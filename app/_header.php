@@ -13,7 +13,7 @@
     </header>
 
     <nav>
-        <a href="/"><b>ok</b></a>
+        <a href="/"><b>Home</b></a>
     </nav>
 
     <main>

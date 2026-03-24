@@ -13,7 +13,7 @@
     </header>
 
     <nav>
-        <a href="/"><b>Contact</b></a>
+        <a href="/"><b>Home</b></a>
     </nav>
 
     <main>

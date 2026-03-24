@@ -1,7 +1,7 @@
     </main>
 
     <footer>
-        <b>Stationary Hub</b>
+        <b>Stationary</b>
     </footer>
 
 </body>

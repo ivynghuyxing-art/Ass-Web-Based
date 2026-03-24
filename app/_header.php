@@ -9,7 +9,7 @@
 </head>
 <body>
     <header>
-        <h1><a href="/">Stationary Hub</a></h1>
+        <h1><a href="/">Stationary</a></h1>
     </header>
 
     <nav>

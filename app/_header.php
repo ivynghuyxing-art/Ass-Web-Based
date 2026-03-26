@@ -9,7 +9,7 @@
 </head>
 <body>
     <header>
-        <h1><a href="/">Hello</a></h1>
+        <h1><a href="/">contact</a></h1>
     </header>
 
     <nav>

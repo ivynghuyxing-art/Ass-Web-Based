@@ -54,7 +54,7 @@ header a{
 .menu a{
     margin-left: 20px;
     text-decoration: none;
-    color: black;
+    color: white;
 }
 .menu a:hover{
     border-bottom: 2px solid white;

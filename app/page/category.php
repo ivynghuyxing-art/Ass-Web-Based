@@ -1,2 +1,2 @@
 <?php
-echo "HELLO CATEGORY";
+include '../_header.php';

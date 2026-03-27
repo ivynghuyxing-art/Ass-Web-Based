@@ -5,7 +5,7 @@ require '_base.php';
 
 
 // ----------------------------------------------------------------------------
-$title = 'Stationary Hub';
+$title = 'Hub';
 $_title= 'Welcome';
 include '_header.php';
 ?>

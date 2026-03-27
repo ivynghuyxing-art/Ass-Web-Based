@@ -9,11 +9,15 @@
 </head>
 <body>
     <header>
-        <h1><a href="/">Stationary Hub</a></h1>
+        <h1><a href="/">Cozy Hub</a></h1>
     </header>
 
-    <nav>
-        <a href="/"><b>Home</b></a>
+    <nav class="navbar"> 
+
+        <div class="menu"> 
+                <a href="/"><b>Home</b></a> 
+                <a href="/app/category.php"><b>Categories</b></a> 
+        </div> 
     </nav>
 
     <main>

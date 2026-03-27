@@ -16,7 +16,7 @@
 
         <div class="menu"> 
                 <a href="/"><b>Home</b></a> 
-                <a href="/app/page/category.php"><b>Categories</b></a> 
+                <a href="/page/category.php"><b>Categories</b></a> 
         </div> 
     </nav>
 

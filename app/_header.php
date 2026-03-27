@@ -10,6 +10,12 @@
 <body>
     <header>
         <h1><a href="/">Cozy Hub</a></h1>
+        
+        <div class="auth">
+           <a href ="/login.php"> Login</a>
+            <a href = "/register.php">Register</a>
+
+        </div>
     </header>
 
     <nav class="navbar"> 

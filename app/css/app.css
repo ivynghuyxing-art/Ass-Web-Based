@@ -9,7 +9,7 @@ header{
     display:flex;
     justify-content: space-between;
     align-items:center;
-    padding:10px 50px;
+    padding:5px 50px;
     background-color: white;
 }
 footer{
@@ -27,16 +27,30 @@ header a{
     color:black;
     text-decoration: none;
 }
-
+.auth{
+    display:flex;
+    justify-content: flex-end;
+    gap:10px;
+    align-items: center;
+}
 .auth a{
     text-decoration:none;
-    color:black;
+    color:darkred;
     font-size:16px;
 }
+.auth.divider{
+    color:black;
+    padding:0 3px
+}
+
+.auth a:hover{
+    border-bottom: 1px solid darkred;
+}
+
 .navbar {
     display: flex;
     align-items: center;
-    padding: 15px 30px;
+    padding: 20px 30px;
     background-color: darkred;
 }
 

@@ -13,6 +13,7 @@
         
         <div class="auth">
            <a href ="/login.php"> Login</a>
+           <span>|</span>
             <a href = "/register.php">Register</a>
 
         </div>

@@ -28,14 +28,12 @@
                 <a href="/page/contact.php"><b>Contact</b></a> 
         </div> 
 
-        <div class="right-section">
-        <form action="/page/search.php" class="search-form" method="get">
-                <?= html_search('product_name', 'placeholder="Search products"') ?>
-                 
-         </form>
-        </div>
+        <div class ="search-bar">
+            <form action="page/search.php" method="get" class="search-form">
+                <input type="search" name="product_name" placeholder="Search product">
 
-        
+            </form>        
+        </div>
     </nav>
 
     <main>

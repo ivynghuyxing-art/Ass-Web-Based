@@ -29,9 +29,9 @@
         </div> 
 
         <div class="right-section">
-        <form class="search-form" method="get">
+        <form action="/page/search.php" class="search-form" method="get">
                 <?= html_search('product_name', 'placeholder="Search products"') ?>
-                 <button type="submit">Search</button>
+                 
          </form>
         </div>
 

@@ -12,11 +12,18 @@
         <h1><a href="/">Cozy Hub</a></h1>
         
         <div class="auth">
-           <a href ="/login.php"> Login</a>
-           <span>|</span>
-            <a href = "/register.php">Register</a>
-
-        </div>
+        <?php 
+            if(!isset($_SESSION['user'])): 
+        ?>
+            <a href="/login.php">Login</a>
+            <span>|</span>
+            <a href="/register.php">Register</a>
+        <?php 
+            else: 
+        ?>
+            <a href="/logout.php">Logout</a>
+        <?php endif; ?>
+    </div>
     </header>
 
     <nav class="navbar"> 
@@ -25,7 +32,7 @@
                 <a href="/"><b>Home</b></a> 
                 <a href="/customer/product.php"><b>Product</b></a>
                 <a href="/customer/category.php"><b>Categories</b></a>
-                <a href="/page/contact.php"><b>Contact</b></a> 
+                <a href="/customer/contact.php"><b>Contact</b></a> 
         </div> 
 
         <div class ="search-bar">

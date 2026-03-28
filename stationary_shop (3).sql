@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 27, 2026 at 04:01 AM
+-- Generation Time: Mar 28, 2026 at 09:56 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -92,8 +92,16 @@ CREATE TABLE `customer` (
   `phone` varchar(15) NOT NULL,
   `email` varchar(100) NOT NULL,
   `photo` varchar(100) NOT NULL,
-  `membership_id` int(11) NOT NULL
+  `membership_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `customer`
+--
+
+INSERT INTO `customer` (`cust_id`, `cust_name`, `password`, `address`, `gender`, `phone`, `email`, `photo`, `membership_id`) VALUES
+(4, 'ivy', '$2y$10$wDXZHEqug/d3tnWxp/xGV.Q5u0FPxWeqAkc6PivVdsrJuPU7JE3wi', '', '', '', '', '', NULL),
+(5, 'Ivyng_07', '$2y$10$Nmy20gaEDYDg7EnWr1tIoeRODyXm8q5AGMtHNd0mzERxFxOUxCg0W', '', '', '', '', '', NULL);
 
 -- --------------------------------------------------------
 
@@ -222,6 +230,7 @@ ALTER TABLE `category`
 --
 ALTER TABLE `customer`
   ADD PRIMARY KEY (`cust_id`),
+  ADD UNIQUE KEY `cust_name` (`cust_name`),
   ADD KEY `membership_id` (`membership_id`);
 
 --
@@ -298,7 +307,7 @@ ALTER TABLE `category`
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `cust_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `cust_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `membership`

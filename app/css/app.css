@@ -49,9 +49,36 @@ header a{
 
 .navbar {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     padding: 20px 30px;
     background-color: darkred;
+}
+
+.navbar.right-section{
+    display:flex;
+    align-items: center;
+    margin-right: 100px;
+}
+
+.navbar .search-form {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+.navbar .search-form input[type="search"] {
+    padding: 5px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.navbar .search-form button {
+    padding: 5px 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 .logo a {

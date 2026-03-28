@@ -27,6 +27,15 @@
                 <a href="/page/category.php"><b>Categories</b></a>
                 <a href="/page/contact.php"><b>Contact</b></a> 
         </div> 
+
+        <div class="right-section">
+        <form class="search-form" method="get">
+                <?= html_search('product_name', 'placeholder="Search products"') ?>
+                 <button type="submit">Search</button>
+         </form>
+        </div>
+
+        
     </nav>
 
     <main>

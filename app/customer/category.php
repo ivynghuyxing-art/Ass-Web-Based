@@ -1,6 +1,6 @@
 <?php
 $title = 'Category';
-include '../_header.php';
+include '../customer_header.php';
 ?>
 
 <?php

@@ -8,7 +8,7 @@ require '_base.php';
 
 $title = 'Hub';
 $_title= 'Welcome';
-include '_header.php';
+include 'customer_header.php';
 
 ?>
 

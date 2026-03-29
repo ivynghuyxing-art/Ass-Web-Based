@@ -38,10 +38,6 @@ header a{
     color:darkred;
     font-size:16px;
 }
-.auth.divider{
-    color:black;
-    padding:0 3px
-}
 
 .auth a:hover{
     border-bottom: 1px solid darkred;
@@ -54,6 +50,16 @@ header a{
     padding: 20px 30px;
     background-color: darkred;
 }
+.menu a{
+    margin-left: 20px;
+    text-decoration: none;
+    color: white;
+}
+
+.menu a:hover{
+    border-bottom: 2px solid white;
+}
+
 .search-bar{
     display:inline-block;
     margin-right: 20px;
@@ -64,30 +70,6 @@ header a{
     border-radius:4px;
     border:1px solid #ccc;
     width:250px;
-}
-
-.logo a {
-    display:flex;
-    flex-direction:column;
-    line-height:1.0;
-    align-items:center;
-    font-size: 24px;
-    font-weight: bold;
-    text-decoration: none;
-    color: white;
-}
-
-.menu a{
-    margin-left: 20px;
-    text-decoration: none;
-    color: white;
-}
-.menu a:hover{
-    border-bottom: 2px solid white;
-}
-
-main{
-    padding:10px 40px;
 }
 
 .center-box {
@@ -127,13 +109,6 @@ main{
     cursor: pointer;
 }
 
-.error {
-    color: red;
-}
-
-
-
-/* center screen */
 .auth-wrapper {
     height: 100vh;
     display: flex;
@@ -141,7 +116,6 @@ main{
     align-items: center;
 }
 
-/* card box */
 .auth-card {
     width: 380px;
     background: white;
@@ -150,7 +124,7 @@ main{
     box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
-/* title */
+
 .auth-title {
     text-align: center;
     margin-bottom: 5px;
@@ -163,7 +137,6 @@ main{
     margin-bottom: 20px;
 }
 
-/* form */
 .auth-form {
     display: flex;
     flex-direction: column;
@@ -181,7 +154,7 @@ main{
     border-radius: 6px;
 }
 
-/* button */
+
 .auth-form button {
     margin-top: 20px;
     padding: 10px;
@@ -204,7 +177,7 @@ main{
 }
 
 .switch a {
-    color: #007bff;
+    color: darkred;
     text-decoration: none;
 }
 
@@ -230,11 +203,11 @@ label.upload img {
 }
 
 .register-btn:hover {
-    background-color: #0056b3;
+    background-color: darkred;
 }
 
 .auth-form a.register:hover {
-    background-color: rgb(168, 39, 39);    /* 鼠标悬停变深蓝 */
+    background-color: rgb(168, 39, 39);  
 }
 
 .box a.login{
@@ -256,4 +229,47 @@ label.upload img {
     font-size: 13px;
     display: block;
     margin-top: 5px;
+}
+/* admin.css */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: #333;
+    color: white;
+    position: relative;
+}
+
+.right button {
+    margin-left: 10px;
+    padding: 6px 12px;
+    cursor: pointer;
+    background: #555;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+.profile {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    background: white;
+    color: black;
+    padding: 10px;
+    display: none;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    width: 200px;
+    text-align: center;
+}
+
+.profile.active {
+    display: block;
+}
+
+.profile img.logo-img {
+    border-radius: 50%;
+    margin-bottom: 8px;
 }

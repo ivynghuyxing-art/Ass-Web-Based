@@ -39,6 +39,18 @@ function redirect($url = null) {
     exit();
 }
 
+// Set or get temporary session variable
+function temp($key, $value = null) {
+    if ($value !== null) {
+        $_SESSION["temp_$key"] = $value;
+    }
+    else {
+        $value = $_SESSION["temp_$key"] ?? null;
+        unset($_SESSION["temp_$key"]);
+        return $value;
+    }
+}
+
 function encode($value) {
     return htmlentities($value);
 }
@@ -53,19 +65,6 @@ function html_password($key, $attr = '') {
 }
 function html_file($key, $accept = '', $attr = '') {
     echo "<input type='file' id='$key' name='$key' accept='$accept' $attr>";
-}
-
-
-// Set or get temporary session variable
-function temp($key, $value = null) {
-    if ($value !== null) {
-        $_SESSION["temp_$key"] = $value;
-    }
-    else {
-        $value = $_SESSION["temp_$key"] ?? null;
-        unset($_SESSION["temp_$key"]);
-        return $value;
-    }
 }
 
 function get_file($key){
@@ -129,7 +128,10 @@ function is_email($value){
 
 function login($customer, $url = '/') {
     $_SESSION['customer'] = $customer;
-    redirect($url);
+}
+
+function admin_login($admin, $url = '/') {
+    $_SESSION['admin'] = $admin;
 }
 
 $_db = new PDO('mysql:dbname=stationary_shop', 'root', '', [

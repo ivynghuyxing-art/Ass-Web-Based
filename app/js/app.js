@@ -17,4 +17,16 @@ $(() => {
             e.target.value = '';
         }
         });
+
+        // admin.js
+    window.addEventListener('DOMContentLoaded', () => {
+        const userBtn = document.getElementById("user-btn");
+        const profile = document.querySelector(".profile");
+
+        if (userBtn && profile) {
+            userBtn.onclick = () => {
+            profile.classList.toggle("active");
+            }
+        }
+    });
 });

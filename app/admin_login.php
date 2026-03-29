@@ -19,13 +19,13 @@ if(is_post()){
     }
 
     if(!$err){
-        $stm = $_db->prepare('SELECT * FROM customer WHERE email=? AND password=SHA1(?)');
+        $stm = $_db->prepare('SELECT * FROM admin WHERE email=? AND password=SHA1(?)');
         $stm->execute([$email,$password]);
         $u = $stm->fetch();
 
         if($u){
         temp('info', 'Login succesfully!');
-        header("Location:/customer/home.php");
+        header("Location:/admin_header.php");
         exit();
         }
 
@@ -40,38 +40,26 @@ if(is_post()){
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
-
-    <link rel="stylesheet" href="/css/PP.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= $title ?? 'Admin Login' ?></title>
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="/css/app.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
-
 <body>
 
 <div class="center-box">
-
-     <div class="login-title">
-        Welcome to Cozy Hub
-</div>
-
     <form method="post" class="box">
+        <h2>Admin Login</h2>
 
-        <h2>Login</h2>
-
-        
         <input type="text" name="email" placeholder="Email" required autocomplete="off">
+        <span class="error"><?= $err['email'] ?? '' ?></span>
 
         <input type="password" name="password" placeholder="Password" required autocomplete="off">
+        <span class="error"><?= $err['password'] ?? '' ?></span>
 
         <button type="submit" class="register-btn">Login</button>
-
-        <p class="switch">
-                No account?
-                <a href="/register.php">Register</a>
-        </p>
-
-
     </form>
-
 </div>
 
 </body>

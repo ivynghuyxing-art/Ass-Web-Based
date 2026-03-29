@@ -84,6 +84,8 @@ if(is_post()){
     <title>Register</title>
 
     <link rel="stylesheet" href="/css/user.css"> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/js/app.js"></script>
 </head>
 
 <div class="auth-wrapper">
@@ -131,8 +133,6 @@ if(is_post()){
     </div>
 
 </div>
-<?php 
-include '_foot.php'; 
-?>
+
 
 </html>

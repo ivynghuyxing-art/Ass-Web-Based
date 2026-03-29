@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang ="en">
 <head>
@@ -15,7 +17,7 @@
         
         <div class="auth">
         <?php 
-            if(!isset($_SESSION['user'])): 
+            if(!isset($_SESSION['customer'])): 
         ?>
             <a href="/login.php">Login</a>
             <span>|</span>

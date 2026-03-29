@@ -109,13 +109,13 @@ function save_photo($f, $folder,$width=200, $height =200){
 //ERROR HANDLING
 
 // Global error array
-$err = [];
+$_err = [];
 
 // Generate <span class='err'>
 function err($key) {
-    global $err;
-    if ($err[$key] ?? false) {
-        echo "<span class='err'>$err[$key]</span>";
+    global $_err;
+    if ($_err[$key] ?? false) {
+        echo"<span class='err'>$_err[$key]</span>";
     }
     else {
         echo '<span></span>';
@@ -128,10 +128,12 @@ function is_email($value){
 
 function login($customer, $url = '/') {
     $_SESSION['customer'] = $customer;
+    redirect($url);
 }
 
 function admin_login($admin, $url = '/') {
-    $_SESSION['admin'] = $admin;
+    $_SESSION['admin_id'] = $admin->id;
+    redirect($url);
 }
 
 $_db = new PDO('mysql:dbname=stationary_shop', 'root', '', [

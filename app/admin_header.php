@@ -2,18 +2,16 @@
 // admin_header.php
 require '_base.php';  
 
-
 if (!isset($_SESSION['admin_id'])) {
-    header('Location: /admin_login.php');
-    exit();
+    redirect('/admin_login.php');
 }
 
-// 获取管理员资料
 $admin_id = $_SESSION['admin_id'];
-$select_profile = $_db->prepare("SELECT * FROM admin WHERE id=?");
+$select_profile = $_db->prepare("SELECT * FROM admin WHERE admin_id=?");
 $select_profile->execute([$admin_id]);
 $fetch_profile = $select_profile->fetch(PDO::FETCH_ASSOC);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,6 +23,7 @@ $fetch_profile = $select_profile->fetch(PDO::FETCH_ASSOC);
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
+
 <header class="header">
     <!-- 左边 Logo -->
     <a href="/admin/dashboard.php" class="logo">Admin Panel</a>

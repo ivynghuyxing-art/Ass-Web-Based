@@ -10,55 +10,55 @@ if(is_post()){
 
 
     if(!$cust_name){
-        $err['cust_name']= 'Required';
+        $_err['cust_name']= 'Required';
     }
     else if(strlen($cust_name) > 100){
-        $err['cust_name'] = 'Maximum 100 character only';
+        $_err['cust_name'] = 'Maximum 100 character only';
     }
     else if(!is_unique($cust_name,'customer',"cust_name")){
-        $err['cust_name'] = 'Username already exist';
+        $_err['cust_name'] = 'Username already exist';
     }
 
     if(!$email){
-        $err['email'] = 'Required';
+        $_err['email'] = 'Required';
     }
     else if(strlen($email) > 100){
-        $err['email'] = 'Maximum 100 character only';
+        $_err['email'] = 'Maximum 100 character only';
     }
     else if(!is_email($email)){
-        $err['email'] = 'Invalid email';
+        $_err['email'] = 'Invalid email';
     }
     else if(!is_unique($email,'customer','email')){
-        $err['email'] = 'Email already exist!';
+        $_err['email'] = 'Email already exist!';
     }
 
     if(!$password){
-        $err['password'] = 'Required';
+        $_err['password'] = 'Required';
     }
     else if(strlen($password) <5 || strlen($password)>100){
-        $err['password'] = 'Between 5-100 characters only';
+        $_err['password'] = 'Between 5-100 characters only';
     }
 
     if(!$confirm){
-        $err['confirm'] = 'Required';
+        $_err['confirm'] = 'Required';
     }
     else if ($password !== $confirm) {
-        $err['confirm'] = 'Passwords do not match';
+        $_err['confirm'] = 'Passwords do not match';
     }
 
     //validate photo
 
     if(!$f){
-        $err['photo'] = 'Required';
+        $_err['photo'] = 'Required';
     }
     else if(!str_starts_with($f->type,'image/')){
-        $err['photo'] = 'Must be image';
+        $_err['photo'] = 'Must be image';
     }
     else if($f->size >1 *1024 *1024){
-        $err['photo'] = 'Maximum 1MB';
+        $_err['photo'] = 'Maximum 1MB';
     }
 
-    if(!$err){
+    if(!$_err){
         $photo = save_photo($f, 'photo');
 
         $stm = $_db->prepare('INSERT INTO customer (cust_name, email,password,photo) VALUES (?,?,?,?)');

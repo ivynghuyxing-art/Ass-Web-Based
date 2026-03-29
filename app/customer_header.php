@@ -10,6 +10,7 @@
     <script src="/js/app.js"></script>
 </head>
 <body>
+
     <header>
         <h1><a href="/">Cozy Hub</a></h1>
         

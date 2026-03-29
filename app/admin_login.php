@@ -18,19 +18,18 @@ if(is_post()){
         $err['password'] = 'Required';
     }
 
-    if(!$err){
+    if(!$_err){
         $stm = $_db->prepare('SELECT * FROM admin WHERE email=? AND password=SHA1(?)');
         $stm->execute([$email,$password]);
-        $u = $stm->fetch();
+        $a = $stm->fetch();
 
-        if($u){
-        temp('info', 'Login succesfully!');
-        header("Location:/admin_header.php");
-        exit();
+        if($a){
+            temp('info', 'Login succesfully!');
+            login($a,'admin_header.php');
         }
 
         else{
-        $err['password'] = 'Not matched';
+        $_err['password'] = 'Not matched';
         }
     }
 }
@@ -47,7 +46,9 @@ if(is_post()){
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
-
+    <!-- Flash message -->
+    <div id="info"><?= temp('info') ?></div>
+    
 <div class="center-box">
     <form method="post" class="box">
         <h2>Admin Login</h2>

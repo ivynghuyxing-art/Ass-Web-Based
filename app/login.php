@@ -1,29 +1,36 @@
 <?php
 require '_base.php';
 
-$error = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if(is_post()){
+    $email = req('email');
+    $password = req('password');
 
-    $custname = $_POST['custname'];
-    $password = $_POST['password'];
+    if($email == ''){
+        $err['email'] = 'Required';
+    }
+    else if(!is_email($email)) {
+        $err['email'] = "Invalid email";
+    }
 
-    $stm = $_db->prepare("SELECT * FROM customer WHERE cust_name = ?");
-    $stm->execute([$custname]);
-    $customer= $stm->fetch();
+    //validate password
+    if($password ==''){
+        $err['password'] = 'Required';
+    }
 
-    if ($customer && password_verify($password, $customer->password)) {
+    if(!$err){
+        $stm = $_db->prepare('SELECT * FROM customer WHERE email=? AND password=SHA1(?)');
+        $stm->execute([$email,$password]);
+        $u = $stm->fetch();
 
-        $_SESSION['user'] = [
-            'id' => $customer->id,
-            'name' => $customer->cust_name,
-        ];
+        if($u){
+        temp('info', 'Login succesfully!');
+        login($u);
+        }
 
-        header("Location: /customer/home.php");
-        exit();
-
-    } else {
-        $error = "Invalid username or password";
+        else{
+        $err['password'] = 'Not matched';
+        }
     }
 }
 ?>
@@ -43,27 +50,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
      <div class="login-title">
         Welcome to Cozy Hub
-    </div>
+</div>
 
     <form method="post" class="box">
 
         <h2>Login</h2>
 
-        <?php
-        if($error){
-            echo $error;
-        }
-        ?>
-
-        <input type="text" name="custname" placeholder="Username" required autocomplete="off">
+        
+        <input type="text" name="email" placeholder="Email" required autocomplete="off">
 
         <input type="password" name="password" placeholder="Password" required autocomplete="off">
 
-        <button type="submit">Login</button>
+        <a href="/customer/home.php" class='login'>Login</a>
 
-        <p>
-            No account? <a href="/register.php">Register</a>
+        <p class="switch">
+                No account?
+                <a href="/register.php">Register</a>
         </p>
+
 
     </form>
 

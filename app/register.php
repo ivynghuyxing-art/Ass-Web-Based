@@ -1,49 +1,80 @@
 <?php
 require '_base.php';
 
-$title = 'Register';
-$_title = 'Create Account';
+if(is_post()){
+    $cust_name = req('cust_name');
+    $email = req('email');
+    $password = req('password');
+    $confirm = req('confirm');
+    $f = get_file('photo');
 
-$error = '';
-$success = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $confirm  = $_POST['confirm_password'];
-
-    //check password match
-    if ($password != $confirm) {
-        $error = "Passwords do not match";
+    if(!$cust_name){
+        $err['cust_name']= 'Required';
     }
-    else {
-
-        // check username exist
-        $stm = $_db->prepare("SELECT cust_id FROM customer WHERE cust_name = ?");
-        $stm->execute([$username]);
-
-        
-
-        if ($stm->fetch()) {
-            $error = "Username already exists";
-            }
-        else {
-
-            //insert user
-            $hashed = password_hash($password, PASSWORD_DEFAULT);
-
-            $stm = $_db->prepare("INSERT INTO customer (cust_name, password,membership_id)
-                                  VALUES (?, ?, ?)");
-            $stm->execute([$username, $hashed, null]);
-
-
-            temp('info','Account has been created!');
-            redirect ('login.php');
-
-        }
+    else if(strlen($cust_name) > 100){
+        $err['cust_name'] = 'Maximum 100 character only';
     }
+    else if(!is_unique($cust_name,'customer',"cust_name")){
+        $err['cust_name'] = 'Username already exist';
+    }
+
+    if(!$email){
+        $err['email'] = 'Required';
+    }
+    else if(strlen($email) > 100){
+        $err['email'] = 'Maximum 100 character only';
+    }
+    else if(!is_email($email)){
+        $err['email'] = 'Invalid email';
+    }
+    else if(!is_unique($email,'customer','email')){
+        $err['email'] = 'Email already exist!';
+    }
+
+    if(!$password){
+        $err['password'] = 'Required';
+    }
+    else if(strlen($password) <5 || strlen($password)>100){
+        $err['password'] = 'Between 5-100 characters only';
+    }
+
+    if(!$confirm){
+        $err['confirm'] = 'Required';
+    }
+    else if ($password !== $confirm) {
+        $err['confirm'] = 'Passwords do not match';
+    }
+
+    //validate photo
+
+    if(!$f){
+        $err['photo'] = 'Required';
+    }
+    else if(!str_starts_with($f->type,'image/')){
+        $err['photo'] = 'Must be image';
+    }
+    else if($f->size >1 *1024 *1024){
+        $err['photo'] = 'Maximum 1MB';
+    }
+
+    if(!$err){
+        $photo = save_photo($f, 'photo');
+
+        $stm = $_db->prepare('INSERT INTO customer (cust_name, email,password,photo) VALUES (?,?,?,?)');
+        $stm->execute([
+            $cust_name,
+            $email,
+            $password,
+            $photo
+        ]);
+
+        temp('info', 'Register Succefully');
+        redirect('login.php');
+    }
+
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -61,26 +92,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <h1 class="auth-title">Create Account</h1>
         <p class="auth-subtitle">Join us today</p>
-         <?php if($error): ?>
-        <p style="color:red;"><?= $error ?></p>
-    <?php endif; ?>
 
-    <?php if($success): ?>
-        <p style="color:green;"><?= $success ?></p>
-    <?php endif; ?>
+        <form method="post" class="auth-form" enctype="multipart/form-data">
 
-        <form method="post" class="auth-form">
 
-            <label>Username</label>
-            <input type="text" name="username" required>
+            <label for="cust_name">Username</label>
+            <?= html_text('cust_name', 'maxlength="50"') ?>
+            <span class="error"> <?= err('cust_name') ?></span>
 
-            <label>Password</label>
-            <input type="password" name="password" required>
+            <label for="email">Email</label>
+            <?= html_text('email', 'maxlength="100"') ?>
+            <span class="error"> <?= err('email')?></span>
 
-            <label>Confirm Password</label>
-            <input type="password" name="confirm_password" required>
+            <label for="password">Password</label>
+            <?= html_password('password', 'maxlength="100"') ?>
+             <span class="error"> <?= err('password')?></span>
 
-            <button type="submit">Register</button>
+            <label for="confirm">Confirm</label>
+            <?= html_password('confirm', 'maxlength="100"') ?>
+            <span class="error"> <?= err('confirm')?></span>
+
+            <label for="photo">Photo</label>
+            <label class="upload" tabindex="0">
+                <?= html_file('photo', 'image/*','hidden') ?>
+                <img src="/images/photo.jpg">
+            </label>
+             <span class="error"> <?= err('photo')?></span>
+
+            <button type="submit" class="register-btn">Register</button>
 
             <p class="switch">
                 Already have an account?

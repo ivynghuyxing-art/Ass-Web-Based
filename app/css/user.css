@@ -207,3 +207,53 @@ main{
     color: #007bff;
     text-decoration: none;
 }
+
+label.upload img {
+    display: block;
+    border: 1px solid #333;
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    cursor: pointer;
+}
+.register-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+.register-btn:hover {
+    background-color: #0056b3;
+}
+
+.auth-form a.register:hover {
+    background-color: rgb(168, 39, 39);    /* 鼠标悬停变深蓝 */
+}
+
+.box a.login{
+    display: inline-block;       
+    padding: 10px 80px;           
+    background-color: darkred;  
+    color: #fff;                  
+    text-decoration: none;        
+    border-radius: 6px;          
+    font-weight: bold;           
+    font-size: 14px;
+    text-align: center;
+    margin: 15px 0;               
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.error {
+    color: red;
+    font-size: 13px;
+    display: block;
+    margin-top: 5px;
+}

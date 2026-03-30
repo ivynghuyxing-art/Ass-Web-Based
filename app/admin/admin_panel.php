@@ -3,11 +3,10 @@ require '../_base.php';
 $title = 'Admin Panel';
 
 if(!isset($_SESSION['admin_id'])){
-    header('Location: admin_login.php');
-    exit();
+    redirect('admin_login.php');
 }
 
-$page=$_GET['page'] ?? 'dashboard';
+$page=$_GET['page'] ?? 'dashboard';  //if no have page, page = dashboard (default)
 require '../admin_header.php';
 
 switch($page){

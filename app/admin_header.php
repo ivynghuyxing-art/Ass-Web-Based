@@ -28,9 +28,9 @@ $fetch_profile = $select_profile->fetch(PDO::FETCH_ASSOC);
 
     
     <div class="right">
-        <a href="dashboard.php">Dashboard</a>
-        <a href="add_product.php">Add Product</a>
-        <a href ="product.php">View Product</a>
+        <a href="dashboard.php?page=dashboard">Dashboard</a>
+        <a href="add_product.php?page=add_product">Add Product</a>
+        <a href ="product.php?page=view_product">View Product</a>
     </div>
     <div class ="logout-btn">
         <a href="admin_logout.php">Logout</a>

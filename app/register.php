@@ -78,12 +78,13 @@ if(is_post()){
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang ="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Register</title>
-
-    <link rel="stylesheet" href="/css/user.css"> 
+    <meta charset ="UTF-8">
+    <meta name="viewport" content= "width=device-width, initial-scale=1.0">
+    <title><?= $title ?? 'Untitled' ?></title>
+    <link rel = "shortcut icon" href="/images/favicon.png">
+    <link rel = "stylesheet" href="/css/app.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="/js/app.js"></script>
 </head>
@@ -91,7 +92,6 @@ if(is_post()){
 <div class="auth-wrapper">
 
     <div class="auth-card">
-
         <h1 class="auth-title">Create Account</h1>
         <p class="auth-subtitle">Join us today</p>
 

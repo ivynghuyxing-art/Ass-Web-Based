@@ -105,7 +105,6 @@ function save_photo($f, $folder,$width=200, $height =200){
 
 }
 
-
 //ERROR HANDLING
 
 // Global error array
@@ -132,7 +131,7 @@ function login($customer, $url = '/') {
 }
 
 function admin_login($admin, $url = '/') {
-    $_SESSION['admin_id'] = $admin->id;
+    $_SESSION['admin_id'] = $admin->admin_id;
     redirect($url);
 }
 

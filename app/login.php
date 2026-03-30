@@ -7,30 +7,29 @@ if(is_post()){
     $password = req('password');
 
     if($email == ''){
-        $err['email'] = 'Required';
+        $_err['email'] = 'Required';
     }
     else if(!is_email($email)) {
-        $err['email'] = "Invalid email";
+        $_err['email'] = "Invalid email";
     }
 
     //validate password
     if($password ==''){
-        $err['password'] = 'Required';
+        $_err['password'] = 'Required';
     }
 
-    if(!$err){
+    if(!$_err){
         $stm = $_db->prepare('SELECT * FROM customer WHERE email=? AND password=SHA1(?)');
         $stm->execute([$email,$password]);
         $u = $stm->fetch();
 
         if($u){
         temp('info', 'Login succesfully!');
-        header("Location:/customer/home.php");
-        exit();
+        redirect('/customer/home.php');
         }
 
         else{
-        $err['password'] = 'Not matched';
+        $_err['password'] = 'Not matched';
         }
     }
 }
@@ -42,10 +41,11 @@ if(is_post()){
     <meta charset="UTF-8">
     <title>Login</title>
 
-    <link rel="stylesheet" href="/css/PP.css">
+    <link rel="stylesheet" href="/css/app.css">
 </head>
 
 <body>
+    
 
 <div class="center-box">
 

@@ -3,7 +3,7 @@
 require '_base.php';  
 
 if (!isset($_SESSION['admin_id'])) {
-    redirect('/admin_login.php');
+    redirect('/admin/admin_login.php');
 }
 
 $admin_id = $_SESSION['admin_id'];

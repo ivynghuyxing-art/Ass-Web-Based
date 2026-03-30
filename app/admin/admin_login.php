@@ -1,5 +1,5 @@
 <?php
-require '_base.php';
+require '../_base.php';
 
 
 if(is_post()){
@@ -7,15 +7,15 @@ if(is_post()){
     $password = req('password');
 
     if($email == ''){
-        $err['email'] = 'Required';
+        $_err['email'] = 'Required';
     }
     else if(!is_email($email)) {
-        $err['email'] = "Invalid email";
+        $_err['email'] = "Invalid email";
     }
 
     //validate password
     if($password ==''){
-        $err['password'] = 'Required';
+        $_err['password'] = 'Required';
     }
 
     if(!$_err){
@@ -25,7 +25,7 @@ if(is_post()){
 
         if($a){
             temp('info', 'Login succesfully!');
-            login($a,'admin_header.php');
+            admin_login($a,'/admin/dashboard.php');
         }
 
         else{
@@ -48,16 +48,16 @@ if(is_post()){
 <body>
     <!-- Flash message -->
     <div id="info"><?= temp('info') ?></div>
-    
+
 <div class="center-box">
     <form method="post" class="box">
         <h2>Admin Login</h2>
 
         <input type="text" name="email" placeholder="Email" required autocomplete="off">
-        <span class="error"><?= $err['email'] ?? '' ?></span>
+        <span class="error"><?= $_err['email'] ?? '' ?></span>
 
         <input type="password" name="password" placeholder="Password" required autocomplete="off">
-        <span class="error"><?= $err['password'] ?? '' ?></span>
+        <span class="error"><?= $_err['password'] ?? '' ?></span>
 
         <button type="submit" class="register-btn">Login</button>
     </form>

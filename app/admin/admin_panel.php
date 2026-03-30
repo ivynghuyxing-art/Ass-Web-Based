@@ -23,6 +23,10 @@ switch($page){
         include 'product.php';
         break;
 
+    case 'logout':
+        include'admin_logout.php';
+        break;
+
     default:
     echo "Page not founded!";
 }?>

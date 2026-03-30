@@ -25,10 +25,11 @@ if(is_post()){
 
         if($a){
             temp('info', 'Login succesfully!');
-            admin_login($a,'/admin/dashboard.php');
+            admin_login($a,'/admin/admin_panel.php');
         }
 
         else{
+        $_err['email']="Invalid email";
         $_err['password'] = 'Not matched';
         }
     }

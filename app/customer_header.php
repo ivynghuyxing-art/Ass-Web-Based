@@ -40,7 +40,7 @@
         </div> 
 
         <div class ="search-bar">
-            <form action="customer/search.php" method="get" class="search-form">
+            <form action="search.php" method="get" class="search-form">
                 <input type="search" name="product_name" placeholder="Search product">
 
             </form>        

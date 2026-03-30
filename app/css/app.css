@@ -227,8 +227,7 @@ label.upload img {
 .error {
     color: red;
     font-size: 13px;
-    display: block;
-    margin-top: 5px;
+    margin-top: 3px;
 }
 /* admin.css */
 .header {
@@ -297,4 +296,29 @@ label.upload img {
      10% { top:  100px; opacity: 1; }
      90% { top:  100px; opacity: 1; }
     100% { top: -100px; opacity: 0; }
+}
+
+.sidebar{
+    width:200px;
+    background:darkred;
+    color:#fff;
+    height:100vh;
+    padding:10px;
+}
+
+.sidebar a{
+    color: #fff;
+    display:block;
+    padding:8px;
+    text-decoration:none;
+    justify-content: center;
+}
+
+.sidebar a:hover{
+    background:rgb(175, 32, 32);
+}
+
+.main-content{
+    flex:1;
+    padding:20px;
 }

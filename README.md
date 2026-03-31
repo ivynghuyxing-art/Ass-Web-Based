@@ -2,5 +2,5 @@
 
 
 	
-joey091207@gmail.com  -- admin login
-101207  -- admin password
+joey0912@gmail.com-- admin login
+091207  -- admin password

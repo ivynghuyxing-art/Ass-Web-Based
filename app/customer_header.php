@@ -1,3 +1,7 @@
+<?php
+require'_base.php';
+?>
+
 <!DOCTYPE html>
 <html lang ="en">
 <head>

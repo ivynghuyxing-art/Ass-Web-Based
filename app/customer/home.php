@@ -1,5 +1,4 @@
 <?php
-require '../_base.php';
 $title = 'Home';
 $_title = '';
 include '../customer_header.php';

@@ -224,7 +224,7 @@ label.upload img {
     cursor: pointer;
     transition: background-color 0.3s;
 }
-.error {
+.err {
     color: red;
     font-size: 13px;
     margin-top: 3px;

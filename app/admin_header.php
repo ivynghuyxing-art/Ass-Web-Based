@@ -1,14 +1,9 @@
 <?php
- 
-
-if (!isset($_SESSION['admin_id'])) {
-    redirect('/admin/admin_login.php');
+if (!isset($_SESSION['user']) || $_SESSION['user']->role !== 'admin') {
+    redirect('/login.php');
 }
 
-$admin_id = $_SESSION['admin_id'];
-$select_profile = $_db->prepare("SELECT * FROM admin WHERE admin_id=?");
-$select_profile->execute([$admin_id]);
-$fetch_profile = $select_profile->fetch(PDO::FETCH_ASSOC);
+$fetch_profile = $_SESSION['user'];  
 ?>
 
 <!DOCTYPE html>
@@ -26,13 +21,12 @@ $fetch_profile = $select_profile->fetch(PDO::FETCH_ASSOC);
     <div class="sidebar">
     <h2><i>Admin panel</i></h2>
 
-    
     <div class="right">
-        <a href="dashboard.php?page=dashboard">Dashboard</a>
-        <a href="add_product.php?page=add_product">Add Product</a>
-        <a href ="product.php?page=view_product">View Product</a>
+        <a href="admin_panel.php?page=dashboard">Dashboard</a>
+        <a href="admin_panel.php?page=add_product">Add Product</a>
+        <a href="admin_panel.php?page=product">View Product</a>
     </div>
-    <div class ="logout-btn">
+    <div class="logout-btn">
         <a href="admin_logout.php">Logout</a>
     </div>
     </div>

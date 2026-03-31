@@ -10,13 +10,13 @@
     <script src="/js/app.js"></script>
 </head>
 <body>
-
+    <div id="info"><?= temp('info') ?></div>
     <header>
         <h1><a href="/">Cozy Hub</a></h1>
         
         <div class="auth">
         <?php 
-            if(!isset($_SESSION['customer'])): 
+            if(!isset($_SESSION['user'])): 
         ?>
             <a href="/login.php">Login</a>
             <span>|</span>

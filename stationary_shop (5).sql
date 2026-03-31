@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 28, 2026 at 09:56 PM
+-- Generation Time: Mar 31, 2026 at 02:23 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,29 +24,12 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `admin`
---
-
-CREATE TABLE `admin` (
-  `admin_id` int(11) NOT NULL,
-  `admin_name` varchar(100) NOT NULL,
-  `address` varchar(100) NOT NULL,
-  `password` varchar(40) NOT NULL,
-  `phone` varchar(20) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `photo` varchar(100) NOT NULL,
-  `level` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `cart`
 --
 
 CREATE TABLE `cart` (
   `cart_id` int(11) NOT NULL,
-  `cust_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `total_price` decimal(10,2) NOT NULL,
   `total_quantity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -80,42 +63,23 @@ CREATE TABLE `category` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `customer`
---
-
-CREATE TABLE `customer` (
-  `cust_id` int(11) NOT NULL,
-  `cust_name` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `address` varchar(255) NOT NULL,
-  `gender` char(1) NOT NULL,
-  `phone` varchar(15) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `photo` varchar(100) NOT NULL,
-  `membership_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `customer`
---
-
-INSERT INTO `customer` (`cust_id`, `cust_name`, `password`, `address`, `gender`, `phone`, `email`, `photo`, `membership_id`) VALUES
-(4, 'ivy', '$2y$10$wDXZHEqug/d3tnWxp/xGV.Q5u0FPxWeqAkc6PivVdsrJuPU7JE3wi', '', '', '', '', '', NULL),
-(5, 'Ivyng_07', '$2y$10$Nmy20gaEDYDg7EnWr1tIoeRODyXm8q5AGMtHNd0mzERxFxOUxCg0W', '', '', '', '', '', NULL);
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `membership`
 --
 
 CREATE TABLE `membership` (
   `membership_id` int(11) NOT NULL,
-  `level` varchar(30) NOT NULL,
-  `discount_rate` decimal(5,2) NOT NULL,
-  `expired_date` date NOT NULL,
-  `joined_date` date NOT NULL
+  `name` varchar(50) NOT NULL,
+  `discount_rate` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `membership`
+--
+
+INSERT INTO `membership` (`membership_id`, `name`, `discount_rate`) VALUES
+(1, 'Normal', 0),
+(2, 'Silver', 5),
+(3, 'Gold', 10);
 
 -- --------------------------------------------------------
 
@@ -125,7 +89,7 @@ CREATE TABLE `membership` (
 
 CREATE TABLE `orders` (
   `orders_id` int(11) NOT NULL,
-  `cust_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `total_price` decimal(10,2) NOT NULL,
   `order_date` date NOT NULL,
   `status` varchar(20) NOT NULL,
@@ -180,6 +144,37 @@ CREATE TABLE `product` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `user`
+--
+
+CREATE TABLE `user` (
+  `user_id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `gender` char(1) NOT NULL,
+  `profile_photo` varchar(100) NOT NULL,
+  `role` varchar(10) NOT NULL,
+  `membership_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`user_id`, `name`, `password`, `email`, `gender`, `profile_photo`, `role`, `membership_id`) VALUES
+(3, 'ivy', '53c4ab4e40', 'ngivy0912@gmail.com', '', '', '', 1),
+(4, 'ivyng', 'e5529d75e3', 'ngivy091207@gmail.com', '', '', '', 1),
+(5, 'kk', '86bd78fd52', 'kk@gmail.com', '', '', '', 1),
+(6, 'kkv', 'e5529d75e3', 'kkv@gmail.com', '', '', '', 1),
+(7, 'xixixi', '3d4f2bf07d', 'xixi912@gmail.com', '', '', '', 1),
+(8, 'xixixika', '3d4f2bf07d', 'xixika912@gmail.com', '', '', '', 1),
+(9, 'ivykk', 'e5529d75e3', 'ngivy0912222@gmail.com', '', '69cbbb1654368.jpg', 'customer', 1),
+(10, 'ivyxixxi', 'e5529d75e3', 'ivyxixi@gmail.com', '', '69cbbba4555fd.jpg', 'customer', 1);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `voucher`
 --
 
@@ -199,17 +194,11 @@ CREATE TABLE `voucher` (
 --
 
 --
--- Indexes for table `admin`
---
-ALTER TABLE `admin`
-  ADD PRIMARY KEY (`admin_id`);
-
---
 -- Indexes for table `cart`
 --
 ALTER TABLE `cart`
   ADD PRIMARY KEY (`cart_id`),
-  ADD KEY `cust_id fk` (`cust_id`);
+  ADD KEY `cust_id fk` (`user_id`);
 
 --
 -- Indexes for table `cart_item`
@@ -226,14 +215,6 @@ ALTER TABLE `category`
   ADD PRIMARY KEY (`category_id`);
 
 --
--- Indexes for table `customer`
---
-ALTER TABLE `customer`
-  ADD PRIMARY KEY (`cust_id`),
-  ADD UNIQUE KEY `cust_name` (`cust_name`),
-  ADD KEY `membership_id` (`membership_id`);
-
---
 -- Indexes for table `membership`
 --
 ALTER TABLE `membership`
@@ -244,7 +225,7 @@ ALTER TABLE `membership`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`orders_id`),
-  ADD KEY `cust_id` (`cust_id`);
+  ADD KEY `cust_id` (`user_id`);
 
 --
 -- Indexes for table `orders_item`
@@ -270,6 +251,13 @@ ALTER TABLE `product`
   ADD KEY `category_id` (`category_id`);
 
 --
+-- Indexes for table `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`user_id`),
+  ADD KEY `membership_id` (`membership_id`);
+
+--
 -- Indexes for table `voucher`
 --
 ALTER TABLE `voucher`
@@ -278,12 +266,6 @@ ALTER TABLE `voucher`
 --
 -- AUTO_INCREMENT for dumped tables
 --
-
---
--- AUTO_INCREMENT for table `admin`
---
-ALTER TABLE `admin`
-  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `cart`
@@ -304,16 +286,10 @@ ALTER TABLE `category`
   MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `customer`
---
-ALTER TABLE `customer`
-  MODIFY `cust_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
 -- AUTO_INCREMENT for table `membership`
 --
 ALTER TABLE `membership`
-  MODIFY `membership_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `membership_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `orders`
@@ -340,6 +316,12 @@ ALTER TABLE `product`
   MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `user`
+--
+ALTER TABLE `user`
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
 -- AUTO_INCREMENT for table `voucher`
 --
 ALTER TABLE `voucher`
@@ -353,7 +335,7 @@ ALTER TABLE `voucher`
 -- Constraints for table `cart`
 --
 ALTER TABLE `cart`
-  ADD CONSTRAINT `cust_id fk` FOREIGN KEY (`cust_id`) REFERENCES `customer` (`cust_id`);
+  ADD CONSTRAINT `cust_id fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
 
 --
 -- Constraints for table `cart_item`
@@ -363,16 +345,10 @@ ALTER TABLE `cart_item`
   ADD CONSTRAINT `product_id fk` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`);
 
 --
--- Constraints for table `customer`
---
-ALTER TABLE `customer`
-  ADD CONSTRAINT `membership_id` FOREIGN KEY (`membership_id`) REFERENCES `membership` (`membership_id`);
-
---
 -- Constraints for table `orders`
 --
 ALTER TABLE `orders`
-  ADD CONSTRAINT `cust_id` FOREIGN KEY (`cust_id`) REFERENCES `customer` (`cust_id`);
+  ADD CONSTRAINT `cust_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
 
 --
 -- Constraints for table `orders_item`

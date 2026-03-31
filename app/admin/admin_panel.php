@@ -2,8 +2,8 @@
 require '../_base.php';
 $title = 'Admin Panel';
 
-if(!isset($_SESSION['admin_id'])){
-    redirect('admin_login.php');
+if(!isset($_SESSION['admin'])){
+    redirect('../login.php');
 }
 
 $page=$_GET['page'] ?? 'dashboard';  //if no have page, page = dashboard (default)

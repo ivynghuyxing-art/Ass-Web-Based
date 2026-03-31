@@ -16,13 +16,13 @@ function is_post(){
 
 //obtain get parameter
 function get($key,$value = null){
-    $value =$_GET['$key'] ?? $value;
+    $value =$_GET[$key] ?? $value;
     return is_array($value)?array_map('trim',$value):trim($value);
 }
 
 //obtain post paramater
 function post($key,$value=null){
-    $value =$_POST['$key'] ?? $value;
+    $value =$_POST[$key] ?? $value;
     return is_array($value)?array_map('trim',$value):trim($value);
 }
 
@@ -125,15 +125,12 @@ function is_email($value){
     return filter_var($value,FILTER_VALIDATE_EMAIL) !== false;
 }
 
-function login($customer, $url = '/') {
-    $_SESSION['customer'] = $customer;
+function login($user, $url = '/') {
+    $_SESSION['user'] = $user;
     redirect($url);
 }
 
-function admin_login($admin, $url = '/') {
-    $_SESSION['admin_id'] = $admin->admin_id;
-    redirect($url);
-}
+
 
 $_db = new PDO('mysql:dbname=stationary_shop', 'root', '', [
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,

@@ -322,3 +322,90 @@ label.upload img {
     flex:1;
     padding:20px;
 }
+
+.dashboard h1{
+    margin:0 0 8px 0;
+    font-size:26px;
+}
+
+.muted{
+    color:#666;
+    font-size:14px;
+    margin-bottom:16px;
+}
+
+.dashboard-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap:14px;
+    margin-bottom:18px;
+}
+
+.metric-card{
+    background:#fff;
+    padding:16px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.05);
+}
+
+.metric-card-wide{
+    grid-column: span 1;
+}
+
+.metric-label{
+    color:#666;
+    font-size:14px;
+    margin-bottom:8px;
+}
+
+.metric-value{
+    font-size:28px;
+    font-weight:bold;
+}
+
+.metric-danger{
+    color:darkred;
+}
+
+.dashboard-section{
+    background:#fff;
+    padding:16px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.05);
+    margin-bottom:16px;
+}
+
+.dashboard-section h2{
+    margin:0 0 12px 0;
+    font-size:18px;
+}
+
+.dashboard-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.dashboard-table th{
+    text-align:left;
+    color:#555;
+    font-weight:600;
+    font-size:13px;
+    border-bottom:1px solid #eee;
+    padding:10px 0;
+}
+
+.dashboard-table td{
+    padding:10px 0;
+    border-bottom:1px solid #f0f0f0;
+    font-size:14px;
+}
+
+.empty{
+    color:#666;
+    font-size:14px;
+}
+
+.stock-cell{
+    color:darkred;
+    font-weight:bold;
+}

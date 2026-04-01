@@ -1,5 +1,5 @@
 <?php
-require '_base.php';
+
 $title = 'Wecome';
 $_title = '';
 include 'customer_header.php';

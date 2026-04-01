@@ -43,11 +43,16 @@ require'_base.php';
                 <a href="/customer/contact.php"><b>Contact</b></a> 
         </div> 
 
-        <div class ="search-bar">
-            <form action="customer/search.php" method="get" class="search-form">
-                <input type="search" name="product_name" placeholder="Search product">
+        <div class="right">
+            <div class ="search-bar">
+                <form action="customer/search.php" method="get" class="search-form">
+                    <input type="search" name="product_name" placeholder="Search product">
+                </form>        
+            </div>
 
-            </form>        
+            <div class="cart-btn">
+                <a href="/customer/cart.php">🛒</a>
+            </div>
         </div>
     </nav>
 

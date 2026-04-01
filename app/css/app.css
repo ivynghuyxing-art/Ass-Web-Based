@@ -60,18 +60,29 @@ header a{
     border-bottom: 2px solid white;
 }
 
+.right{
+    display:flex;
+    align-items: center;
+    gap: 15px;
+}
+
 .search-bar{
     display:inline-block;
-    margin-right: 20px;
+
 }
 
 .search-form input[type="search"]{
-    padding:5px 20px;
+    padding:5px 10px;
     border-radius:4px;
     border:1px solid #ccc;
-    width:250px;
+    width:300px;
+    height:35px;
 }
 
+.cart-btn a{
+    text-decoration: none;
+    font-size: 20px;
+}
 .center-box {
     height: 100vh;
     display: flex;
@@ -110,7 +121,6 @@ header a{
 }
 
 .auth-wrapper {
-    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;

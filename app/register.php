@@ -6,6 +6,7 @@ if(is_post()){
     $email    = req('email');
     $password = req('password');
     $confirm  = req('confirm');
+    $gender   = req('gender');
     $f        = get_file('photo');
  
     // Validate name
@@ -41,6 +42,13 @@ if(is_post()){
     } else if($password !== $confirm){
         $_err['confirm'] = 'Passwords do not match';
     }
+
+    // Validate gender
+    if(!$gender){
+        $_err['gender'] = 'Required';
+    } else if(!in_array($gender, ['M', 'F'])){
+        $_err['gender'] = 'Invalid gender';
+    }
  
     // Validate photo
     if(!$f){
@@ -54,8 +62,8 @@ if(is_post()){
     if(!$_err){
         $photo = save_photo($f, 'photo');
  
-        $stm = $_db->prepare("INSERT INTO user (name, email, password, profile_photo, role, membership_id) VALUES (?,?,SHA1(?),?,'customer',1)");
-        $stm->execute([$name, $email, $password, $photo]);
+        $stm = $_db->prepare("INSERT INTO user (name, password, email, gender, profile_photo, role, membership_id) VALUES (?,SHA1(?),?,?,?,'customer',1)");
+        $stm->execute([$name, $password, $email, $gender, $photo]);
  
         temp('info', 'Registered successfully! Please login.');
         redirect('login.php');
@@ -91,7 +99,15 @@ if(is_post()){
                 <label for="email">Email</label>
                 <?= html_text('email', 'maxlength="100"') ?>
                 <?= err('email') ?>
- 
+
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender">
+                    <option value="">-- Select Gender --</option>
+                    <option value="M" <?= ($gender ?? '') === 'M' ? 'selected' : '' ?>>Male</option>
+                    <option value="F" <?= ($gender ?? '') === 'F' ? 'selected' : '' ?>>Female</option>
+                </select>
+                <?= err('gender') ?>
+
                 <label for="password">Password</label>
                 <?= html_password('password', 'maxlength="100"') ?>
                 <?= err('password') ?>

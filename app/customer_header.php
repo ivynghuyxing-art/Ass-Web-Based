@@ -46,7 +46,7 @@ require'_base.php';
         <div class="right">
             <div class ="search-bar">
                 <form action="customer/search.php" method="get" class="search-form">
-                    <input type="search" name="product_name" placeholder="Search product">
+                    <input type="search" id="search"name="product_name" placeholder="Search product">
                 </form>        
             </div>
 

@@ -130,6 +130,29 @@ function login($user, $url = '/') {
     redirect($url);
 }
 
+function ensureCart($user_id) {
+    global $_db;
+    $cart = $_db->prepare('SELECT * FROM cart WHERE user_id = ?');
+    $cart->execute([$user_id]);
+    $cart = $cart->fetch();
+    if (!$cart) {
+        $_db->prepare('INSERT INTO cart (user_id, total_price, total_quantity) VALUES (?,0,0)')->execute([$user_id]);
+        $cart = (object)['cart_id' => $_db->lastInsertId(), 'total_price' => 0, 'total_quantity' => 0];
+    }
+    return $cart;
+}
+
+function recalcCart($cart_id) {
+    global $_db;
+    $_db->prepare('UPDATE cart SET total_quantity = (SELECT COALESCE(SUM(quantity),0) FROM cart_item WHERE cart_id = ?), total_price = (SELECT COALESCE(SUM(price),0) FROM cart_item WHERE cart_id = ?) WHERE cart_id = ?')
+        ->execute([$cart_id, $cart_id, $cart_id]);
+}
+
+function sanitize_qty($qty) {
+    $qty = (int)$qty;
+    return $qty > 0 ? $qty : 1;
+}
+
 
 
 $_db = new PDO('mysql:dbname=stationary_shop', 'root', '', [

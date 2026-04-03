@@ -51,10 +51,18 @@ require'_base.php';
             </div>
 
             <div class="cart-btn">
-                <a href="/customer/cart.php">🛒</a>
-            </div>
+            <?php
+            $cart_count = 0;
+            if (isset($_SESSION['user'])) {
+                $stmCount = $_db->prepare("SELECT COALESCE(SUM(ci.quantity),0) FROM cart_item ci JOIN cart c ON ci.cart_id=c.cart_id WHERE c.user_id=?");
+                $stmCount->execute([$_SESSION['user']->user_id]);
+                $cart_count = $stmCount->fetchColumn();
+            }
+            ?>
+            <a href="/customer/cart.php">🛒 (<?= $cart_count ?>)</a>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <main>
-        <h1><?= $_title ?? 'Untitled' ?></h1>
+<main>
+    <h1><?= $_title ?? 'Untitled' ?></h1>

@@ -28,13 +28,13 @@ require'_base.php';
         <?php 
             else: 
         ?>
+            <a href="/logout.php" onclick="return confirm('Do you want to logout')">Logout</a>
+            
             <?php if ($_user): ?>
                 <div class="user-photo">
-                    <img src="/photo/<?= ($_user->profile_photo) ?>">
-                    
+                    <img src="/photo/<?= ($_user->profile_photo) ?>" alt="Profile Photo">
                 </div>
             <?php endif; ?>
-            <a href="/logout.php" onclick="return confirm('Do you want to logout')">Logout</a>
         <?php endif; ?>
     </div>
     </header>

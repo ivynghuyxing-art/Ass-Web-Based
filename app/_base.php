@@ -125,6 +125,8 @@ function is_email($value){
     return filter_var($value,FILTER_VALIDATE_EMAIL) !== false;
 }
 
+$_user = $_SESSION['user'] ?? null;
+
 function login($user, $url = '/') {
     $_SESSION['user'] = $user;
     redirect($url);
@@ -153,6 +155,21 @@ function sanitize_qty($qty) {
     return $qty > 0 ? $qty : 1;
 }
 
+function auth(...$roles) {
+    global $_user;
+    if ($_user) {
+        if ($roles) {
+            if (in_array($_user->role, $roles)) {
+                return; // OK
+            }
+        }
+        else {
+            return; // OK
+        }
+    }
+    
+    redirect('/login.php');
+}
 
 
 $_db = new PDO('mysql:dbname=stationary_shop', 'root', '', [

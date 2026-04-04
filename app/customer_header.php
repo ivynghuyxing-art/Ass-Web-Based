@@ -28,6 +28,12 @@ require'_base.php';
         <?php 
             else: 
         ?>
+            <?php if ($_user): ?>
+                <div class="user-photo">
+                    <img src="/photo/<?= ($_user->profile_photo) ?>">
+                    
+                </div>
+            <?php endif; ?>
             <a href="/logout.php" onclick="return confirm('Do you want to logout')">Logout</a>
         <?php endif; ?>
     </div>
@@ -65,4 +71,4 @@ require'_base.php';
 </nav>
 
 <main>
-    <h1><?= $_title ?? 'Untitled' ?></h1>
+    <h1 class ="page-title"><?= $_title ?? 'Untitled' ?></h1>

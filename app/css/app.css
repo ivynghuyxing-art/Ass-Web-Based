@@ -615,7 +615,6 @@ label.upload img {
 }
 
 .btn {
-    display: inline-block;
     padding: 10px 20px;
     background: darkred;
     color: white;
@@ -623,6 +622,7 @@ label.upload img {
     border-radius: 5px;
     margin: 15px;
     transition: background 0.3s;
+    text-align: center;
 }
 
 .btn:hover {
@@ -740,12 +740,12 @@ label.upload img {
 
     .button-group {
         display: flex;
+        flex-direction: column;
         gap: 10px;
         margin-top: 20px;
     }
 
-    .btn-add-cart,
-    .btn-buy-now {
+    .btn-add-cart{
         padding: 12px 30px;
         border: none;
         border-radius: 5px;
@@ -755,22 +755,32 @@ label.upload img {
         flex: 1;
     }
 
+    .btn-add-cart,.btn-buy-now{
+        padding: 12px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        flex: 1;
+    }
+
+
     .btn-add-cart {
-        background-color: #27ae60;
+        background-color: darkred;
         color: white;
     }
 
     .btn-add-cart:hover {
-        background-color: #229954;
+        background-color:rgb(173, 8, 8);;
     }
 
     .btn-buy-now {
-        background-color: #e74c3c;
-        color: white;
+        background-color: white;
+        color: black;
     }
 
     .btn-buy-now:hover {
-        background-color: #c0392b;
+        background-color: lightgrey;
     }
 
     .out-of-stock-message {

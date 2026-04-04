@@ -74,14 +74,14 @@ $items = $items->fetchAll();
                     <?php foreach ($items as $item): ?>
                         <tr>
                             <td>
-                                <img src="/product_img/<?= encode($item->image) ?>" alt="<?= encode($item->product_name) ?>" width="70" style="margin-right:10px;vertical-align:middle;">
-                                <?= encode($item->product_name) ?>
+                                <img src="/product_img/<?= ($item->image) ?>" alt="<?= ($item->product_name) ?>" width="70" style="margin-right:10px;vertical-align:middle;">
+                                <?=($item->product_name) ?>
                             </td>
                             <td>RM <?= number_format($item->unit_price,2) ?></td>
                             <td><input type="number" name="quantity[<?= $item->cart_item_id ?>]" value="<?= $item->quantity ?>" min="1" max="<?= $item->stock_quantity ?>"></td>
                             <td>RM <?= number_format($item->price,2) ?></td>
                             <td>
-                                <form method="post" style="display:inline;">
+                                <form method="post">
                                     <input type="hidden" name="action" value="remove">
                                     <input type="hidden" name="cart_item_id" value="<?= $item->cart_item_id ?>">
                                     <button type="submit" class="btn-danger">Remove</button>
@@ -92,7 +92,6 @@ $items = $items->fetchAll();
                 </tbody>
             </table>
             <div class="cart-actions">
-                <button type="submit" class="btn-primary">Update quantities</button>
                 <button type="submit" name="action" value="clear" class="btn-warning" onclick="return confirm('Clear your cart?')">Clear cart</button>
                 <a href="/customer/checkout.php" class="btn-success">Proceed to checkout</a>
             </div>

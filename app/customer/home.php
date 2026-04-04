@@ -36,17 +36,29 @@ include '../customer_header.php';
     <h2>Featured Products</h2>
     <div class="product-grid">
         <?php
-        $stm = $_db->query("SELECT * FROM product LIMIT 6");
+        $stm = $_db->query("SELECT * FROM product LIMIT 10");
         $products = $stm->fetchAll();
-        foreach ($products as $p) {
-            echo "<div class='product-card'>";
-            echo "<img src='/product_img/{$p->image}' alt='{$p->product_name}'>";
-            echo "<h3>{$p->product_name}</h3>";
-            echo "<p>RM {$p->price}</p>";
-            echo "<a href='/product/product_detail.php?product_id={$p->product_id}' class='btn'>View Details</a>";
-            echo "</div>";
-        }
         ?>
+        <?php foreach ($products as $p) :?>
+            <div class="product-card">
+        <img src="/product_img/<?= encode($p->image) ?>" alt="<?= encode($p->product_name) ?>">
+
+        <h3><?= encode($p->product_name) ?></h3>
+        <p>RM <?= number_format($p->price, 2) ?></p>
+
+        <?php if ($p->stock_quantity > 0): ?> 
+            <form method="post" class="add-cart-form">
+                <input type="hidden" name="action" value="add">
+                <input type="hidden" name="product_id" value="<?= $p->product_id ?>">
+                <input type="number" name="quantity" value="1" min="1" max="<?= $p->stock_quantity ?>">
+                <a href='/product/product_detail.php?product_id=<?= $p->product_id ?>' class='btn'>View Details</a>
+            </form>
+        <?php else: ?>
+            <p>Out of Stock</p>
+        <?php endif; ?>
+
+    </div>
+<?php endforeach; ?>
     </div>
 </section>
 

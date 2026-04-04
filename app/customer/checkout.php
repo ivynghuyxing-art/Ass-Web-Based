@@ -23,7 +23,7 @@ if ($cart && $cart->item_qty > 0) {
 
 if (!$cart || $cart->item_qty == 0) {
     temp('info', 'Your cart is empty. Please add products before checkout.');
-    redirect('/customer/product.php');
+    redirect('/product/viewproduct.php');
 }
 
 $shipping_fee = 5.00;

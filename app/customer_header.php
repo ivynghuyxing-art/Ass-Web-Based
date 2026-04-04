@@ -37,8 +37,8 @@ require'_base.php';
     <nav class="navbar"> 
 
         <div class="menu"> 
-                <a href="/"><b>Home</b></a> 
-                <a href="/customer/product.php"><b>Product</b></a>
+                <a href="/customer/home.php"><b>Home</b></a> 
+                <a href="/product/viewproduct.php"><b>Product</b></a>
                 <a href="/customer/category.php"><b>Categories</b></a>
                 <a href="/customer/contact.php"><b>Contact</b></a> 
         </div> 

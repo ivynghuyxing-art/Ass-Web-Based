@@ -43,7 +43,7 @@ include '../customer_header.php';
             echo "<img src='/product_img/{$p->image}' alt='{$p->product_name}'>";
             echo "<h3>{$p->product_name}</h3>";
             echo "<p>RM {$p->price}</p>";
-            echo "<a href='/customer/product.php?id={$p->product_id}' class='btn'>View Details</a>";
+            echo "<a href='/product/product_detail.php?product_id={$p->product_id}' class='btn'>View Details</a>";
             echo "</div>";
         }
         ?>

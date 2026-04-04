@@ -5,5 +5,5 @@ session_unset();
 session_destroy();
 
 
-redirect('/index.php');
+redirect('customer/home.php');
 ?>

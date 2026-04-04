@@ -41,7 +41,7 @@ $orders = $orders->fetchAll();
             </tbody>
         </table>
     <?php else: ?>
-        <p>No orders yet. <a href="/customer/product.php">Shop now</a>.</p>
+        <p>No orders yet. <a href="/product/viewproduct.php">Shop now</a>.</p>
     <?php endif; ?>
 </section>
 

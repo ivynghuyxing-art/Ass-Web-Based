@@ -106,7 +106,7 @@ $items = $items->fetchAll();
     <?php else: ?>
         <div class="empty-cart">
             <p>Your cart is empty. </p>
-                <a href="/customer/product.php">Browse products</a>
+                <a href="../product/viewproduct.php">Browse products</a>
         </div>
     <?php endif; ?>
 </section>

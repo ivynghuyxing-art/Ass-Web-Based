@@ -12,7 +12,7 @@ include '../customer_header.php';
     }
 
     .center-search input {
-        width: 400px;
+        width: 450px;
         padding: 12px;
         font-size: 16px;
         border: 1px solid #ccc;

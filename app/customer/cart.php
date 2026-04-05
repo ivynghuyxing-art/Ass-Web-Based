@@ -63,6 +63,7 @@ $items = $items->fetchAll();
             <table class="cart-table">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Product</th>
                         <th>Unit Price</th>
                         <th>Quantity</th>
@@ -73,6 +74,9 @@ $items = $items->fetchAll();
                 <tbody>
                     <?php foreach ($items as $item): ?>
                         <tr>
+                            <td>
+                                <input type="checkbox" class="select-item" data-price="<?= $item->price ?>" data-unit-price="<?= $item->unit_price ?>" data-cart-item-id="<?= $item->cart_item_id ?>">
+                            </td>
                             <td>
                                 <img src="/product_img/<?= ($item->image) ?>" alt="<?= ($item->product_name) ?>" width="70" style="margin-right:10px;vertical-align:middle;">
                                 <?=($item->product_name) ?>
@@ -99,9 +103,13 @@ $items = $items->fetchAll();
 
         <div class="cart-summary">
             <h3>Summary</h3>
+            <p>Selected items: <strong id="selected-count">0</strong></p>
+            <p>Selected total: <strong>RM <span id="selected-total">0.00</span></strong></p>
+            <hr>
             <p>Total items: <?= $cart->total_quantity ?></p>
             <p>Total price: RM <?= number_format($cart->total_price,2) ?></p>
         </div>
+
     <?php else: ?>
         <div class="empty-cart">
             <p>Your cart is empty. </p>

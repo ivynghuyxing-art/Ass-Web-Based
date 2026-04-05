@@ -81,16 +81,16 @@ if (is_post() && (req('add') || req('buy_now') )) {
 ?>
 <section class="product-detail">
     <div class="product-detail-container">
+        
         <div class="product-image-section">
             <img src="/product_img/<?= encode($product->image) ?>" alt="<?= encode($product->product_name) ?>" class="product-detail-image">
         </div>
 
         <div class="product-info-section">
-            <h1><?= encode($product->product_name) ?></h1>
-            
             <div class="product-meta">
                 <p class="category">
-                    <strong>Category:</strong> <?= encode($product->category_name ?? 'N/A') ?>
+                    <h1><?= ($product->product_name) ?></h1>
+                    <strong>Category:</strong> <?= ($product->category_name ?? 'N/A') ?>
                 </p>
                 <p class="stock-status">
                     <strong>Stock:</strong> 

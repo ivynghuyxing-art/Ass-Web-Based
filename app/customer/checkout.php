@@ -62,7 +62,7 @@ if (is_post()) {
                 <th>Item</th>
                 <th>Qty</th>
                 <th>Unit</th>
-                <th>Line total</th>
+                <th>Total</th>
             </tr>
         </thead>
         <tbody>

@@ -68,4 +68,52 @@ $(() => {
         // Auto slide
         setInterval(nextSlide, 5000);
     }
-});
+    
+    function initCartSelectionSummary() {
+        const selectAll = document.getElementById('select-all');
+        const itemCheckboxes = Array.from(document.querySelectorAll('.select-item'));
+        const quantityInputs = Array.from(document.querySelectorAll('input[type="number"][name^="quantity"]'));
+        const selectedCountEl = document.getElementById('selected-count');
+        const selectedTotalEl = document.getElementById('selected-total');
+
+        if (!selectAll && itemCheckboxes.length === 0) return;
+
+        function updateSelectedSummary() {
+            let count = 0;
+            let total = 0;
+
+            itemCheckboxes.forEach(checkbox => {
+                const row = checkbox.closest('tr');
+                const quantityInput = row?.querySelector('input[type="number"][name^="quantity"]');
+                const unitPrice = parseFloat(checkbox.dataset.unitPrice || checkbox.dataset.price) || 0;
+                const quantity = Number(quantityInput?.value) || 0;
+                const lineTotal = unitPrice * quantity;
+
+                if (checkbox.checked) {
+                    count += 1;
+                    total += lineTotal;
+                }
+            });
+
+            if (selectedCountEl) selectedCountEl.textContent = count;
+            if (selectedTotalEl) selectedTotalEl.textContent = total.toFixed(2);
+        }
+
+        itemCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                if (!checkbox.checked && selectAll) {
+                    selectAll.checked = false;
+                }
+                if (checkbox.checked && selectAll) {
+                    selectAll.checked = itemCheckboxes.every(item => item.checked);
+                }
+                updateSelectedSummary();
+            });
+        });
+
+        quantityInputs.forEach(input => input.addEventListener('input', updateSelectedSummary));
+
+        updateSelectedSummary();
+    }
+
+    initCartSelectionSummary();});

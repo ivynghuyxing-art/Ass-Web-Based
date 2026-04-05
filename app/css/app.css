@@ -806,3 +806,46 @@ label.upload img {
         font-size: 30px;
         padding-left: 20px;   
     }
+
+    .cart-table {
+        width: 100%;
+        border-collapse: collapse;
+        padding-left: 20px;
+    }
+
+    .cart-table th, .cart-table td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+        vertical-align: middle;
+    }
+
+    .cart-table th:first-child,
+    .cart-table td:first-child {
+        width: 50px;
+        text-align: center;
+    }
+
+    .cart-table input[type="checkbox"] {
+        transform: scale(1.15);
+        cursor: pointer;
+    }
+
+    .cart-summary {
+        margin-top: 20px;
+        max-width: 400px;
+        padding: 18px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background: #fafafa;
+    }
+
+    .cart-summary h3 {
+        margin-bottom: 12px;
+        font-size: 20px;
+    }
+
+    .cart-summary p {
+        margin: 8px 0;
+        font-size: 16px;
+    }

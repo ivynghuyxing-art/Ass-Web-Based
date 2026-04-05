@@ -50,14 +50,13 @@ require'_base.php';
         </div> 
 
         <div class="right">
-            <?php if ($_title !== 'Categories'): ?>
              <div class ="search-bar">
                 <form action="/customer/search.php" method="get" class="search-form">
                     <input type="search" id="search"name="product_name" placeholder="Search product">
                     <button type="submit">Search</button>
                 </form>        
              </div>
-            <?php endif; ?>
+        
 
             <div class="cart-btn">
             <?php

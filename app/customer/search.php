@@ -17,13 +17,13 @@ if ($search_term) {
 
 <section class="search-results">
     <?php if ($search_term): ?>
-        <h2>Search Results for "<?= encode($search_term) ?>"</h2>
+        <h2>Search Results for "<?= ($search_term) ?>"</h2>
         <?php if (count($products) > 0): ?>
             <div class="product-grid">
                 <?php foreach ($products as $p): ?>
                     <div class="product-card">
-                        <img src="/product_img/<?= encode($p->image) ?>" alt="<?= encode($p->product_name) ?>">
-                        <h3><?= encode($p->product_name) ?></h3>
+                        <img src="/product_img/<?= ($p->image) ?>">
+                        <h3><?=($p->product_name) ?></h3>
                         <p>RM <?= number_format($p->price, 2) ?></p>
                         <?php if ($p->stock_quantity > 0): ?>
                             <form method="post" class="add-cart-form">

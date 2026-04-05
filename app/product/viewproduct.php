@@ -6,6 +6,7 @@ include '../customer_header.php';
 
 
 if (is_post() && req('action') === 'add') {
+    auth();
     $product_id = (int)req('product_id');
     $quantity = sanitize_qty(req('quantity', 1));
 

@@ -24,7 +24,7 @@ if ($search_term) {
                     <div class="product-card">
                         <img src="/product_img/<?= ($p->image) ?>">
                         <h3><?=($p->product_name) ?></h3>
-                        <p>RM <?= number_format($p->price, 2) ?></p>
+                        <p>RM <?= ($p->price) ?></p>
                         <?php if ($p->stock_quantity > 0): ?>
                             <form method="post" class="add-cart-form">
                                 <input type="hidden" name="action" value="add">
@@ -39,7 +39,7 @@ if ($search_term) {
                 <?php endforeach; ?>
             </div>
         <?php else: ?>
-            <p>No products found matching your search.</p>
+            <p>No products found .</p>
         <?php endif; ?>
     <?php else: ?>
         <p>Please enter a search term.</p>

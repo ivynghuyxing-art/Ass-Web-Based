@@ -61,14 +61,14 @@ if (is_post()) {
             <tr>
                 <th>Item</th>
                 <th>Qty</th>
-                <th>Unit</th>
+                <th>Unit Price</th>
                 <th>Total</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($items as $item): ?>
                 <tr>
-                    <td><?= encode($item->product_name) ?></td>
+                    <td><?= ($item->product_name) ?></td>
                     <td><?= $item->quantity ?></td>
                     <td>RM <?= number_format($item->unit_price,2) ?></td>
                     <td>RM <?= number_format($item->unit_price * $item->quantity,2) ?></td>

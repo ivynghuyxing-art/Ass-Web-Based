@@ -831,13 +831,18 @@ label.upload img {
         cursor: pointer;
     }
 
+    .cart-actions{
+        padding-left:20px;
+    }
+
     .cart-summary {
         margin-top: 20px;
         max-width: 400px;
         padding: 18px;
         border: 1px solid #ddd;
-        border-radius: 10px;
+        order-radius: 10px;
         background: #fafafa;
+        
     }
 
     .cart-summary h3 {

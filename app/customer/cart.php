@@ -17,7 +17,7 @@ $cart = ensureCart($user_id);
 if (is_post()) {
     $action = req('action');
 
-    if ($action === 'update') {
+    if ($action === 'update' || $action === 'checkout') {
         foreach (req('quantity', []) as $id => $qty) {
             $qty = (int)$qty;
             if ($qty < 1) $qty = 1;
@@ -31,22 +31,20 @@ if (is_post()) {
             $_db->prepare('UPDATE cart_item SET quantity = ?, price = ? WHERE cart_item_id = ?')->execute([$qty, $qty * $item->product_price, $id]);
         }
         recalcCart($cart->cart_id);
-        temp('info', 'Cart updated');
-        redirect('/customer/cart.php');
+        
+        if ($action === 'checkout') {
+            redirect('/customer/checkout.php');
+        } else {
+            temp('info', 'Cart updated');
+            redirect('/customer/cart.php');
+        }
     }
 
     if ($action === 'remove') {
-        $cart_item_id = (int)req('cart_item_id');
+        $cart_item_id = req('cart_item_id');
         $_db->prepare('DELETE FROM cart_item WHERE cart_item_id = ? AND cart_id = ?')->execute([$cart_item_id, $cart->cart_id]);
         recalcCart($cart->cart_id);
         temp('info', 'Item removed');
-        redirect('/customer/cart.php');
-    }
-
-    if ($action === 'clear') {
-        $_db->prepare('DELETE ci FROM cart_item ci WHERE ci.cart_id = ?')->execute([$cart->cart_id]);
-        recalcCart($cart->cart_id);
-        temp('info', 'Cart cleared');
         redirect('/customer/cart.php');
     }
 }
@@ -59,7 +57,7 @@ $items = $items->fetchAll();
 <section class="cart-page">
     <?php if ($items): ?>
         <form method="post">
-            <input type="hidden" name="action" value="update">
+            <input type="hidden" name="action" id="cart-action" value="update">
             <table class="cart-table">
                 <thead>
                     <tr>
@@ -67,7 +65,7 @@ $items = $items->fetchAll();
                         <th>Product</th>
                         <th>Unit Price</th>
                         <th>Quantity</th>
-                        <th>Total</th>
+                        <th></th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -83,21 +81,23 @@ $items = $items->fetchAll();
                             </td>
                             <td>RM <?= number_format($item->unit_price,2) ?></td>
                             <td><input type="number" name="quantity[<?= $item->cart_item_id ?>]" value="<?= $item->quantity ?>" min="1" max="<?= $item->stock_quantity ?>"></td>
-                            <td>RM <?= number_format($item->price,2) ?></td>
+                            <td></td>
                             <td>
-                                <form method="post">
-                                    <input type="hidden" name="action" value="remove">
-                                    <input type="hidden" name="cart_item_id" value="<?= $item->cart_item_id ?>">
-                                    <button type="submit" class="btn-danger">Remove</button>
-                                </form>
+                                <button type="button" class="btn-remove" 
+                                    onclick="
+                                        document.getElementById('remove-item-id').value='<?= $item->cart_item_id ?>';
+                                        document.getElementById('cart-action').value='remove';
+                                        this.form.submit();
+                                    ">
+                                    Remove
+                                </button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
             <div class="cart-actions">
-                <button type="submit" name="action" value="clear" class="btn-warning" onclick="return confirm('Clear your cart?')">Clear cart</button>
-                <a href="/customer/checkout.php" class="btn-success">Proceed to checkout</a>
+                <button type="button" class="btn-success" onclick="document.getElementById('cart-action').value='checkout'; this.form.submit();">Proceed to Checkout</button>
             </div>
         </form>
 

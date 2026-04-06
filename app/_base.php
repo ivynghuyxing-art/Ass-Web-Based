@@ -170,6 +170,24 @@ function auth(...$roles) {
     
     redirect('/login.php');
 }
+function get_mail() {
+    require_once 'lib/PHPMailer.php';
+    require_once 'lib/SMTP.php';
+
+    $m = new PHPMailer(true);
+    $m->isSMTP();
+    $m->SMTPAuth = true;
+    $m->Host = 'smtp.gmail.com';
+    $m->Port = 587;
+    $m->Username = 'irvintan123456@gmail.com';
+    // $m->Username = 'AACS3173@gmail.com';
+    // $m->Password = 'npsg gzfd pnio aylm';  
+    $m->Password = 'upay jevm iime yhxy';
+    $m->CharSet = 'utf-8';
+    $m->setFrom($m->Username, '😺 Admin');
+
+    return $m;
+}
 
 
 $_db = new PDO('mysql:dbname=stationary_shop', 'root', '', [

@@ -1,79 +1,78 @@
-<?php
-require '_base.php';
+    <?php
+    error_reporting(E_ALL);
+    require '_base.php';
 
-if(is_post()){
-    $email    = req('email');
-    $password = req('password');
+    if(is_post()){
+        $email    = req('email');
+        $password = req('password');
 
-    if(!$email){
-        $_err['email'] = 'Required';
-    } else if(!is_email($email)){
-        $_err['email'] = 'Invalid email';
-    }
+        if(!$email){
+            $_err['email'] = 'Required';
+        } else if(!is_email($email)){
+            $_err['email'] = 'Invalid email';
+        }
 
-    if(!$password){
-        $_err['password'] = 'Required';
-    }
+        if(!$password){
+            $_err['password'] = 'Required';
+        }
 
-    if(!$_err){
-        $stm = $_db->prepare('SELECT * FROM user WHERE email = ? AND password = SHA1(?)');
-        $stm->execute([$email, $password]);
-        $u = $stm->fetch();
+        if(!$_err){
+            $stm = $_db->prepare('SELECT * FROM user WHERE email = ? AND password = SHA1(?)');
+            $stm->execute([$email, $password]);
+            $u = $stm->fetch();
 
-        if($u){
-            $_SESSION['user'] = $u;
+            if ($u) {
+                // Check if user is verified (valid = 1)
+                if ($u->valid == 0) {
+                    $_err['login'] = 'Please verify your email before logging in. Check your inbox for a verification link.';
+                } else {
+                    $_SESSION['user'] = $u;
+                    temp('info', 'Welcome back, ' . $u->name);
 
-            // Redirect based on role
-            if($u->role === 'admin'){
-                $_SESSION['admin']=$u;
-                temp('info', 'Welcome!');
-                redirect('/admin/admin_panel.php');
-                
+                    // 2. ROLE REDIRECTION
+                    if ($u->role === 'admin') {
+                        redirect('/admin/admin_panel.php');
+                    } else {
+                        redirect('/customer/home.php');
+                    }
+                }
             } else {
-                temp('info', 'Login successfully!');
-                redirect('/customer/home.php');
+                $_err['login'] = 'Invalid email or password';
             }
-        } else {
-            $_err['email']='Email is incorrect';
-            $_err['password'] = 'Password is incorrect';
         }
     }
-}
-?>
+    $_title = 'Login';
+    include '_head.php';
+    ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Cozy Hub</title>
-    <link rel="shortcut icon" href="/images/favicon.png">
-    <link rel="stylesheet" href="/css/app.css">
-</head>
-<body>
-    <div id="info"><?= temp('info') ?></div>
 
-    <div class="center-box">
-        <div class="login-title">Welcome to Cozy Hub</div>
+    <body>
+        <div id="info"><?= temp('info') ?></div>
 
-        <form method="post" class="box">
+        <div class="center-box">
+            <div class="login-title">Welcome to Cozy Hub</div>
+
+            <form method="post" class="box">
             <h2>Login</h2>
 
+            <div style="color: red; text-align: center; margin-bottom: 10px;">
+                <?= err('login') ?>
+            </div>
+
             <input type="text" name="email" placeholder="Email"
-                   value="<?= encode($email ?? '') ?>"
-                   autocomplete="off">
+                value="<?= encode($email ?? '') ?>"
+                autocomplete="off">
             <?= err('email') ?>
+                <input type="password" name="password" placeholder="Password" autocomplete="off">
+                <?= err('password') ?>
 
-            <input type="password" name="password" placeholder="Password" autocomplete="off">
-            <?= err('password') ?>
+                <button type="submit" class="register-btn">Login</button>
 
-            <button type="submit" class="register-btn">Login</button>
-
-            <p class="switch">
-                No account?
-                <a href="/register.php">Register</a>
-            </p>
-        </form>
-    </div>
-</body>
-</html>
+                <p class="switch">
+                    No account?
+                    <a href="/register.php">Register</a>
+                </p>
+            </form>
+        </div>
+    </body>
+    </html>

@@ -59,29 +59,46 @@ if(is_post()){
         $_err['photo'] = 'Maximum 1MB';
     }
  
-    if(!$_err){
+if(!$_err){
         $photo = save_photo($f, 'photo');
  
-        $stm = $_db->prepare("INSERT INTO user (name, password, email, gender, profile_photo, role, membership_id) VALUES (?,SHA1(?),?,?,?,'customer',1)");
-        $stm->execute([$name, $password, $email, $gender, $photo]);
- 
-        temp('info', 'Registered successfully! Please login.');
+        $stm = $_db->prepare("INSERT INTO user (name, email, password, profile_photo, role, membership_id, valid) VALUES (?,?,SHA1(?),?,'customer',1,0)");
+        $stm->execute([$name, $email, $password, $photo]);
+
+        $id = $_db->lastInsertId();
+
+        // Verification Token (optional - can be skipped if email fails)
+        $token = sha1(uniqid() . rand());
+        $expire = date('Y-m-d H:i:s', strtotime('+1 hour'));
+        $_db->prepare('INSERT INTO verification_tokens (user_id, token, expire) VALUES (?, ?, ?)')->execute([$id, $token, $expire]);
+
+        $verification_link = "/verify_email.php?token=$token";
+        $mail = get_mail();
+        $mail->addAddress($email, $name);
+        $mail->isHTML(true);
+        $mail->Subject = 'Email Verification';
+        $mail->Body = "
+            <p>Hi $name,</p>
+            <p>Thank you for registering. Please verify your email by clicking the link below:</p>
+            <p><a href='$verification_link'>$verification_link</a></p>
+            <p>This link will expire in 1 hour.</p>
+        ";
+        
+        try {
+            $mail->send();
+        } catch (Exception $e) {
+        }
+        
+        temp('info', 'Registered successfully! Please check your email to verify your account.');
         redirect('login.php');
     }
 }
+
+$title = 'Register | Cozy Hub';
+include '_head.php';
+
 ?>
  
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register | Cozy Hub</title>
-    <link rel="shortcut icon" href="/images/favicon.png">
-    <link rel="stylesheet" href="/css/app.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="/js/app.js"></script>
-</head>
 <body>
     <div id="info"><?= temp('info') ?></div>
  
@@ -134,3 +151,4 @@ if(is_post()){
     </div>
 </body>
 </html>
+<?php include '_foot.php'; ?>

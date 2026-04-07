@@ -85,7 +85,7 @@ if(!$_err){
 }
 
 $title = 'Register | Cozy Hub';
-include '_head.php';
+include 'customer_header.php';
 
 ?>
  

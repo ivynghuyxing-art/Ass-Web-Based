@@ -1,4 +1,5 @@
 <?php
+require_once '_base.php';
 if (!isset($_SESSION['user']) || $_SESSION['user']->role !== 'admin') {
     redirect('/login.php');
 }

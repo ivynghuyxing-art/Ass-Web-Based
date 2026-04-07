@@ -62,34 +62,10 @@ if(is_post()){
 if(!$_err){
         $photo = save_photo($f, 'photo');
  
-        $stm = $_db->prepare("INSERT INTO user (name, email, password, profile_photo, role, membership_id, valid) VALUES (?,?,SHA1(?),?,'customer',1,0)");
+        $stm = $_db->prepare("INSERT INTO user (name, email, password, profile_photo, role, membership_id, valid) VALUES (?,?,SHA1(?),?,'customer',1,1)");
         $stm->execute([$name, $email, $password, $photo]);
 
-        $id = $_db->lastInsertId();
-
-        // Verification Token (optional - can be skipped if email fails)
-        $token = sha1(uniqid() . rand());
-        $expire = date('Y-m-d H:i:s', strtotime('+1 hour'));
-        $_db->prepare('INSERT INTO verification_tokens (user_id, token, expire) VALUES (?, ?, ?)')->execute([$id, $token, $expire]);
-
-        $verification_link = "/verify_email.php?token=$token";
-        $mail = get_mail();
-        $mail->addAddress($email, $name);
-        $mail->isHTML(true);
-        $mail->Subject = 'Email Verification';
-        $mail->Body = "
-            <p>Hi $name,</p>
-            <p>Thank you for registering. Please verify your email by clicking the link below:</p>
-            <p><a href='$verification_link'>$verification_link</a></p>
-            <p>This link will expire in 1 hour.</p>
-        ";
-        
-        try {
-            $mail->send();
-        } catch (Exception $e) {
-        }
-        
-        temp('info', 'Registered successfully! Please check your email to verify your account.');
+        temp('info', 'Registered successfully!');
         redirect('login.php');
     }
 }

@@ -22,7 +22,7 @@ if ($search_term) {
             <div class="product-grid">
                 <?php foreach ($products as $p): ?>
                     <div class="product-card">
-                        <img src="/product_img/<?= ($p->image) ?>">
+                        <img src="../product_img/<?= ($p->image) ?>">
                         <h3><?=($p->product_name) ?></h3>
                         <p>RM <?= ($p->price) ?></p>
                         <?php if ($p->stock_quantity > 0): ?>

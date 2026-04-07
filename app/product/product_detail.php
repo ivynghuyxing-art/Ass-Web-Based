@@ -83,7 +83,7 @@ if (is_post() && (req('add') || req('buy_now') )) {
     <div class="product-detail-container">
         
         <div class="product-image-section">
-            <img src="/product_img/<?= encode($product->image) ?>" alt="<?= encode($product->product_name) ?>" class="product-detail-image">
+            <img src="../product_img/<?= encode($product->image) ?>" alt="<?= encode($product->product_name) ?>" class="product-detail-image">
         </div>
 
         <div class="product-info-section">

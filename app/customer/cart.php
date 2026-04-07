@@ -76,7 +76,7 @@ $items = $items->fetchAll();
                                 <input type="checkbox" class="select-item" data-price="<?= $item->price ?>" data-unit-price="<?= $item->unit_price ?>" data-cart-item-id="<?= $item->cart_item_id ?>">
                             </td>
                             <td>
-                                <img src="/product_img/<?= ($item->image) ?>" alt="<?= ($item->product_name) ?>" width="70" style="margin-right:10px;vertical-align:middle;">
+                                <img src="../product_img/<?= ($item->image) ?>" alt="<?= ($item->product_name) ?>" width="70" style="margin-right:10px;vertical-align:middle;">
                                 <?=($item->product_name) ?>
                             </td>
                             <td>RM <?= number_format($item->unit_price,2) ?></td>

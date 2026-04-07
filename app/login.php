@@ -22,19 +22,14 @@
             $u = $stm->fetch();
 
             if ($u) {
-                // Check if user is verified (valid = 1)
-                if ($u->valid == 0) {
-                    $_err['login'] = 'Please verify your email before logging in. Check your inbox for a verification link.';
-                } else {
-                    $_SESSION['user'] = $u;
-                    temp('info', 'Welcome back, ' . $u->name);
+                $_SESSION['user'] = $u;
+                temp('info', 'Welcome back, ' . $u->name);
 
-                    // 2. ROLE REDIRECTION
-                    if ($u->role === 'admin') {
-                        redirect('/admin/admin_panel.php');
-                    } else {
-                        redirect('/customer/home.php');
-                    }
+                // 2. ROLE REDIRECTION
+                if ($u->role === 'admin') {
+                    redirect('/admin/admin_panel.php');
+                } else {
+                    redirect('/customer/home.php');
                 }
             } else {
                 $_err['login'] = 'Invalid email or password';

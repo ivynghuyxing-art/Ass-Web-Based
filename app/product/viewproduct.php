@@ -70,7 +70,7 @@ $products = $_db->query('SELECT * FROM product')->fetchAll();
         <?php foreach ($products as $p): ?>
             <div class="product-card">
                 <a href="../product/product_detail.php?product_id=<?= $p->product_id ?>">
-                    <img src="/product_img/<?= encode($p->image) ?>" alt="<?= encode($p->product_name) ?>">
+                    <img src="../product_img/<?= encode($p->image) ?>" alt="<?= encode($p->product_name) ?>">
                 </a>
                 <h3><?= encode($p->product_name) ?></h3>
                 <p>RM <?= number_format($p->price,2) ?></p>

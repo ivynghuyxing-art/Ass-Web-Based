@@ -1,6 +1,6 @@
 <?php
-$title = 'Product';
-$_title='Search Product';
+$_title = '';
+$title = 'SearchProduct';
 include '../customer_header.php';
 ?>
 

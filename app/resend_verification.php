@@ -39,7 +39,7 @@ if(is_post()){
 }
 
 $title = 'Resend Verification | Cozy Hub';
-include '_head.php';
+include 'customer_header.php';
 ?>
 
 <body>

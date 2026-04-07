@@ -42,7 +42,7 @@ if(is_post()){
 }
 
 $title = 'Verify Email | Cozy Hub';
-include '_head.php';
+include 'customer_header.php';
 ?>
 
 <body>

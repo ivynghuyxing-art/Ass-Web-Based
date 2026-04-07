@@ -52,6 +52,7 @@ header a {
 }
 
 footer {
+    margin-top: auto;
     padding: 40px 50px;
     background-color: lightgray;
 }
@@ -68,6 +69,7 @@ footer {
     margin-left: 20px;
     text-decoration: none;
     color: white;
+    font-size:20px;
 }
 
 .menu a:hover {
@@ -167,6 +169,11 @@ footer {
 
 .search-form button:hover {
     background: var(--accent);
+}
+
+.search-results {
+    margin-left: 20px;
+   
 }
 
 /* =========================================

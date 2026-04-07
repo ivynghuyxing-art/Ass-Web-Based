@@ -22,6 +22,13 @@
             $u = $stm->fetch();
 
             if ($u) {
+                if($u->valid == 0 || $u->email_verified == 0){
+                    $_SESSION['verify_user_id'] = $u->user_id;
+                    $_SESSION['verify_email'] = $u->email;
+                    temp('info', 'Please verify your email first.');
+                    redirect('verify_email.php');
+                }
+
                 $_SESSION['user'] = $u;
                 temp('info', 'Welcome back, ' . $u->name);
 

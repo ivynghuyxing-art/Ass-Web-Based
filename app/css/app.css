@@ -1,21 +1,11 @@
-/* =========================================
-   1. GLOBAL VARIABLES & BASE STYLES
-   ========================================= */
-:root {
-    --primary: darkred; 
-    --accent: rgb(173, 8, 8);
-    --bg-color: #FFFBF5;
-    --text-dark: #333;
-}
-
 body {
     margin: 0;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background-color: var(--bg-color);
+    background-color: #FFFBF5;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--text-dark);
+    color: #333;
 }
 
 /* Admin page layout - sidebar on left */
@@ -24,6 +14,7 @@ body.admin-layout {
 }
 
 .page-container {
+    display:flex;
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
@@ -62,7 +53,7 @@ footer {
     justify-content: space-between;
     align-items: center;
     padding: 20px 30px;
-    background-color: var(--primary);
+    background-color: darkred;
 }
 
 .menu a {
@@ -88,15 +79,20 @@ footer {
 
 .auth a {
     text-decoration: none;
-    color: var(--primary);
+    color: darkred;
     font-size: 16px;
 }
 
 .auth a:hover {
-    border-bottom: 1px solid var(--primary);
+    border-bottom: 1px solid darkred;
+}
+.user-photo-dropdown {
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
 }
 
-.user-photo img {
+.user-photo-dropdown img {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -104,11 +100,39 @@ footer {
     border: 1px solid #ccc;
 }
 
+.dropdown-content{
+    display: none;
+    position: absolute;
+    right: 0px;
+    top: 110%;
+    background-color: white;
+    min-width: 150px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    z-index: 9999;
+}
+
+.dropdown-content a {
+    display: block;
+    padding: 10px;
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.dropdown-content a:hover {
+    background-color: #f0f0f0;
+}
+
+.user-photo-dropdown.active .dropdown-content {
+    display: block;
+}
+
 .user-details {
     display: flex;
     flex-direction: column;
     font-size: 14px;
-    color: var(--text-dark);
+    color: #333;
 }
 
 .right {
@@ -168,7 +192,7 @@ footer {
 }
 
 .search-form button:hover {
-    background: var(--accent);
+    background: rgb(173,8,8);
 }
 
 .search-results {
@@ -238,7 +262,7 @@ footer {
     margin: 0;
     font-size: 36px;
     font-weight: bold;
-    background: linear-gradient(135deg, var(--primary), var(--accent));
+    background: linear-gradient(135deg, darkred, rgb(173,8,8));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -291,7 +315,7 @@ footer {
 .box button, .auth-form button, .register-btn, .box a.login {
     width: 100%;
     padding: 10px;
-    background: var(--primary);
+    background:darkred;
     color: white;
     border: none;
     border-radius: 6px;
@@ -305,7 +329,7 @@ footer {
 }
 
 .box button:hover, .auth-form button:hover, .register-btn:hover, .box a.login:hover {
-    background: var(--accent);
+    background: rgb(173,8,8);
 }
 
 .switch {
@@ -315,7 +339,7 @@ footer {
 }
 
 .switch a {
-    color: var(--primary);
+    color:darkred;
     text-decoration: none;
 }
 
@@ -457,12 +481,17 @@ label.upload img {
 }
 
 .category-card img {
-    width: 100%; height: 100%;
+    width: 100%;
+    height: 150%;
     object-fit: cover;
-    transition: transform 0.5s;
+    border-radius:6px;
+    margin-bottom:15px;
+
 }
 
-.category-card:hover img { transform: scale(1.1); }
+.category-card:hover img { 
+    transform: scale(1.1); 
+}
 
 .overlay {
     position: absolute;
@@ -474,6 +503,10 @@ label.upload img {
     color: white;
     font-weight: bold;
     font-size: 1.2rem;
+}
+.title{
+    margin-left: 20px;
+    font-size: 20px;
 }
 
 .featured-products {
@@ -489,6 +522,7 @@ label.upload img {
     margin: 20px auto;
     padding: 0 20px;
 }
+
 
 .product-card, .product-item {
     background: white;
@@ -510,11 +544,11 @@ label.upload img {
     object-fit: contain; 
     background: #f5f5f5;
     border-radius: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
 }
 
 .product-card h3, .product-item h2 {
-    margin: 10px 0 5px;
+    margin: 4px 0 5px;
     color: var(--text-dark);
     font-size: 15px;
     display: -webkit-box;
@@ -525,7 +559,7 @@ label.upload img {
 
 .product-card p, .product-item .price {
     margin: 5px 0;
-    color: var(--primary);
+    color: darkred;
     font-weight: bold;
     font-size: 1.1em;
 }
@@ -547,9 +581,9 @@ label.upload img {
 .add-to-cart, .product-card .add-cart-form button {
     width: 100%;
     padding: 8px;
-    background: var(--primary);
+    background: darkred;
     color: white;
-    border: 1px solid var(--primary);
+    border: 1px solid darkred;
     border-radius: 4px;
     cursor: pointer;
     font-size: 13px;
@@ -557,7 +591,7 @@ label.upload img {
 }
 
 .add-to-cart:hover, .product-card .add-cart-form button:hover {
-    background: var(--accent);
+    background: rgb(173,8,8);
 }
 
 .product-link {
@@ -654,12 +688,12 @@ label.upload img {
 }
 
 .btn-add-cart, .btn {
-    background-color: var(--primary);
+    background-color: darkred;
     color: white;
 }
 
 .btn-add-cart:hover, .btn:hover {
-    background-color: var(--accent);
+    background-color: rgb(173,8,8);
 }
 
 .btn-buy-now, .buy-now {
@@ -683,9 +717,6 @@ label.upload img {
     text-decoration: underline;
 }
 
-/* =========================================
-   10. SHOPPING CART
-   ========================================= */
 .cart-btn a {
     text-decoration: none;
     font-size: 20px;
@@ -1001,4 +1032,141 @@ label.upload img {
     padding: 4px 8px;
     border-radius: 4px;
     display: inline-block;
+}
+
+
+.add-product-form {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.add-product-form h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.add-product-form label {
+    display: block;
+    margin: 15px 0 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.add-product-form input,
+.add-product-form select,
+.add-product-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.add-product-form input:focus,
+.add-product-form select:focus,
+.add-product-form textarea:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76,175,80,0.3);
+}
+
+.add-product-form textarea {
+    resize: vertical;
+}
+
+.add-product-form small {
+    display: block;
+    margin-top: 5px;
+    color: #888;
+    font-size: 12px;
+}
+
+.form-buttons {
+    margin-top: 25px;
+    display: flex;
+    gap: 10px;
+}
+
+.add-product-form button[type="submit"] {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.add-product-form button[type="submit"]:hover {
+    background: #45a049;
+}
+
+.reset-btn {
+    background: #f44336;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.reset-btn:hover {
+    background: #da190b;
+}
+
+.error-message {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 4px;
+    border: 1px solid #f5c6cb;
+    text-align: center;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 25px;
+    padding: 20px;
+    }
+
+.category-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    padding: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    color: #333;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 1);
+}
+.category-card img {
+    transform: 100%;
+    box-shadow: 160px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+.category-card h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.category-text{
+    font-size: 20px;
+    margin-left:20px;
 }

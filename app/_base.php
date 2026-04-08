@@ -184,7 +184,7 @@ function get_mail() {
     // $m->Password = 'npsg gzfd pnio aylm';  
     $m->Password = 'upay jevm iime yhxy';
     $m->CharSet = 'utf-8';
-    $m->setFrom($m->Username, '😺 Admin');
+    $m->setFrom($m->Username, 'Cozy Hub');
 
     return $m;
 }

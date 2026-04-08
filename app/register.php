@@ -62,11 +62,25 @@ if(is_post()){
 if(!$_err){
         $photo = save_photo($f, 'photo');
  
-        $stm = $_db->prepare("INSERT INTO user (name, email, password, profile_photo, role, membership_id, valid) VALUES (?,?,SHA1(?),?,'customer',1,1)");
-        $stm->execute([$name, $email, $password, $photo]);
-
-        temp('info', 'Registered successfully!');
-        redirect('login.php');
+        // Generate 6-digit verification code
+        $verification_code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+ 
+        $stm = $_db->prepare("INSERT INTO user (name, email, password, profile_photo, role, membership_id, valid, verification_code, email_verified, gender) VALUES (?,?,SHA1(?),?,'customer',1,0,?,0,?)");
+        $stm->execute([$name, $email, $password, $photo, $verification_code, $gender]);
+ 
+        // Send verification email
+        $mail = get_mail();
+        $mail->addAddress($email, $name);
+        $mail->Subject = 'Email Verification Code';
+        $mail->Body = "Your verification code is: $verification_code\n\nPlease enter this code to verify your email address.";
+        $mail->send();
+ 
+        // Store user_id in session for verification
+        $_SESSION['verify_user_id'] = $_db->lastInsertId();
+        $_SESSION['verify_email'] = $email;
+ 
+        temp('info', 'Registration successful! Please check your email for verification code.');
+        redirect('verify_email.php');
     }
 }
 

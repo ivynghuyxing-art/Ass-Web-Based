@@ -1,5 +1,5 @@
 <?php
-require '_base.php';
+require '../_base.php';
 
 // Initialize error array
 $_err = [];
@@ -27,10 +27,10 @@ if (is_post()) {
 
             // 3. Handle Token (Using $user->id based on your registration logic)
             $stm = $_db->prepare("DELETE FROM token WHERE user_id = ?");
-            $stm->execute([$user->id]);
+            $stm->execute([$user->user_id]);
 
             $stm = $_db->prepare("INSERT INTO token (id, expire, user_id) VALUES (?, ADDTIME(NOW(), '01:00:00'), ?)");
-            $stm->execute([$id, $user->id]);
+            $stm->execute([$id, $user->user_id]);
 
             // 4. Prepare Email
             $base_url = "http://" . $_SERVER['HTTP_HOST']; 
@@ -40,12 +40,8 @@ if (is_post()) {
             $m->addAddress($email, $user->name);
             
             // Check for profile_photo (synchronize with register.php)
-            if (!empty($user->profile_photo)) { 
-                $m->addEmbeddedImage("photos/{$user->profile_photo}", 'photo');
-                $photo_html = "<img src='cid:photo' style='width: 80px; height: 80px; border-radius: 50%;'>";
-            } else {
-                $photo_html = "";
-            }
+          
+            $photo_html = "";
 
             $m->isHTML(true);
             $m->Subject = "Password Reset Request - Cozy Hub";
@@ -75,8 +71,21 @@ if (is_post()) {
 }
 
 $_title = 'Forgot Password';
-include '_head.php';
+
 ?>
+
+<!DOCTYPE html>
+<html lang ="en">
+<head>
+    <meta charset ="UTF-8">
+    <meta name="viewport" content= "width=device-width, initial-scale=1.0">
+    <title><?= $title ?? 'Untitled' ?></title>
+    <link rel = "shortcut icon" href="/images/favicon.png">
+    <link rel = "stylesheet" href="/css/app.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/js/app.js"></script>
+</head>
+<body> 
 
 <div class="auth-wrapper">
     <div class="auth-card">
@@ -96,5 +105,5 @@ include '_head.php';
         </div>
     </div>
 </div>
+</body>
 
-<?php include '_foot.php'; ?>

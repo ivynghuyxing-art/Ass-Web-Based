@@ -1,7 +1,7 @@
 <?php
 
 $title = 'Products';
-$_title = 'Products';
+$_title = '';
 include '../customer_header.php';
 
 
@@ -64,6 +64,10 @@ if (is_post() && req('action') === 'add') {
 // show product list
 $products = $_db->query('SELECT * FROM product')->fetchAll();
 ?>
+
+<div class="title">
+    <h2>Products</h2>
+</div>
 
 <section class="featured-products">
     <div class="product-grid">

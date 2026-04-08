@@ -262,7 +262,7 @@ footer {
     margin: 0;
     font-size: 36px;
     font-weight: bold;
-    background: linear-gradient(135deg, var(--primary), var(--accent));
+    background: linear-gradient(135deg, darkred, rgb(173,8,8));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -315,7 +315,7 @@ footer {
 .box button, .auth-form button, .register-btn, .box a.login {
     width: 100%;
     padding: 10px;
-    background: var(--primary);
+    background:darkred;
     color: white;
     border: none;
     border-radius: 6px;
@@ -329,7 +329,7 @@ footer {
 }
 
 .box button:hover, .auth-form button:hover, .register-btn:hover, .box a.login:hover {
-    background: var(--accent);
+    background: rgb(173,8,8);
 }
 
 .switch {
@@ -339,7 +339,7 @@ footer {
 }
 
 .switch a {
-    color: var(--primary);
+    color:darkred;
     text-decoration: none;
 }
 

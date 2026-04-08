@@ -17,7 +17,7 @@ $fetch_profile = $_SESSION['user'];
     <link rel="stylesheet" href="/css/app.css"> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
-<body>
+<body class="admin-layout" style="display:flex; margin:0; padding:0; height:100vh; overflow:hidden;">
 
     <div class="sidebar">
     <h2><i>Admin panel</i></h2>

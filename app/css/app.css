@@ -1,7 +1,7 @@
 body {
     margin: 0;
     height: 100vh;
-    display: grid;
+    display: block;
     grid: auto auto 1fr auto / auto;
     background-color: #FFFBF5;
 }

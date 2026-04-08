@@ -833,7 +833,7 @@ label.upload img {
 
 .sidebar {
     width: 220px;
-    background: linear-gradient(180deg, var(--primary) 0%, rgb(150, 0, 0) 100%);
+    background: linear-gradient(180deg, #8B0000 0%, #AD0808 100%);
     color: #fff;
     height: 100vh;
     padding: 20px 12px;

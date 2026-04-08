@@ -10,8 +10,8 @@ auth();// only allowed user who have
 //retrive to display
 if (is_get()) {
     
-    $stm = $_db->prepare('SELECT * FROM user WHERE id=?');
-    $stm->execute([$_user->id]);
+    $stm = $_db->prepare('SELECT * FROM user WHERE user_id=?');
+    $stm->execute([$_user->user_id]);
     $u = $stm->fetch();
 
     if (!$u) {
@@ -19,7 +19,7 @@ if (is_get()) {
     }
 
     extract((array)$u);
-    $_SESSION['photo'] = $u->photo;
+    $_SESSION['photo'] = $u->profile_photo;
 }
 
 //update profile
@@ -44,9 +44,9 @@ if (is_post()) {
         // we allowed user to change email, cannot same email
         $stm = $_db->prepare('
             SELECT COUNT(*) FROM user
-            WHERE email =? AND id !=?
+            WHERE email =? AND user_id !=?
         ');
-        $stm->execute([$email,$_user->id]);
+        $stm->execute([$email,$_user->user_id]);
 
         if ($stm->fetchColumn() > 0) {
             $_err['email'] = 'Duplicated';
@@ -77,23 +77,23 @@ if (is_post()) {
 
         // (1) Delete and save photo --> optional
         if ($f) {
-            unlink("../photos/$photo");
-            $photo = save_photo($f, '../photos');
+            unlink("../photo/$photo");
+            $photo = save_photo($f, '../photo');
         }
         
         // (2) Update user (email, name, photo)
         // TODO
         $stm = $_db->prepare('
             UPDATE user
-            SET email = ?, name =?, photo = ?
-            WHERE id = ?
+            SET email = ?, name =?, profile_photo = ?
+            WHERE user_id = ?
         ');
-        $stm->execute([$email,$name,$photo,$_user->id]);
+        $stm->execute([$email,$name,$photo,$_user->user_id]);
 
         // (3) Update global user object
         $_user->email = $email;
         $_user->name  = $name;
-        $_user->photo = $photo;
+        $_user->profile_photo = $photo;
 
 
         temp('info', 'Record updated');
@@ -104,7 +104,7 @@ if (is_post()) {
 // ----------------------------------------------------------------------------
 
 $_title = 'User | Profile';
-include '../_head.php';
+include '../customer_header.php';
 ?>
 
 <form method="post" class="form" enctype="multipart/form-data">
@@ -119,7 +119,7 @@ include '../_head.php';
     <label for="photo">Photo</label>
     <label class="upload" tabindex="0">
         <?= html_file('photo', 'image/*', 'hidden') ?>
-        <img src="/photos/<?= $photo ?>">
+        <img src="/photo/<?= $photo ?>">
     </label>
     <?= err('photo') ?>
 

@@ -31,8 +31,14 @@ require_once '_base.php';
             <a href="/logout.php" onclick="return confirm('Do you want to logout')">Logout</a>
             
             <?php if ($_user): ?>
-                <div class="user-photo">
+                <div class="user-photo-dropdown">
                     <img src="/photo/<?= ($_user->profile_photo) ?>" alt="Profile Photo">
+
+                    <div class="dropdown-content">
+                        <a href="/customer/profile.php">Profile</a>
+                        <a href="/customer/orders_history.php">Orders History</a>
+                        <a href="/customer/reset_password.php">Reset Password</a>
+                    </div>
                 </div>
             <?php endif; ?>
         <?php endif; ?>

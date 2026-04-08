@@ -117,3 +117,16 @@ $(() => {
     }
 
     initCartSelectionSummary();});
+
+    $(document).ready(function () {
+    // 点击头像开关 dropdown
+    $('.user-photo-dropdown img').on('click', function (e) {
+        e.stopPropagation();
+        $('.user-photo-dropdown').toggleClass('active');
+    });
+
+    // 点击其他地方关闭
+    $(document).on('click', function () {
+        $('.user-photo-dropdown').removeClass('active');
+    });
+});

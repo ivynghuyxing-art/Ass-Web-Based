@@ -80,9 +80,7 @@ if (is_post() && (req('add') || req('buy_now') )) {
 }
 ?>
 
-<div class="title">
-    <h2>Products Detail</h2>
-</div>
+
 
 <section class="product-detail">
     <div class="product-detail-container">
@@ -95,7 +93,6 @@ if (is_post() && (req('add') || req('buy_now') )) {
             <div class="product-meta">
                 <p class="category">
                     <h1><?= ($product->product_name) ?></h1>
-                    <strong>Category:</strong> <?= ($product->category_name ?? 'N/A') ?>
                 </p>
                 <p class="stock-status">
                     <strong>Stock:</strong> 

@@ -45,7 +45,7 @@ header a {
 }
 
 footer {
-    margin-top: auto;
+    margin-top: 40px;
     padding: 40px 50px;
     background-color: lightgray;
 }

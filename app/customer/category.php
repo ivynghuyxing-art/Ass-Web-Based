@@ -7,9 +7,6 @@ require '../customer_header.php';
 $stmt = $_db->query('SELECT * FROM category');
 $categories = $stmt->fetchAll();
 ?>
-
-<div class="page-container">
-
     <?php foreach ($categories as $cat): ?>
 
         <div class="title">

@@ -1,5 +1,4 @@
     <?php
-    error_reporting(E_ALL);
     require '_base.php';
 
     if(is_post()){

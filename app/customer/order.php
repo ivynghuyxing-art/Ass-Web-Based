@@ -1,6 +1,6 @@
 <?php
 $title = 'My Orders';
-$_title = 'My Orders';
+$_title = '';
 include '../customer_header.php';
 
 if (!isset($_SESSION['user'])) {
@@ -15,8 +15,11 @@ $orders->execute([$user_id]);
 $orders = $orders->fetchAll();
 ?>
 
+<div class="title">
+    <h2>My Order</h2>
+</div>
+
 <section class="orders-page">
-    <h2>My Orders</h2>
     <?php if ($orders): ?>
         <table class="cart-table">
             <thead>

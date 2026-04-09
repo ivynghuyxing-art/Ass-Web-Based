@@ -1,5 +1,5 @@
 <?php
-include '../_base.php';
+include '../customer_header.php';
 
 // ----------------------------------------------------------------------------
 
@@ -104,7 +104,7 @@ if (is_post()) {
 // ----------------------------------------------------------------------------
 
 $_title = 'User | Profile';
-include '../customer_header.php';
+
 ?>
 
 <form method="post" class="form" enctype="multipart/form-data">

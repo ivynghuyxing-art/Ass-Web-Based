@@ -68,8 +68,6 @@ $products = $_db->query('SELECT * FROM product')->fetchAll();
 <div class="title">
     <h2>Products</h2>
 </div>
-
-<section class="featured-products">
     <div class="product-grid">
         <?php foreach ($products as $p): ?>
             <div class="product-card">

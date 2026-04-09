@@ -1,7 +1,7 @@
 <?php
 
 $title = 'Product Detail';
-$_title = 'Product Detail';
+$_title = '';
 include '../customer_header.php';
 
 // Get product_id from URL
@@ -79,6 +79,11 @@ if (is_post() && (req('add') || req('buy_now') )) {
 
 }
 ?>
+
+<div class="title">
+    <h2>Products Detail</h2>
+</div>
+
 <section class="product-detail">
     <div class="product-detail-container">
         

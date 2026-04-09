@@ -30,7 +30,7 @@
                 }
 
                 $_SESSION['user'] = $u;
-                temp('info', 'Welcome back, ' . $u->name);
+                temp('info', 'Welcome, ' . $u->name);
 
                 // 2. ROLE REDIRECTION
                 if ($u->role === 'admin') {

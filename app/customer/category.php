@@ -1,28 +1,45 @@
 <?php
-$title = 'Category';
+$title = 'Categories';
 $_title = '';
-include '../customer_header.php';
+require '../customer_header.php';
 
-$categories = $_db->query('SELECT * FROM category')->fetchAll();
+// retrieve all the category
+$stmt = $_db->query('SELECT * FROM category');
+$categories = $stmt->fetchAll();
 ?>
 
- <div class="category-text">
-    <h2>Categories</h2>
- </div>
+<div class="page-container">
 
+    <?php foreach ($categories as $cat): ?>
 
+        <div class="title">
+            <h2><?= $cat->category_name ?></h2>
+        </div>
 
-<!-- Category Card -->
-<section class="category-grid">
-    <?php foreach ($categories as $c): ?>
-        <a href="/product/viewproduct.php?category_id=<?= $c->category_id ?>" class="category-card">
-            <img src="/category_img/<?= $c->category_id ?>.jpg" alt="<?= htmlspecialchars($c->category_name) ?>">
-            <h3><?= htmlspecialchars($c->category_name) ?></h3>
-            <p><?= htmlspecialchars($c->description) ?></p>
-        </a>
+        <div class="product-grid">
+            <?php
+            $stmt2 = $_db->prepare('SELECT * FROM product WHERE category_id = ?');
+            $stmt2->execute([$cat->category_id]);
+            $products = $stmt2->fetchAll();
+            ?>
+
+            <?php if ($products): ?>
+                <?php foreach ($products as $p): ?>
+                <a href="/product/product_detail.php?product_id=<?= $p->product_id ?>" class="product-link">
+                    <div class="product-card">
+                        <img src="/product_img/<?= $p->image ?>" alt="<?= $p->product_name ?>">
+                        <h3><?= $p->product_name ?></h3>
+                        <p>RM <?= number_format($p->price, 2) ?></p>
+                    </div>
+                </a>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>No products found.</p>
+            <?php endif; ?>
+        </div>
+
     <?php endforeach; ?>
-</section>
 
-<?php
-include '../_foot.php';
+</div>
 
+<?php include '../_foot.php'; ?>

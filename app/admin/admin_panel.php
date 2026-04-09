@@ -19,7 +19,7 @@ switch($page){
         break;
 
     case 'product':
-        include '../product/adminviewproduct.php';
+        include '../product/admin_view_product.php';
         break;
 
     case 'edit_product':

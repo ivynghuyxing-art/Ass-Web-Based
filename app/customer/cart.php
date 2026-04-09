@@ -1,6 +1,6 @@
 <?php
 $title = 'Cart';
-$_title = 'My Cart';
+$_title = '';
 include '../customer_header.php';
 
 if (!isset($_SESSION['user'])) {
@@ -54,10 +54,15 @@ $items->execute([$cart->cart_id]);
 $items = $items->fetchAll();
 ?>
 
+<div class="title">
+    <h2>My Cart</h2>
+</div>
+
 <section class="cart-page">
     <?php if ($items): ?>
         <form method="post">
             <input type="hidden" name="action" id="cart-action" value="update">
+            <input type="hidden" id="remove-item-id" name="cart_item_id" value="">
             <table class="cart-table">
                 <thead>
                     <tr>
@@ -97,7 +102,9 @@ $items = $items->fetchAll();
                 </tbody>
             </table>
             <div class="cart-actions">
-                <button type="button" class="btn-success" onclick="document.getElementById('cart-action').value='checkout'; this.form.submit();">Proceed to Checkout</button>
+                <button type="submit" name="action" value="checkout" class="btn-success">
+                    Proceed to Checkout
+                </button>
             </div>
         </form>
 

@@ -1,5 +1,5 @@
 <?php
-require_once '_base.php';
+require '_base.php';
 ?>
 
 <!DOCTYPE html>
@@ -36,7 +36,7 @@ require_once '_base.php';
 
                     <div class="dropdown-content">
                         <a href="/customer/customer_profile.php">Profile</a>
-                        <a href="/customer/orders_history.php">Orders History</a>
+                        <a href="/customer/order_history.php">Orders History</a>
                         <a href="/customer/reset_password.php">Reset Password</a>
                     </div>
                 </div>

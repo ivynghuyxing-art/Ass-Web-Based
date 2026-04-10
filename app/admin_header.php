@@ -1,5 +1,5 @@
 <?php
-require_once '_base.php';
+require_once __DIR__ . '/_base.php';
 if (!isset($_SESSION['user']) || $_SESSION['user']->role !== 'admin') {
     redirect('/login.php');
 }
@@ -24,8 +24,7 @@ $fetch_profile = $_SESSION['user'];
 
     <div class="right">
         <a href="admin_panel.php?page=dashboard">Dashboard</a>
-        <a href="admin_panel.php?page=add_product">Add Product</a>
-        <a href="admin_panel.php?page=product">View Product</a>
+        <a href="admin_panel.php?page=products" class="<?= in_array($page, ['products', 'product', 'add_product']) ? 'active' : '' ?>">Products</a>
     </div>
     <div class="logout-btn">
         <a href="admin_logout.php">Logout</a>

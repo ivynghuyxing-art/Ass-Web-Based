@@ -1,5 +1,5 @@
 <?php
-require_once'../_base.php';
+require_once __DIR__ . '/../_base.php';
 $title = 'Add Product';
 $_title = 'Add Product';
 

@@ -1,5 +1,5 @@
 <?php
-require '../_base.php';
+require_once __DIR__ . '/../_base.php';
 $title = 'Admin Panel';
 
 if(!isset($_SESSION['user']) || $_SESSION['user']->role !== 'admin'){
@@ -15,11 +15,9 @@ switch($page){
         break;
     
     case 'add_product':
-        include '../product/addproduct.php';
-        break;
-
     case 'product':
-        include '../product/admin_view_product.php';
+    case 'products':
+        include '../product/admin_products.php';
         break;
 
     case 'edit_product':

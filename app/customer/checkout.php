@@ -1,6 +1,6 @@
 <?php
 $title = 'Checkout';
-$_title = 'Checkout';
+$_title = '';
 include '../customer_header.php';
 
 if (!isset($_SESSION['user'])) {
@@ -53,9 +53,11 @@ if (is_post()) {
     redirect('/customer/order.php');
 }
 ?>
+<div class ="title">
+     <h2>Order Summary</h2>
+</div>
 
-<section class="checkout-page">
-    <h2>Order Summary</h2>
+<section class="cart-page">
     <table class="cart-table">
         <thead>
             <tr>
@@ -77,7 +79,7 @@ if (is_post()) {
         </tbody>
     </table>
 
-    <div class="checkout-summary">
+    <div class="cart-summary">
         <p>Subtotal: RM <?= number_format($cart->total_price,2) ?></p>
         <p>Shipping: RM <?= number_format($shipping_fee,2) ?></p>
         <p><strong>Grand total: RM <?= number_format($grand_total,2) ?></strong></p>

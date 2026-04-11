@@ -32,6 +32,10 @@ switch($page){
         include 'user_account.php';
         break;
 
+    case 'profile':
+        include 'admin_profile.php';
+        break;
+
     case 'orders_pending':
         echo "<h2>Pending Orders</h2>";
         break;

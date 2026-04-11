@@ -935,21 +935,114 @@ label.upload img {
     font-weight: 500;
 }
 
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 18px;
-    margin-bottom: 28px;
+.profile-page {
+    max-width: 1100px;
+    margin: 0 auto;
 }
 
-.metric-card {
+.profile-page .page-header {
+    margin-bottom: 25px;
+}
+
+.profile-page .page-header h1 {
+    margin: 0;
+    font-size: 32px;
+    color: #2c3e50;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.profile-card {
     background: #fff;
-    padding: 22px;
+    padding: 28px;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+.profile-card img {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 18px;
+    border: 3px solid #f5f5f5;
+}
+
+.profile-card h2 {
+    margin: 0 0 6px;
+    font-size: 24px;
+}
+
+.profile-card .muted {
+    margin: 0 16px 20px;
+}
+
+.profile-card .profile-info {
+    text-align: left;
+    margin-top: 20px;
+    display: grid;
+    gap: 14px;
+}
+
+.profile-card .profile-info div {
+    display: grid;
+    gap: 5px;
+}
+
+.profile-form {
+    background: #fff;
+    padding: 28px;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.profile-form .form-group {
+    margin-bottom: 18px;
+}
+
+.profile-form .form-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 22px;
+}
+
+.profile-form button,
+.profile-form .reset-btn {
+    padding: 12px 22px;
+    border: none;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    border-left: 4px solid var(--primary);
-    transition: all 0.3s ease;
+    font-size: 15px;
     cursor: pointer;
+}
+
+.profile-form button {
+    background: darkred;
+    color: white;
+}
+
+.profile-form button:hover {
+    background: #aa0000;
+}
+
+.profile-form .reset-btn {
+    background: #bbb;
+    color: #222;
+}
+
+.profile-form .upload img {
+    max-width: 240px;
+    width: 100%;
+    height: 240px;
+    border-radius: 14px;
+    object-fit: cover;
+    border: 1px solid #ddd;
 }
 
 .metric-card:hover {

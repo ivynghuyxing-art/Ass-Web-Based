@@ -30,6 +30,39 @@ $(() => {
         }
     });
 
+    // View more products for category sections
+    $('.view-more-btn').on('click', function () {
+        const button = $(this);
+        const section = button.closest('.category-section');
+        const extraItems = section.find('.extra-product');
+        const totalExtras = extraItems.length;
+
+        if (extraItems.first().is(':visible')) {
+            extraItems.addClass('hidden');
+            button.text(`View more ${totalExtras} ${totalExtras === 1 ? 'item' : 'items'}`);
+        } else {
+            extraItems.removeClass('hidden');
+            button.text('Show less');
+        }
+    });
+
+    // Header categories dropdown
+    $(document).on('click', '.nav-dropdown .dropdown-toggle', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const dropdown = $(this).closest('.nav-dropdown');
+        $('.nav-dropdown').not(dropdown).removeClass('active');
+        dropdown.toggleClass('active');
+    });
+
+    $(document).on('click', function () {
+        $('.nav-dropdown').removeClass('active');
+    });
+
+    $('.nav-dropdown .dropdown-content').on('click', function (event) {
+        event.stopPropagation();
+    });
+
     // Banner Slider
     let currentSlide = 0;
     const slides = document.querySelectorAll('.slide');

@@ -1,11 +1,14 @@
 <?php
 // Fetch summary data
 $totalProducts = $_db->query("SELECT COUNT(*) FROM product")->fetchColumn();
+$totalProductsInStock = $_db->query("SELECT COUNT(*) FROM product WHERE stock_quantity > 0")->fetchColumn();
 $totalUsers = $_db->query("SELECT COUNT(*) FROM user")->fetchColumn();
 $totalOrders = $_db->query("SELECT COUNT(*) FROM orders")->fetchColumn();
 $totalSales = $_db->query("SELECT COALESCE(SUM(total_price), 0) FROM orders")->fetchColumn();
-$pendingOrders = $_db->query("SELECT COUNT(*) FROM orders WHERE status = 'pending'")->fetchColumn();
+$pendingOrders = $_db->query("SELECT COUNT(*) FROM orders WHERE status = 'Pending'")->fetchColumn();
 $lowStock = $_db->query("SELECT COUNT(*) FROM product WHERE stock_quantity <= 5")->fetchColumn();
+$outOfStock = $_db->query("SELECT COUNT(*) FROM product WHERE stock_quantity = 0")->fetchColumn();
+$orderStatusDistribution = $_db->query(" SELECT status, COUNT(*) as total FROM orders GROUP BY status")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <div class="dashboard-page">
@@ -19,8 +22,13 @@ $lowStock = $_db->query("SELECT COUNT(*) FROM product WHERE stock_quantity <= 5"
         <div class="hero-metrics">
             <div class="summary-card">
                 <span>Total Products</span>
-                <strong><?= number_format($totalProducts) ?></strong>
+                <strong><?= number_format($totalProductsInStock) ?></strong>
                 <small>Active stationery items</small>
+                <?php if ($outOfStock > 0): ?>
+            <small style="color: #e74c3c; display: block;">
+                (<?= $outOfStock ?> items sold out)
+            </small>
+        <?php endif; ?>
             </div>
             <div class="summary-card">
                 <span>Total Customers</span>
@@ -38,7 +46,7 @@ $lowStock = $_db->query("SELECT COUNT(*) FROM product WHERE stock_quantity <= 5"
     <section class="dashboard-grid">
         <div class="metric-card metric-card--blue">
             <div class="metric-card__label">Total Products</div>
-            <div class="metric-card__value"><?= number_format($totalProducts) ?></div>
+            <div class="metric-card__value"><?= number_format($totalProductsInStock) ?></div>
             <div class="metric-card__note">Inventory across all stationery categories.</div>
         </div>
         <div class="metric-card metric-card--green">
@@ -79,9 +87,63 @@ $lowStock = $_db->query("SELECT COUNT(*) FROM product WHERE stock_quantity <= 5"
 
         <div class="dashboard-panel chart-card">
             <h2>Sales & Visits</h2>
-            <div class="chart-placeholder">Sales overview chart will appear here.</div>
-            <p class="chart-note">Use this area to show monthly sales trends or popular stationery categories.</p>
+            <?php if (count($orderStatusDistribution ?? [])): ?>
+                <div class="chart-container">
+                    <canvas id="salesPieChart"></canvas>
+                </div>
+            <?php else: ?>
+                <div class="chart-placeholder">No orders data available yet.</div>
+            <?php endif; ?>
+            <p class="chart-note">Orders by status in the store.</p>
         </div>
     </section>
 </div>
+
+<?php if (count($orderStatusDistribution) > 0): ?>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const chartLabels = <?= json_encode(array_column($orderStatusDistribution, 'status')) ?>;
+        const chartData = <?= json_encode(array_map(fn($row) => (int) $row->order_count, $orderStatusDistribution)) ?>;
+        const chartColors = [
+            '#ef4444', '#f97316', '#facc15', '#22c55e', '#0ea5e9', '#818cf8', '#a855f7', '#ec4899', '#14b8a6', '#f43f5e'
+        ];
+
+        new Chart(document.getElementById('salesPieChart'), {
+            type: 'pie',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    data: chartData,
+                    backgroundColor: chartLabels.map((_, index) => chartColors[index % chartColors.length]),
+                    borderColor: '#fff',
+                    borderWidth: 2,
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 14,
+                            padding: 14,
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const sum = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percent = sum ? ((value / sum) * 100).toFixed(1) : 0;
+                                return `${label}: ${value} (${percent}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+<?php endif; ?>
 

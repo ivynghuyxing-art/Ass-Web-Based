@@ -9,7 +9,7 @@ $search_term = get('product_name');
 $products = [];
 
 if ($search_term) {
-    $stm = $_db->prepare("SELECT * FROM product WHERE product_name LIKE ?");
+    $stm = $_db->prepare("SELECT * FROM product WHERE product_name LIKE ? AND is_active=1");
     $stm->execute(['%' . $search_term . '%']);
     $products = $stm->fetchAll();
 }

@@ -15,7 +15,7 @@ $categories = $stmt->fetchAll();
 
         <div class="product-grid">
             <?php
-            $stmt2 = $_db->prepare('SELECT * FROM product WHERE category_id = ?');
+            $stmt2 = $_db->prepare('SELECT * FROM product WHERE category_id = ? AND is_active=1');
             $stmt2->execute([$cat->category_id]);
             $products = $stmt2->fetchAll();
             ?>

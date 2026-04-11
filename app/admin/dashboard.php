@@ -7,6 +7,8 @@ $totalOrders = $_db->query("SELECT COUNT(*) FROM orders")->fetchColumn();
 $totalSales = $_db->query("SELECT COALESCE(SUM(total_price), 0) FROM orders")->fetchColumn();
 $pendingOrders = $_db->query("SELECT COUNT(*) FROM orders WHERE status = 'Pending'")->fetchColumn();
 $lowStock = $_db->query("SELECT COUNT(*) FROM product WHERE stock_quantity <= 5")->fetchColumn();
+$outOfStock = $_db->query("SELECT COUNT(*) FROM product WHERE stock_quantity = 0")->fetchColumn();
+$orderStatusDistribution = $_db->query(" SELECT status, COUNT(*) as total FROM orders GROUP BY status")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <div class="dashboard-page">
@@ -85,7 +87,7 @@ $lowStock = $_db->query("SELECT COUNT(*) FROM product WHERE stock_quantity <= 5"
 
         <div class="dashboard-panel chart-card">
             <h2>Sales & Visits</h2>
-            <?php if (count($orderStatusDistribution) > 0): ?>
+            <?php if (count($orderStatusDistribution ?? [])): ?>
                 <div class="chart-container">
                     <canvas id="salesPieChart"></canvas>
                 </div>

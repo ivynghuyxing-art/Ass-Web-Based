@@ -546,7 +546,7 @@ label.upload img {
     cursor: pointer;
     text-decoration: none;
     padding: 0;
-    font: inherit;
+    font-family: inherit;
 }
 
 .menu .dropdown-toggle:hover,
@@ -555,17 +555,15 @@ label.upload img {
     outline: none;
 }
 
-.menu .dropdown-content {
-    display: none;
-    position: absolute;
-    top: calc(100% + 10px);
-    left: 0;
-    background: white;
-    min-width: 180px;
-    padding: 10px 0;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    z-index: 9999;
+.menu .dropdown-content a {
+    padding: 10px 18px;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    color: #111827;
+    text-decoration: none;
+    font-size: 14px;
+    margin: 0;   
 }
 
 .menu .dropdown-content a {

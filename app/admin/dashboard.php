@@ -46,7 +46,7 @@ $orderStatusDistribution = $_db->query(" SELECT status, COUNT(*) as total FROM o
     <section class="dashboard-grid">
         <div class="metric-card metric-card--blue">
             <div class="metric-card__label">Total Products</div>
-            <div class="metric-card__value"><?= number_format($totalProducts) ?></div>
+            <div class="metric-card__value"><?= number_format($totalProductsInStock) ?></div>
             <div class="metric-card__note">Inventory across all stationery categories.</div>
         </div>
         <div class="metric-card metric-card--green">

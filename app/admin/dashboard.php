@@ -1,11 +1,13 @@
 <?php
 // Fetch summary data
 $totalProducts = $_db->query("SELECT COUNT(*) FROM product")->fetchColumn();
+$totalProductsInStock = $_db->query("SELECT COUNT(*) FROM product WHERE stock_quantity > 0")->fetchColumn();
 $totalUsers = $_db->query("SELECT COUNT(*) FROM user")->fetchColumn();
 $totalOrders = $_db->query("SELECT COUNT(*) FROM orders")->fetchColumn();
 $totalSales = $_db->query("SELECT COALESCE(SUM(total_price), 0) FROM orders")->fetchColumn();
 $pendingOrders = $_db->query("SELECT COUNT(*) FROM orders WHERE status = 'pending'")->fetchColumn();
 $lowStock = $_db->query("SELECT COUNT(*) FROM product WHERE stock_quantity <= 5")->fetchColumn();
+$outOfStock = $_db->query("SELECT COUNT(*) FROM product WHERE stock_quantity = 0")->fetchColumn();
 ?>
 
 <div class="dashboard-page">
@@ -19,8 +21,13 @@ $lowStock = $_db->query("SELECT COUNT(*) FROM product WHERE stock_quantity <= 5"
         <div class="hero-metrics">
             <div class="summary-card">
                 <span>Total Products</span>
-                <strong><?= number_format($totalProducts) ?></strong>
+                <strong><?= number_format($totalProductsInStock) ?></strong>
                 <small>Active stationery items</small>
+                <?php if ($outOfStock > 0): ?>
+            <small style="color: #e74c3c; display: block;">
+                (<?= $outOfStock ?> items sold out)
+            </small>
+        <?php endif; ?>
             </div>
             <div class="summary-card">
                 <span>Total Customers</span>

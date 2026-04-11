@@ -1,5 +1,6 @@
 <?php
-require '_base.php';
+require_once '_base.php';
+$navCategories = $_db->query('SELECT * FROM category ORDER BY category_name')->fetchAll();
 ?>
 
 <!DOCTYPE html>
@@ -51,7 +52,15 @@ require '_base.php';
         <div class="menu"> 
                 <a href="/customer/home.php"><b>Home</b></a> 
                 <a href="/product/viewproduct.php"><b>Product</b></a>
-                <a href="/customer/category.php"><b>Categories</b></a>
+                <div class="dropdown nav-dropdown">
+                    <button type="button" class="dropdown-toggle"><b>Categories</b></button>
+                    <div class="dropdown-content nav-dropdown-content">
+                        <a href="/customer/category.php">All</a>
+                        <?php foreach ($navCategories as $navCat): ?>
+                            <a href="/customer/category.php?category_id=<?= $navCat->category_id ?>"><?= encode($navCat->category_name) ?></a>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
                 <a href="/customer/contact.php"><b>Contact</b></a> 
         </div> 
 

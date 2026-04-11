@@ -2008,3 +2008,8 @@ label.upload img {
     align-items: center;
     gap: 4px;
 }
+
+.title hr{
+    width:95%;
+    border-top: 1px solid rgb(186, 181, 181);
+}

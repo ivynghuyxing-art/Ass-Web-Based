@@ -84,7 +84,7 @@ if(!$_err){
     }
 }
 
-$title = 'Register | Cozy Hub';
+$title = 'Register';
 ?>
  
 <!DOCTYPE html>

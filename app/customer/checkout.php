@@ -1,7 +1,7 @@
 <?php
 $title = 'Checkout';
 $_title = '';
-include '../customer_header.php';
+include '../_base.php';
 
 if (!isset($_SESSION['user'])) {
     temp('info', 'Please login to checkout');
@@ -159,12 +159,23 @@ if (is_post()) {
             // Redirect to fake payment page
             redirect('/customer/payment.php?orders_id=' . $orders_id);
         }
-    }
+    }       
 }
 ?>
-
+<!DOCTYPE html>
+<html lang ="en">
+<head>
+    <meta charset ="UTF-8">
+    <meta name="viewport" content= "width=device-width, initial-scale=1.0">
+    <title><?= $title ?? 'Untitled' ?></title>
+    <link rel = "shortcut icon" href="/images/favicon.png">
+    <link rel = "stylesheet" href="/css/app.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/js/app.js"></script>
+</head>
+<body>
 <div class="title">
-    <h2>Checkout</h2>
+    <h2>Cozy Hub</h2><hr>
 </div>
 
 <div class="checkout-wrapper">
@@ -340,5 +351,4 @@ if (is_post()) {
 
     </div>
 </div>
-
-<?php include '../_foot.php'; ?>
+</body>

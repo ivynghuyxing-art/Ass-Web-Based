@@ -19,7 +19,7 @@ if ($id) {
 
     // Delete product
     $stmt = $_db->prepare("DELETE FROM product WHERE product_id = ?");
-    $stmt->execute([$id]);
+    $stmt->execute([$product_id]);
 
     temp('info', 'Product deleted successfully!');
 }

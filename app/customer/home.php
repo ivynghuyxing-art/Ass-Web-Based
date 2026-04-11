@@ -37,7 +37,7 @@
         <h2>Featured Products</h2>
         <div class="product-grid">
             <?php
-            $stm = $_db->query("SELECT * FROM product LIMIT 10");
+            $stm = $_db->query("SELECT * FROM product WHERE is_active=1 LIMIT 10");
             $products = $stm->fetchAll();
             ?>
             <?php foreach ($products as $p) :?>

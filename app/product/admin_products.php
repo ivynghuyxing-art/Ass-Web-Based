@@ -3,8 +3,7 @@ $title = 'Products';
 $_title = 'Products';
 
 $categories = $_db->query('SELECT * FROM category ORDER BY category_name')->fetchAll();
-$products = $_db->query('SELECT p.*, c.category_name FROM product p LEFT JOIN category c ON p.category_id = c.category_id ORDER BY p.product_name')->fetchAll();
-
+$products = $_db->query('SELECT p.*, c.category_name FROM product p LEFT JOIN category c ON p.category_id = c.category_id WHERE p.is_active = 1 ORDER BY p.product_name')->fetchAll();  
 if (is_post() && req('action') === 'add_product') {
     $product_name = req('product_name');
     $price = req('price');
@@ -48,7 +47,7 @@ if (is_post() && req('action') === 'add_product') {
     if (!$_err) {
         $photo = save_photo($f, '../product_img');
 
-        $stm = $_db->prepare('INSERT INTO product (product_name, price, stock_quantity, category_id, description, image) VALUES (?, ?, ?, ?, ?, ?)');
+        $stm = $_db->prepare('INSERT INTO product (product_name, price, stock_quantity, category_id, description, image, is_active) VALUES (?, ?, ?, ?, ?, ?, 1)');
         $stm->execute([$product_name, $price, $stock_quantity, $category_id, $description, $photo]);
 
         temp('info', 'Product added successfully!');

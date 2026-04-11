@@ -48,7 +48,9 @@ $title = 'Forgot Password';
 <body>
     <div id="info"><?= temp('info') ?></div>
     <div class="center-box">
-        <div class="login-title">Forgot Password</div>
+        <div class="login-title">
+            Forgot Password
+        </div>
         <form method="post" class="box">
             <h2>Reset Password</h2>
             <input type="text" name="email" placeholder="Enter your email" value="<?= encode($email ?? '') ?>">

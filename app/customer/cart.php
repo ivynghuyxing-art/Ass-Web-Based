@@ -49,7 +49,7 @@ if (is_post()) {
     }
 }
 
-$items = $_db->prepare('SELECT ci.cart_item_id, ci.quantity, ci.price, p.product_name, p.image, p.price AS unit_price, p.stock_quantity FROM cart_item ci JOIN product p ON ci.product_id = p.product_id WHERE ci.cart_id = ?');
+$items = $_db->prepare('SELECT ci.cart_item_id, ci.quantity, ci.price, p.product_name, p.image, p.price AS unit_price, p.stock_quantity FROM cart_item ci JOIN product p ON ci.product_id = p.product_id WHERE ci.cart_id = ? AND p.is_active = 1');
 $items->execute([$cart->cart_id]);
 $items = $items->fetchAll();
 ?>

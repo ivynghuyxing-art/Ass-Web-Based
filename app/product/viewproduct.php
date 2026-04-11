@@ -10,7 +10,7 @@ if (is_post() && req('action') === 'add') {
     $product_id = (int)req('product_id');
     $quantity = sanitize_qty(req('quantity', 1));
 
-    $product = $_db->prepare('SELECT * FROM product WHERE product_id = ?');
+    $product = $_db->prepare('SELECT * FROM product WHERE product_id = ? AND is_active = 1');
     $product->execute([$product_id]);
     $product = $product->fetch();
 
@@ -62,7 +62,7 @@ if (is_post() && req('action') === 'add') {
 }
 
 // show product list
-$products = $_db->query('SELECT * FROM product')->fetchAll();
+$products = $_db->query('SELECT * FROM product WHERE is_active = 1')->fetchAll();
 ?>
 
 <div class="title">

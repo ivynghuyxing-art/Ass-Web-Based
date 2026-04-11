@@ -13,7 +13,7 @@ if (!$product_id) {
 }
 
 // Fetch product details
-$product = $_db->prepare('SELECT p.*, c.category_name FROM product p JOIN category c ON p.category_id = c.category_id WHERE p.product_id = ?');
+$product = $_db->prepare('SELECT p.*, c.category_name FROM product p JOIN category c ON p.category_id = c.category_id WHERE p.product_id = ? AND p.is_active = 1');
 $product->execute([$product_id]);
 $product = $product->fetch();
 

@@ -189,6 +189,12 @@ function get_mail() {
     return $m;
 }
 
+$malaysia_states = [
+    'Johor','Kedah','Kelantan','Melaka','Negeri Sembilan',
+    'Pahang','Perak','Perlis','Pulau Pinang','Sabah',
+    'Sarawak','Selangor','Terengganu','Kuala Lumpur','Labuan','Putrajaya'
+];
+
 
 $_db = new PDO('mysql:dbname=stationary_shop', 'root', '', [
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,

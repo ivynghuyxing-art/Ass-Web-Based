@@ -1293,6 +1293,16 @@ label.upload img {
     min-height: 360px;
 }
 
+.chart-container {
+    min-height: 320px;
+    position: relative;
+}
+
+.chart-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
 .chart-placeholder {
     height: 260px;
     border-radius: 20px;

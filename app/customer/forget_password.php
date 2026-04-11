@@ -31,8 +31,7 @@ if(is_post()){
             $mail->Body = "Click the link to reset your password:\n$link\n\nLink expires in 1 hour.";
             $mail->send();
         }
-
-        // 不管email存不存在都显示同样的信息（安全做法）
+        
         temp('info', 'Reset link has been sent to your email.');
         redirect('/login.php');
     }

@@ -10,14 +10,14 @@ if (!isset($_SESSION['user'])) {
 
 $user_id = $_SESSION['user']->user_id;
 
-
-
 $cart = ensureCart($user_id);
 
 if (is_post()) {
     $action = req('action');
 
-    if ($action === 'update' || $action === 'checkout') {
+    if ($action === 'checkout') {
+        $selected_items = req('selected_items', []);
+
         foreach (req('quantity', []) as $id => $qty) {
             $qty = (int)$qty;
             if ($qty < 1) $qty = 1;
@@ -31,13 +31,13 @@ if (is_post()) {
             $_db->prepare('UPDATE cart_item SET quantity = ?, price = ? WHERE cart_item_id = ?')->execute([$qty, $qty * $item->product_price, $id]);
         }
         recalcCart($cart->cart_id);
-        
-        if ($action === 'checkout') {
-            redirect('/customer/checkout.php');
-        } else {
-            temp('info', 'Cart updated');
+
+        if (empty($selected_items)) {
+            temp('info', 'Please select at least one item to checkout.');
             redirect('/customer/cart.php');
         }
+        $_SESSION['checkout_items'] = $selected_items;
+        redirect('/customer/checkout.php');
     }
 
     if ($action === 'remove') {
@@ -60,13 +60,14 @@ $items = $items->fetchAll();
 
 <section class="cart-page">
     <?php if ($items): ?>
-        <form method="post">
-            <input type="hidden" name="action" id="cart-action" value="update">
+        <form method="post" id="cart-form">
+            <input type="hidden" name="action" id="cart-action" value="checkout">
             <input type="hidden" id="remove-item-id" name="cart_item_id" value="">
+
             <table class="cart-table">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th><input type="checkbox" id="select-all"> All</th>
                         <th>Product</th>
                         <th>Unit Price</th>
                         <th>Quantity</th>
@@ -78,17 +79,30 @@ $items = $items->fetchAll();
                     <?php foreach ($items as $item): ?>
                         <tr>
                             <td>
-                                <input type="checkbox" class="select-item" data-price="<?= $item->price ?>" data-unit-price="<?= $item->unit_price ?>" data-cart-item-id="<?= $item->cart_item_id ?>">
+                                <input type="checkbox"
+                                       class="select-item"
+                                       name="selected_items[]"
+                                       value="<?= $item->cart_item_id ?>"
+                                       data-unit-price="<?= $item->unit_price ?>"
+                                       data-cart-item-id="<?= $item->cart_item_id ?>">
                             </td>
                             <td>
                                 <img src="../product_img/<?= ($item->image) ?>" alt="<?= ($item->product_name) ?>" width="70" style="margin-right:10px;vertical-align:middle;">
-                                <?=($item->product_name) ?>
+                                <?= ($item->product_name) ?>
                             </td>
-                            <td>RM <?= number_format($item->unit_price,2) ?></td>
-                            <td><input type="number" name="quantity[<?= $item->cart_item_id ?>]" value="<?= $item->quantity ?>" min="1" max="<?= $item->stock_quantity ?>"></td>
+                            <td>RM <?= number_format($item->unit_price, 2) ?></td>
+                            <td>
+                                <input type="number"
+                                       name="quantity[<?= $item->cart_item_id ?>]"
+                                       value="<?= $item->quantity ?>"
+                                       min="1"
+                                       max="<?= $item->stock_quantity ?>"
+                                       class="qty-input"
+                                       data-cart-item-id="<?= $item->cart_item_id ?>">
+                            </td>
                             <td></td>
                             <td>
-                                <button type="button" class="btn-remove" 
+                                <button type="button" class="btn-remove"
                                     onclick="
                                         document.getElementById('remove-item-id').value='<?= $item->cart_item_id ?>';
                                         document.getElementById('cart-action').value='remove';
@@ -101,26 +115,34 @@ $items = $items->fetchAll();
                     <?php endforeach; ?>
                 </tbody>
             </table>
-            <div class="cart-actions">
-                <button type="submit" name="action" value="checkout" class="btn-success">
+
+        
+            <div class="cart-summary-bar">
+                <div class="cart-summary-info">
+        
+                    <div class="summary-divider"></div>
+                    <div class="summary-block">
+                        <span class="summary-label">Total Items</span>
+                        <span class="summary-value" id="selected-count">0</span>
+                    </div>
+                    
+                    <div class="summary-divider"></div>
+                    <div class="summary-block highlight">
+                        <span class="summary-label">Total Price</span>
+                        <span class="summary-value" id="selected-total-display">RM 0.00</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-success" onclick="handleCheckout()">
                     Proceed to Checkout
                 </button>
             </div>
-        </form>
 
-        <div class="cart-summary">
-            <h3>Summary</h3>
-            <p>Selected items: <strong id="selected-count">0</strong></p>
-            <p>Selected total: <strong>RM <span id="selected-total">0.00</span></strong></p>
-            <hr>
-            <p>Total items: <?= $cart->total_quantity ?></p>
-            <p>Total price: RM <?= number_format($cart->total_price,2) ?></p>
-        </div>
+        </form>
 
     <?php else: ?>
         <div class="empty-cart">
-            <p>Your cart is empty. </p>
-                <a href="../product/viewproduct.php">Browse products</a>
+            <p>Your cart is empty.</p>
+            <a href="../product/viewproduct.php">Browse products</a>
         </div>
     <?php endif; ?>
 </section>

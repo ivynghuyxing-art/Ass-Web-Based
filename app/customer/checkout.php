@@ -14,16 +14,42 @@ $cart = $_db->prepare('SELECT c.*, COALESCE(SUM(ci.quantity),0) AS item_qty FROM
 $cart->execute([$user_id]);
 $cart = $cart->fetch();
 
-$items = [];
-if ($cart && $cart->item_qty > 0) {
-    $items = $_db->prepare('SELECT ci.*, p.product_name, p.price AS unit_price, p.image FROM cart_item ci JOIN product p ON ci.product_id = p.product_id WHERE ci.cart_id = ?');
-    $items->execute([$cart->cart_id]);
-    $items = $items->fetchAll();
+
+$selected_items = $_SESSION['checkout_items'] ?? [];
+
+if (empty($selected_items)) {
+    temp('info', 'No items selected. Please select items to checkout.');
+    redirect('/customer/cart.php');
 }
 
 if (!$cart || $cart->item_qty == 0) {
     temp('info', 'Your cart is empty. Please add products before checkout.');
     redirect('/product/viewproduct.php');
+}
+
+$placeholders = implode(',', array_fill(0, count($selected_items), '?'));
+$params       = array_merge($selected_items, [$cart->cart_id]);
+
+$items = $_db->prepare("
+    SELECT ci.*, p.product_name, p.price AS unit_price, p.image
+    FROM cart_item ci
+    JOIN product p ON ci.product_id = p.product_id
+    WHERE ci.cart_item_id IN ($placeholders)
+      AND ci.cart_id = ?
+      AND p.is_active = 1
+");
+$items->execute($params);
+$items = $items->fetchAll();
+
+if (empty($items)) {
+    temp('info', 'Selected items are no longer available.');
+    redirect('/customer/cart.php');
+}
+
+
+$selected_subtotal = 0;
+foreach ($items as $item) {
+    $selected_subtotal += $item->unit_price * $item->quantity;
 }
 
 $shipping_fee    = 5.00;
@@ -39,12 +65,12 @@ if (isset($_SESSION['applied_voucher'])) {
     $v = $v->fetch();
     if ($v) {
         $voucher         = $v;
-        $discount_amount = min($v->discount_amount, $cart->total_price);
+        $discount_amount = min($v->discount_amount, $selected_subtotal);
         $voucher_msg     = 'Voucher applied: -RM ' . number_format($discount_amount, 2);
     }
 }
 
-$grand_total = $cart->total_price + $shipping_fee - $discount_amount;
+$grand_total = $selected_subtotal + $shipping_fee - $discount_amount;
 
 if (is_post()) {
     $action = req('action');
@@ -68,17 +94,17 @@ if (is_post()) {
                 $voucher_error = 'This voucher has expired.';
             } else if ($v->usage_limit !== null && $v->usage_count >= $v->usage_limit) {
                 $voucher_error = 'This voucher has reached its usage limit.';
-            } else if ($cart->total_price < $v->minimum_purchase_amount) {
+            } else if ($selected_subtotal < $v->minimum_purchase_amount) {
                 $voucher_error = 'Minimum purchase of RM ' . number_format($v->minimum_purchase_amount, 2) . ' required.';
             } else {
                 $voucher          = $v;
-                $discount_amount  = min($v->discount_amount, $cart->total_price);
+                $discount_amount  = min($v->discount_amount, $selected_subtotal);
                 $voucher_msg      = 'Voucher applied: -RM ' . number_format($discount_amount, 2);
                 $_SESSION['applied_voucher'] = $code;
             }
         }
 
-        $grand_total = $cart->total_price + $shipping_fee - $discount_amount;
+        $grand_total = $selected_subtotal + $shipping_fee - $discount_amount;
     }
 
     // ── REMOVE VOUCHER ──
@@ -130,19 +156,28 @@ if (is_post()) {
             $orders_id      = $_db->query('SELECT COALESCE(MAX(orders_id),0) + 1 FROM orders')->fetchColumn();
             $orders_item_id = $_db->query('SELECT COALESCE(MAX(orders_item_id),0) + 1 FROM orders_item')->fetchColumn();
 
-            // Insert order with status = Pending (payment not done yet)
+            // Insert order with status = Pending
             $_db->prepare('INSERT INTO orders (orders_id, user_id, total_price, order_date, status, shipping_fee, recipient_name, phone, address_line1, address_line2, postal_code, city, state, voucher_code, discount_amount) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
                 ->execute([$orders_id, $user_id, $grand_total, date('Y-m-d'), 'Pending', $shipping_fee,
                            $recipient_name, $phone, $address_line1, $address_line2, $postal_code, $city, $state,
                            $voucher_code, $discount_amount]);
 
+          
             foreach ($items as $item) {
                 $_db->prepare('INSERT INTO orders_item (orders_item_id, orders_id, product_id, price, quantity) VALUES (?,?,?,?,?)')
                     ->execute([$orders_item_id++, $orders_id, $item->product_id, $item->unit_price, $item->quantity]);
 
+                // update stock
                 $_db->prepare('UPDATE product SET stock_quantity = stock_quantity - ? WHERE product_id = ?')
                     ->execute([$item->quantity, $item->product_id]);
+
+               
+                $_db->prepare('DELETE FROM cart_item WHERE cart_item_id = ? AND cart_id = ?')
+                    ->execute([$item->cart_item_id, $cart->cart_id]);
             }
+
+            
+            recalcCart($cart->cart_id);
 
             // Update voucher usage count
             if ($voucher) {
@@ -150,26 +185,23 @@ if (is_post()) {
                     ->execute([$voucher->voucher_id]);
             }
 
-            // Clear cart
-            $_db->prepare('DELETE FROM cart_item WHERE cart_id = ?')->execute([$cart->cart_id]);
-            $_db->prepare('UPDATE cart SET total_price=0, total_quantity=0 WHERE cart_id = ?')->execute([$cart->cart_id]);
-
+            unset($_SESSION['checkout_items']);
             unset($_SESSION['applied_voucher']);
 
             // Redirect to fake payment page
             redirect('/customer/payment.php?orders_id=' . $orders_id);
         }
-    }       
+    }
 }
 ?>
 <!DOCTYPE html>
-<html lang ="en">
+<html lang="en">
 <head>
-    <meta charset ="UTF-8">
-    <meta name="viewport" content= "width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $title ?? 'Untitled' ?></title>
-    <link rel = "shortcut icon" href="/images/favicon.png">
-    <link rel = "stylesheet" href="/css/app.css">
+    <link rel="shortcut icon" href="/images/favicon.png">
+    <link rel="stylesheet" href="/css/app.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="/js/app.js"></script>
 </head>
@@ -311,6 +343,7 @@ if (is_post()) {
         </div>
 
         <!-- Order Summary -->
+        <!-- ✅ 只显示选中的 items，count() 也只显示选中数量 -->
         <div class="checkout-panel">
             <h3>Order Summary (<?= count($items) ?>)</h3>
 
@@ -330,7 +363,8 @@ if (is_post()) {
             <div class="summary-totals">
                 <div class="total-row">
                     <span>Subtotal</span>
-                    <span>RM <?= number_format($cart->total_price, 2) ?></span>
+                    <!-- ✅ 用 selected_subtotal，不用 cart->total_price -->
+                    <span>RM <?= number_format($selected_subtotal, 2) ?></span>
                 </div>
                 <div class="total-row">
                     <span>Shipping</span>

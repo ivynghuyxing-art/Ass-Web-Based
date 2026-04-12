@@ -49,7 +49,7 @@ if (is_post() && req('action') === 'add_voucher') {
         temp('info', 'Voucher added successfully!');
         redirect('admin_panel.php?page=vouchers');
     }
-} // 👈 这是修复的关键：闭合 add_voucher 的 if 语句
+} 
 
 if (is_post() && req('action') === 'edit_voucher') {
     $voucher_id = req('voucher_id');

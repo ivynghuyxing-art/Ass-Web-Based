@@ -92,8 +92,8 @@ $displayPhoto = $photo ? '/photo/' . $photo : '/images/favicon.png';
                     <span><?= encode($admin->user_id) ?></span>
                 </div>
                 <div>
-                    <strong>Joined</strong>
-                    <span><?= encode($admin->created_at ?? 'N/A') ?></span>
+                    <strong>Gender</strong>
+                    <span><?= encode($admin->gender ?? 'N/A') ?></span>
                 </div>
             </div>
         </div>

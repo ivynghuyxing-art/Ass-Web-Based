@@ -21,13 +21,16 @@
             $u = $stm->fetch();
 
             if ($u) {
-                if($u->valid == 0 || $u->email_verified == 0){
+                if ($u->valid == 0){
+                    $_err['login'] = 'Your account has been blocked. Please contact support.';
+                }
+                else if($u->email_verified == 0){
                     $_SESSION['verify_user_id'] = $u->user_id;
                     $_SESSION['verify_email'] = $u->email;
                     temp('info', 'Please verify your email first.');
                     redirect('verify_email.php');
                 }
-
+                else {
                 $_SESSION['user'] = $u;
                 temp('info', 'Welcome, ' . $u->name);
 
@@ -36,6 +39,7 @@
                     redirect('/admin/admin_panel.php');
                 } else {
                     redirect('/customer/home.php');
+                }
                 }
             } else {
                 $_err['login'] = 'Invalid email or password';

@@ -1,50 +1,99 @@
 <?php
 include_once('../_base.php');
 
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = $_POST['action'] ?? null;
+    $user_id = $_POST['user_id'] ?? null;
+
+    if ($user_id && $action) {
+        try {
+            if ($action === 'block') {
+                $stmt = $_db->prepare("UPDATE user SET valid = 0 WHERE user_id = ?");
+                $_SESSION['message'] = "User ID $user_id has been blocked.";
+            } else {
+                $stmt = $_db->prepare("UPDATE user SET valid = 1 WHERE user_id = ?");
+                $_SESSION['message'] = "User ID $user_id has been unblocked.";
+            }
+
+            $stmt->execute([$user_id]);
+
+            header("Location: admin_panel.php?page=users");
+            exit();
+        } catch (PDOException $e) {
+            $_SESSION['message'] = "Database error: " . $e->getMessage();
+            header("Location: admin_panel.php?page=users");
+            exit();
+        }
+    }
+}
+
 try {
     $stmt = $_db->query("SELECT user_id, name, email, role, valid FROM user WHERE role = 'customer'");
     $users = $stmt ? $stmt->fetchAll() : [];
 } catch (PDOException $e) {
-    echo "<p style='color:red'>Database error: " . $e->getMessage() . "</p>";
+    $error = "Database error: " . $e->getMessage();
     $users = [];
 }
 ?>
 
+<?php if (isset($_SESSION['message'])): ?>
+    <div style="padding: 10px; margin: 10px 0; background: #e8f5e9; border-left: 4px solid #4caf50;">
+        <?= htmlspecialchars($_SESSION['message']) ?>
+    </div>
+    <?php unset($_SESSION['message']); ?>
+<?php endif; ?>
+
 <div class="dashboard-section">
   <h2>👥 User Accounts</h2>
   <p class="muted">Manage User Account</p>
+
+  <div id="messageBox" class="alert" style="display: none;"></div>
   
   <table class="styled-table">
     <thead>
       <tr>
-        <th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Action</th>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Status</th>
+        <th>Action</th>
       </tr>
     </thead>
     <tbody>
-      <?php foreach($users as $user): ?>
-      <tr>
-        <td><?= $user->user_id ?></td>
-        <td><?= $user->name ?></td>
-        <td><?= $user->email ?></td>
-        <td>
-          <span class="badge <?= $user->role ?>">
-            <?= ucfirst($user->role) ?>
-          </span>
-        </td>
-        <td>
-          <span class="status <?= $user->valid ? 'active' : 'inactive' ?>">
-            <?= $user->valid ? 'Active' : 'Inactive' ?>
-          </span>
-        </td>
-        <td>
-          <?php if ($user->valid): ?>
-          <a href="block_user.php?id=<?= $user->user_id ?>" class="btn danger">🚫 Block</a>
-           <?php else: ?>
-           <a href="unblock_user.php?id=<?= $user->user_id ?>" class="btn">✅ Unblock</a>
-           <?php endif; ?>
-        </td>
-      </tr>
-      <?php endforeach; ?>
-    </tbody>
-  </table>
+            <?php foreach($users as $user): ?>
+            <tr>
+                <td><?= htmlspecialchars($user->user_id) ?></td>
+                <td><?= htmlspecialchars($user->name) ?></td>
+                <td><?= htmlspecialchars($user->email) ?></td>
+                <td>
+                    <span class="badge <?= $user->role ?>">
+                        <?= ucfirst($user->role) ?>
+                    </span>
+                </td>
+                <td>
+                    <span class="status <?= $user->valid ? 'active' : 'inactive' ?>">
+                        <?= $user->valid ? 'Active' : 'Inactive' ?>
+                    </span>
+                </td>
+                <td>
+                    <?php if ($user->valid): ?>
+                        <form method="post" style="display:inline;" onsubmit="return confirm('Do you want to block this user？')">
+                            <input type="hidden" name="action" value="block">
+                            <input type="hidden" name="user_id" value="<?= $user->user_id ?>">
+                            <button type="submit" class="btn danger">🚫 Block</button>
+                        </form>
+                    <?php else: ?>
+                        <form method="post" style="display:inline;" onsubmit="return confirm('Do you want to unblock this user？')">
+                            <input type="hidden" name="action" value="unblock">
+                            <input type="hidden" name="user_id" value="<?= $user->user_id ?>">
+                            <button type="submit" class="btn success">✅ Unblock</button>
+                        </form>
+                    <?php endif; ?>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
 </div>

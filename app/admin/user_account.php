@@ -2,7 +2,7 @@
 include_once('../_base.php');
 
 try {
-    $stmt = $_db->query("SELECT user_id, name, email, role, valid FROM user");
+    $stmt = $_db->query("SELECT user_id, name, email, role, valid FROM user WHERE role = 'customer'");
     $users = $stmt ? $stmt->fetchAll() : [];
 } catch (PDOException $e) {
     echo "<p style='color:red'>Database error: " . $e->getMessage() . "</p>";
@@ -37,8 +37,11 @@ try {
           </span>
         </td>
         <td>
-          <a href="edit_user.php?id=<?= $user->user_id ?>" class="btn">✏️ Edit</a>
-          <a href="delete_user.php?id=<?= $user->user_id ?>" class="btn danger">🗑️ Delete</a>
+          <?php if ($user->valid): ?>
+          <a href="block_user.php?id=<?= $user->user_id ?>" class="btn danger">🚫 Block</a>
+           <?php else: ?>
+           <a href="unblock_user.php?id=<?= $user->user_id ?>" class="btn">✅ Unblock</a>
+           <?php endif; ?>
         </td>
       </tr>
       <?php endforeach; ?>

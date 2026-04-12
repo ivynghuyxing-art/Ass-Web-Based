@@ -1,3 +1,14 @@
+// ✅ 全局函数，onclick="handleCheckout()" 才能调用到
+function handleCheckout() {
+    const checked = document.querySelectorAll('.select-item:checked');
+    if (checked.length === 0) {
+        alert('Please select at least one item to checkout.');
+        return;
+    }
+    document.getElementById('cart-action').value = 'checkout';
+    document.getElementById('cart-form').submit();
+}
+
 $(() => {
 
     // Photo preview
@@ -16,16 +27,16 @@ $(() => {
             img.src = img.dataset.src;
             e.target.value = '';
         }
-        });
+    });
 
-        // admin.js
+    // admin.js
     window.addEventListener('DOMContentLoaded', () => {
         const userBtn = document.getElementById("user-btn");
         const profile = document.querySelector(".profile");
 
         if (userBtn && profile) {
             userBtn.onclick = () => {
-            profile.classList.toggle("active");
+                profile.classList.toggle("active");
             }
         }
     });
@@ -101,57 +112,57 @@ $(() => {
         // Auto slide
         setInterval(nextSlide, 5000);
     }
-    
+
+    // ✅ Cart selection summary
     function initCartSelectionSummary() {
-        const selectAll = document.getElementById('select-all');
+        const selectAll      = document.getElementById('select-all');
         const itemCheckboxes = Array.from(document.querySelectorAll('.select-item'));
-        const quantityInputs = Array.from(document.querySelectorAll('input[type="number"][name^="quantity"]'));
+        const quantityInputs = Array.from(document.querySelectorAll('.qty-input'));
         const selectedCountEl = document.getElementById('selected-count');
-        const selectedTotalEl = document.getElementById('selected-total');
+        const selectedTotalEl = document.getElementById('selected-total-display'); // ✅ 新 ID
 
-        if (!selectAll && itemCheckboxes.length === 0) return;
+        if (itemCheckboxes.length === 0) return;
 
-        function updateSelectedSummary() {
+        function updateSummary() {
             let count = 0;
             let total = 0;
 
-            itemCheckboxes.forEach(checkbox => {
-                const row = checkbox.closest('tr');
-                const quantityInput = row?.querySelector('input[type="number"][name^="quantity"]');
-                const unitPrice = parseFloat(checkbox.dataset.unitPrice || checkbox.dataset.price) || 0;
-                const quantity = Number(quantityInput?.value) || 0;
-                const lineTotal = unitPrice * quantity;
-
-                if (checkbox.checked) {
-                    count += 1;
-                    total += lineTotal;
-                }
+            itemCheckboxes.forEach(cb => {
+                if (!cb.checked) return;
+                const cartItemId = cb.dataset.cartItemId;
+                const unitPrice  = parseFloat(cb.dataset.unitPrice) || 0;
+                const qtyInput   = document.querySelector(`.qty-input[data-cart-item-id="${cartItemId}"]`);
+                const qty        = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
+                count++;
+                total += unitPrice * qty;
             });
 
             if (selectedCountEl) selectedCountEl.textContent = count;
-            if (selectedTotalEl) selectedTotalEl.textContent = total.toFixed(2);
+            if (selectedTotalEl) selectedTotalEl.textContent = 'RM ' + total.toFixed(2);
+
+            // 全选 checkbox 状态
+            if (selectAll) {
+                selectAll.checked       = itemCheckboxes.length > 0 && itemCheckboxes.every(cb => cb.checked);
+                selectAll.indeterminate = itemCheckboxes.some(cb => cb.checked) && !itemCheckboxes.every(cb => cb.checked);
+            }
         }
 
-        itemCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function () {
-                if (!checkbox.checked && selectAll) {
-                    selectAll.checked = false;
-                }
-                if (checkbox.checked && selectAll) {
-                    selectAll.checked = itemCheckboxes.every(item => item.checked);
-                }
-                updateSelectedSummary();
-            });
+        // 全选
+        selectAll?.addEventListener('change', function () {
+            itemCheckboxes.forEach(cb => cb.checked = this.checked);
+            updateSummary();
         });
 
-        quantityInputs.forEach(input => input.addEventListener('input', updateSelectedSummary));
+        itemCheckboxes.forEach(cb => cb.addEventListener('change', updateSummary));
+        quantityInputs.forEach(input => input.addEventListener('input', updateSummary));
 
-        updateSelectedSummary();
+        updateSummary();
     }
 
-    initCartSelectionSummary();});
+    initCartSelectionSummary();
+});
 
-    $(document).ready(function () {
+$(document).ready(function () {
     // 点击头像开关 dropdown
     $('.user-photo-dropdown img').on('click', function (e) {
         e.stopPropagation();

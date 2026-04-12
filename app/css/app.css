@@ -2372,30 +2372,3 @@ label.upload img {
     width:95%;
     border-top: 1px solid rgb(186, 181, 181);
 }
-
-.pager {
-    display: flex;
-    gap: 4px;
-    margin-top: 20px;
-    justify-content: center;
-}
-
-.pager a {
-    padding: 8px 14px;
-    background-color: white;
-    color: black;
-    text-decoration: none;
-    border-radius: 4px;
-}
-
-.pager a:hover {
-    background-color: lightgrey;
-}
-
-.pager a.active {
-    background-color: white;
-    font-weight: bold;
-}
-.pager a.active:hover{
-    background-color:lightgrey;
-}

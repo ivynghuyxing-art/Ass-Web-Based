@@ -26,7 +26,9 @@ $fetch_profile = $_SESSION['user'];
     <div class="right">
         <a href="admin_panel.php?page=dashboard" class="<?= $page === 'dashboard' ? 'active' : '' ?>">Dashboard 📈</a>
         <a href="admin_panel.php?page=profile" class="<?= $page === 'profile' ? 'active' : '' ?>">Profile 👤</a>
+        <a href="admin_panel.php?page=orders" class="<?= $page === 'orders' ? 'active' : '' ?>">Orders 📦</a>
         <a href="admin_panel.php?page=products" class="<?= in_array($page, ['products', 'product', 'add_product']) ? 'active' : '' ?>">Products 🛒</a>
+        <a href="admin_panel.php?page=users" class="<?= $page === 'users' ? 'active' : '' ?>">Users 👥</a>
     </div>
     <div class="logout-btn">
         <a href="admin_logout.php">Logout</a>

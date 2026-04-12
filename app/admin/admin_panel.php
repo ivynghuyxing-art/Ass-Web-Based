@@ -36,6 +36,10 @@ switch($page){
         include 'admin_profile.php';
         break;
 
+    case 'orders':
+        include __DIR__ . '/order.php';
+        break;
+
     case 'orders_pending':
         echo "<h2>Pending Orders</h2>";
         break;
@@ -51,7 +55,7 @@ switch($page){
     case 'logout':
         include'admin_logout.php';
         break;
-
+    
     default:
     echo "Page not found!";
 }?>

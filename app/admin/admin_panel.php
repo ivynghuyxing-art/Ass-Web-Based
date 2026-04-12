@@ -36,6 +36,10 @@ switch($page){
         include 'admin_profile.php';
         break;
 
+    case 'vouchers':
+        include __DIR__ . '/admin_voucher.php';
+        break;
+
     case 'orders':
         include __DIR__ . '/order.php';
         break;

@@ -22,10 +22,14 @@ if (!$product) {
     redirect('/customer/home.php');
 }
 
-// Handle add to cart
+// Handle add to cart and buy now
 if (is_post() && (req('add') || req('buy_now') )) {
     if (!isset($_SESSION['user'])) {
-        temp('info', 'Please login to add to cart');
+        if(req('buy_now')){
+        temp('info', 'Please login to buy');
+        }else{
+            temp('info','Please login to add to cart');
+        }
         redirect('../login.php');
     }
 

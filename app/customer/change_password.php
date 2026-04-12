@@ -34,7 +34,7 @@ if (is_post()) {
             ->execute([$new, $user->user_id]);
 
         temp('info', 'Password updated!');
-        redirect('/customer/customer_profile.php');
+        redirect('/customer/home.php');
     }
 }
 ?>

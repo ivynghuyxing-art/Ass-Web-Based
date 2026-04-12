@@ -60,9 +60,11 @@ if (is_post() && req('action') === 'add') {
     temp('info', 'Added to cart');
     redirect('viewproduct.php');
 }
+require_once'../lib/SimplePager.php';
+$page = req('page',1);
+$pager = new SimplePager('SELECT * FROM product WHERE is_active=1',[],'12',$page);
+$products = $pager->result;
 
-// show product list
-$products = $_db->query('SELECT * FROM product WHERE is_active = 1')->fetchAll();
 ?>
 
 <div class="title">
@@ -90,6 +92,7 @@ $products = $_db->query('SELECT * FROM product WHERE is_active = 1')->fetchAll()
             </div>
         <?php endforeach; ?>
     </div>
+<?=$pager->html()?>
 </section>
 
 <?php include '../_foot.php'; ?>

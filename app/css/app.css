@@ -2372,3 +2372,74 @@ label.upload img {
     width:95%;
     border-top: 1px solid rgb(186, 181, 181);
 }
+
+/* =========================================
+    Manage User Account
+   ========================================= */
+   .styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.styled-table th {
+  background: darkred;
+  color: #fff;
+  padding: 12px;
+  text-align: left;
+}
+
+.styled-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.styled-table tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+.status.active {
+  color: green;
+  font-weight: bold;
+}
+
+.status.inactive {
+  color: red;
+  font-weight: bold;
+}
+
+.badge.admin {
+  background: #f44336;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.badge.customer {
+  background: #2196f3;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.btn {
+  padding: 6px 12px;
+  background: darkred;
+  color: white;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 13px;
+  margin-right: 6px;
+}
+
+.btn:hover {
+  background: rgb(173,8,8);
+}
+
+.btn.danger {
+  background: #b91c1c;
+}

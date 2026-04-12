@@ -2871,3 +2871,9 @@ label.upload img {
     height: 100%;
     transition: width 0.3s;
 }
+.orders-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 20px;
+}

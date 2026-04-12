@@ -14,7 +14,6 @@ $cart = $_db->prepare('SELECT c.*, COALESCE(SUM(ci.quantity),0) AS item_qty FROM
 $cart->execute([$user_id]);
 $cart = $cart->fetch();
 
-
 $selected_items = $_SESSION['checkout_items'] ?? [];
 
 if (empty($selected_items)) {
@@ -46,7 +45,6 @@ if (empty($items)) {
     redirect('/customer/cart.php');
 }
 
-
 $selected_subtotal = 0;
 foreach ($items as $item) {
     $selected_subtotal += $item->unit_price * $item->quantity;
@@ -57,6 +55,15 @@ $discount_amount = 0;
 $voucher         = null;
 $voucher_msg     = '';
 $voucher_error   = '';
+
+// ── 提前读取地址资料（POST 或空值），保证回填 ──
+$recipient_name = trim(req('recipient_name', ''));
+$phone          = trim(req('phone', ''));
+$address_line1  = trim(req('address_line1', ''));
+$address_line2  = trim(req('address_line2', ''));
+$postal_code    = trim(req('postal_code', ''));
+$city           = trim(req('city', ''));
+$state          = trim(req('state', ''));
 
 // Restore voucher from session if already applied
 if (isset($_SESSION['applied_voucher'])) {
@@ -97,9 +104,9 @@ if (is_post()) {
             } else if ($selected_subtotal < $v->minimum_purchase_amount) {
                 $voucher_error = 'Minimum purchase of RM ' . number_format($v->minimum_purchase_amount, 2) . ' required.';
             } else {
-                $voucher          = $v;
-                $discount_amount  = min($v->discount_amount, $selected_subtotal);
-                $voucher_msg      = 'Voucher applied: -RM ' . number_format($discount_amount, 2);
+                $voucher                     = $v;
+                $discount_amount             = min($v->discount_amount, $selected_subtotal);
+                $voucher_msg                 = 'Voucher applied: -RM ' . number_format($discount_amount, 2);
                 $_SESSION['applied_voucher'] = $code;
             }
         }
@@ -108,21 +115,18 @@ if (is_post()) {
     }
 
     // ── REMOVE VOUCHER ──
+    // ✅ 不再 redirect，直接清除 session 并留在页面，地址资料通过 hidden inputs 保留
     if ($action === 'remove_voucher') {
         unset($_SESSION['applied_voucher']);
-        redirect('/customer/checkout.php');
+        $voucher         = null;
+        $discount_amount = 0;
+        $voucher_msg     = '';
+        $grand_total     = $selected_subtotal + $shipping_fee;
     }
 
     // ── PLACE ORDER ──
     if ($action === 'place_order') {
-        $recipient_name = trim(req('recipient_name'));
-        $phone          = trim(req('phone'));
-        $address_line1  = trim(req('address_line1'));
-        $address_line2  = trim(req('address_line2'));
-        $postal_code    = trim(req('postal_code'));
-        $city           = trim(req('city'));
-        $state          = trim(req('state'));
-        $voucher_code   = $voucher ? $voucher->code : null;
+        $voucher_code = $voucher ? $voucher->code : null;
 
         if (!$recipient_name) {
             $_err['recipient_name'] = 'Required';
@@ -156,30 +160,24 @@ if (is_post()) {
             $orders_id      = $_db->query('SELECT COALESCE(MAX(orders_id),0) + 1 FROM orders')->fetchColumn();
             $orders_item_id = $_db->query('SELECT COALESCE(MAX(orders_item_id),0) + 1 FROM orders_item')->fetchColumn();
 
-            // Insert order with status = Pending
             $_db->prepare('INSERT INTO orders (orders_id, user_id, total_price, order_date, status, shipping_fee, recipient_name, phone, address_line1, address_line2, postal_code, city, state, voucher_code, discount_amount) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
                 ->execute([$orders_id, $user_id, $grand_total, date('Y-m-d'), 'Pending', $shipping_fee,
                            $recipient_name, $phone, $address_line1, $address_line2, $postal_code, $city, $state,
                            $voucher_code, $discount_amount]);
 
-          
             foreach ($items as $item) {
                 $_db->prepare('INSERT INTO orders_item (orders_item_id, orders_id, product_id, price, quantity) VALUES (?,?,?,?,?)')
                     ->execute([$orders_item_id++, $orders_id, $item->product_id, $item->unit_price, $item->quantity]);
 
-                // update stock
                 $_db->prepare('UPDATE product SET stock_quantity = stock_quantity - ? WHERE product_id = ?')
                     ->execute([$item->quantity, $item->product_id]);
 
-               
                 $_db->prepare('DELETE FROM cart_item WHERE cart_item_id = ? AND cart_id = ?')
                     ->execute([$item->cart_item_id, $cart->cart_id]);
             }
 
-            
             recalcCart($cart->cart_id);
 
-            // Update voucher usage count
             if ($voucher) {
                 $_db->prepare('UPDATE voucher SET usage_count = usage_count + 1 WHERE voucher_id = ?')
                     ->execute([$voucher->voucher_id]);
@@ -188,7 +186,6 @@ if (is_post()) {
             unset($_SESSION['checkout_items']);
             unset($_SESSION['applied_voucher']);
 
-            // Redirect to fake payment page
             redirect('/customer/payment.php?orders_id=' . $orders_id);
         }
     }
@@ -216,13 +213,13 @@ if (is_post()) {
         <h2>Shipping Address</h2>
         <hr class="section-divider">
 
-        <form method="post">
+        <form method="post" id="place-order-form">
             <input type="hidden" name="action" value="place_order">
 
             <div class="form-group">
                 <label>Full Name <span class="required">*</span></label>
-                <input type="text" name="recipient_name"
-                       value="<?= encode($recipient_name ?? '') ?>"
+                <input type="text" name="recipient_name" id="f_recipient_name"
+                       value="<?= encode($recipient_name) ?>"
                        class="<?= isset($_err['recipient_name']) ? 'is-error' : '' ?>"
                        placeholder="e.g. Ahmad bin Ali">
                 <?= err('recipient_name') ?>
@@ -230,8 +227,8 @@ if (is_post()) {
 
             <div class="form-group">
                 <label>Phone <span class="required">*</span></label>
-                <input type="text" name="phone"
-                       value="<?= encode($phone ?? '') ?>"
+                <input type="text" name="phone" id="f_phone"
+                       value="<?= encode($phone) ?>"
                        class="<?= isset($_err['phone']) ? 'is-error' : '' ?>"
                        placeholder="e.g. 0123456789">
                 <?= err('phone') ?>
@@ -239,8 +236,8 @@ if (is_post()) {
 
             <div class="form-group">
                 <label>Address Line 1 <span class="required">*</span></label>
-                <input type="text" name="address_line1"
-                       value="<?= encode($address_line1 ?? '') ?>"
+                <input type="text" name="address_line1" id="f_address_line1"
+                       value="<?= encode($address_line1) ?>"
                        class="<?= isset($_err['address_line1']) ? 'is-error' : '' ?>"
                        placeholder="Street address, unit number">
                 <?= err('address_line1') ?>
@@ -248,16 +245,16 @@ if (is_post()) {
 
             <div class="form-group">
                 <label>Address Line 2</label>
-                <input type="text" name="address_line2"
-                       value="<?= encode($address_line2 ?? '') ?>"
+                <input type="text" name="address_line2" id="f_address_line2"
+                       value="<?= encode($address_line2) ?>"
                        placeholder="Apartment, suite, etc. (optional)">
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label>Postal Code <span class="required">*</span></label>
-                    <input type="text" name="postal_code"
-                           value="<?= encode($postal_code ?? '') ?>"
+                    <input type="text" name="postal_code" id="f_postal_code"
+                           value="<?= encode($postal_code) ?>"
                            class="<?= isset($_err['postal_code']) ? 'is-error' : '' ?>"
                            placeholder="e.g. 10000">
                     <?= err('postal_code') ?>
@@ -265,8 +262,8 @@ if (is_post()) {
 
                 <div class="form-group">
                     <label>City <span class="required">*</span></label>
-                    <input type="text" name="city"
-                           value="<?= encode($city ?? '') ?>"
+                    <input type="text" name="city" id="f_city"
+                           value="<?= encode($city) ?>"
                            class="<?= isset($_err['city']) ? 'is-error' : '' ?>"
                            placeholder="e.g. George Town">
                     <?= err('city') ?>
@@ -276,10 +273,10 @@ if (is_post()) {
             <div class="form-group">
                 <label>State <span class="required">*</span></label>
                 <div class="select-wrapper">
-                    <select name="state" class="<?= isset($_err['state']) ? 'is-error' : '' ?>">
+                    <select name="state" id="f_state" class="<?= isset($_err['state']) ? 'is-error' : '' ?>">
                         <option value="">Select your state</option>
                         <?php foreach ($malaysia_states as $s): ?>
-                            <option value="<?= $s ?>" <?= ($state ?? '') === $s ? 'selected' : '' ?>><?= $s ?></option>
+                            <option value="<?= $s ?>" <?= $state === $s ? 'selected' : '' ?>><?= $s ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -321,14 +318,31 @@ if (is_post()) {
             <?php if ($voucher): ?>
                 <div class="voucher-success">
                     <span><?= htmlspecialchars($voucher_msg) ?></span>
-                    <form method="post" style="display:inline;">
+                    <!-- ✅ Remove voucher: bawa balik address data -->
+                    <form method="post" style="display:inline;" id="remove-voucher-form">
                         <input type="hidden" name="action" value="remove_voucher">
+                        <input type="hidden" name="recipient_name" value="<?= encode($recipient_name) ?>">
+                        <input type="hidden" name="phone"          value="<?= encode($phone) ?>">
+                        <input type="hidden" name="address_line1"  value="<?= encode($address_line1) ?>">
+                        <input type="hidden" name="address_line2"  value="<?= encode($address_line2) ?>">
+                        <input type="hidden" name="postal_code"    value="<?= encode($postal_code) ?>">
+                        <input type="hidden" name="city"           value="<?= encode($city) ?>">
+                        <input type="hidden" name="state"          value="<?= encode($state) ?>">
                         <button type="submit" style="background:none;border:none;color:#dc2626;font-size:12px;cursor:pointer;text-decoration:underline;">Remove</button>
                     </form>
                 </div>
             <?php else: ?>
-                <form method="post">
+                <!-- ✅ Apply voucher: bawa balik address data -->
+                <form method="post" id="apply-voucher-form">
                     <input type="hidden" name="action" value="apply_voucher">
+                    <input type="hidden" name="recipient_name" value="<?= encode($recipient_name) ?>">
+                    <input type="hidden" name="phone"          value="<?= encode($phone) ?>">
+                    <input type="hidden" name="address_line1"  value="<?= encode($address_line1) ?>">
+                    <input type="hidden" name="address_line2"  value="<?= encode($address_line2) ?>">
+                    <input type="hidden" name="postal_code"    value="<?= encode($postal_code) ?>">
+                    <input type="hidden" name="city"           value="<?= encode($city) ?>">
+                    <input type="hidden" name="state"          value="<?= encode($state) ?>">
+
                     <div class="coupon-row">
                         <input type="text" name="voucher_code"
                                value="<?= htmlspecialchars(req('voucher_code', '')) ?>"
@@ -343,7 +357,6 @@ if (is_post()) {
         </div>
 
         <!-- Order Summary -->
-        <!-- ✅ 只显示选中的 items，count() 也只显示选中数量 -->
         <div class="checkout-panel">
             <h3>Order Summary (<?= count($items) ?>)</h3>
 
@@ -363,7 +376,6 @@ if (is_post()) {
             <div class="summary-totals">
                 <div class="total-row">
                     <span>Subtotal</span>
-                    <!-- ✅ 用 selected_subtotal，不用 cart->total_price -->
                     <span>RM <?= number_format($selected_subtotal, 2) ?></span>
                 </div>
                 <div class="total-row">
@@ -385,4 +397,6 @@ if (is_post()) {
 
     </div>
 </div>
+
 </body>
+</html>

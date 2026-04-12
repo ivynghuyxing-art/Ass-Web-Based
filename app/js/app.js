@@ -173,4 +173,24 @@ $(document).ready(function () {
     $(document).on('click', function () {
         $('.user-photo-dropdown').removeClass('active');
     });
+
+
+//Before submitting the Apply or Remove voucher form, sync the latest values from the left address section into the hidden input fields.
+function syncAddressToForm(form) {
+    const get = id => document.getElementById(id)?.value ?? '';
+    form.querySelector('[name=recipient_name]').value = get('f_recipient_name');
+    form.querySelector('[name=phone]').value           = get('f_phone');
+    form.querySelector('[name=address_line1]').value   = get('f_address_line1');
+    form.querySelector('[name=address_line2]').value   = get('f_address_line2');
+    form.querySelector('[name=postal_code]').value     = get('f_postal_code');
+    form.querySelector('[name=city]').value            = get('f_city');
+    form.querySelector('[name=state]').value           = get('f_state');
+}
+
+document.getElementById('apply-voucher-form')
+    ?.addEventListener('submit', function () { syncAddressToForm(this); });
+
+document.getElementById('remove-voucher-form')
+    ?.addEventListener('submit', function () { syncAddressToForm(this); });
+
 });

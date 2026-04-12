@@ -160,20 +160,24 @@ if (isset($_GET['reset_count'])) {
             
             <div class="form-row">
                 <div class="form-group">
-                    <label>Start Date</label>
-                    <input type="date" name="started_date" 
-                           value="<?= $edit_voucher->started_date ?? $started_date ?? '' ?>">
-                    <small>Leave empty for immediate activation</small>
-                </div>
-                
-                <div class="form-group">
-                    <label>Expiry Date</label>
-                    <input type="date" name="expired_date" 
-                           value="<?= $edit_voucher->expired_date ?? $expired_date ?? '' ?>">
-                    <small>Leave empty for no expiry date</small>
-                    <?php if (isset($_err['expired_date'])): ?>
-                        <div class="error-message"><?= $_err['expired_date'] ?></div>
-                    <?php endif; ?>
+                 <label>Start Date</label>
+                 <input type="date" name="started_date" 
+               value="<?= $edit_voucher->started_date ?? $started_date ?? '' ?>" 
+               min="<?= date('Y-m-d') ?>"
+               onchange="validateDates()">
+                <small>Leave empty for immediate activation</small>
+            </div>
+    
+            <div class="form-group">
+                <label>Expiry Date</label>
+                 <input type="date" name="expired_date" 
+                    value="<?= $edit_voucher->expired_date ?? $expired_date ?? '' ?>" 
+                    min="<?= date('Y-m-d') ?>"
+                     onchange="validateDates()">
+                <small>Leave empty for no expiry date</small>
+                <?php if (isset($_err['expired_date'])): ?>
+                    <div class="error-message"><?= $_err['expired_date'] ?></div>
+                <?php endif; ?>
                 </div>
             </div>
             

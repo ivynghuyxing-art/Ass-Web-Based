@@ -37,7 +37,7 @@ switch($page){
         break;
 
     case 'orders':
-        include 'view_order.php';
+        include __DIR__ . '/order.php';
         break;
 
     case 'orders_pending':

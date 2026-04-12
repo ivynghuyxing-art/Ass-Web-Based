@@ -1,7 +1,37 @@
 <?php
-require '../_base.php';
 
-// ===== 更新 Status =====
+
+if (isset($_GET['id'])) {
+
+    $id = $_GET['id'];
+
+    $stmt = $_db->prepare("SELECT * FROM orders WHERE orders_id = ?");
+    $stmt->execute([$id]);
+    $order = $stmt->fetch();
+
+    if (!$order) {
+        echo "Order not found";
+        exit;
+    }
+    ?>
+
+    <h2>Order Details</h2>
+
+    <p><b>Order ID:</b> <?= $order->orders_id ?></p>
+    <p><b>User ID:</b> <?= $order->user_id ?></p>
+    <p><b>Total:</b> RM <?= number_format($order->total_price, 2) ?></p>
+    <p><b>Status:</b> <?= $order->status ?></p>
+    <p><b>Date:</b> <?= $order->order_date ?></p>
+
+    <br>
+    <a href="admin_panel.php?page=orders">← Back</a>
+
+    <?php
+    return; 
+}
+
+
+// ===== Update status =====
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_status'])) {
     $orders_id = $_POST['orders_id'];
     $status = $_POST['status'];
@@ -13,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_status'])) {
     exit;
 }
 
+
 // ===== Search + Filter =====
 $search = $_GET['search'] ?? '';
 $status_filter = $_GET['status'] ?? '';
@@ -20,13 +51,11 @@ $status_filter = $_GET['status'] ?? '';
 $sql = "SELECT * FROM orders WHERE 1";
 $params = [];
 
-// Search
 if ($search != '') {
     $sql .= " AND orders_id LIKE ?";
     $params[] = "%$search%";
 }
 
-// Filter
 if ($status_filter != '' && $status_filter != 'All') {
     $sql .= " AND status = ?";
     $params[] = $status_filter;
@@ -41,7 +70,6 @@ $orders = $stmt->fetchAll();
 
 <h2>All Orders</h2>
 
-<!-- 🔍 Search + Filter -->
 <form method="GET">
     <input type="hidden" name="page" value="orders">
 
@@ -75,7 +103,6 @@ $orders = $stmt->fetchAll();
     <td><?= $row->user_id ?></td>
     <td>RM <?= number_format($row->total_price, 2) ?></td>
 
-    <!-- 🔥 Status Update -->
     <td>
         <form method="POST">
             <input type="hidden" name="orders_id" value="<?= $row->orders_id ?>">
@@ -92,7 +119,8 @@ $orders = $stmt->fetchAll();
     <td><?= $row->order_date ?></td>
 
     <td>
-        <a href="view_order.php?id=<?= $row->orders_id ?>">View</a>
+        <!-- ⭐ 改这里 -->
+        <a href="admin_panel.php?page=orders&id=<?= $row->orders_id ?>">View</a>
     </td>
 </tr>
 <?php endforeach; ?>

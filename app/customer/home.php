@@ -8,7 +8,7 @@
     <!-- Banner Slider -->
     <section class="banner-slider">
         <div class="slider-container">
-            <div class="slide active"><img src="/images/banner.jpg">
+            <div class="slide active"><img src="/images/banner2.jpg" style="width:100%">
             </div>
             <div class="slide" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
             </div>

@@ -76,6 +76,7 @@ if (is_post()) {
         </div>
 
         <button type="submit" class ="register-btn">Update Password</button>
+        <a href="/customer/home.php">Back To Home</a>
     </form>
 </div>
 </body>

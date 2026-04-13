@@ -3,7 +3,11 @@ require_once __DIR__ . '/../_base.php';
 
 $id = $_GET['id'] ?? null;
 
-if ($id) {
+if ($id){    
+    $stmt = $_db->prepare("DELETE FROM orders_item WHERE product_id = ?");
+    $stmt->execute([$id]);
+
+ 
     $stmt = $_db->prepare("DELETE FROM product WHERE product_id = ?");
     $stmt->execute([$id]);
 

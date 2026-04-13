@@ -1,4 +1,3 @@
-// ✅ 全局函数，onclick="handleCheckout()" 才能调用到
 function handleCheckout() {
     const checked = document.querySelectorAll('.select-item:checked');
     if (checked.length === 0) {
@@ -7,6 +6,14 @@ function handleCheckout() {
     }
     document.getElementById('cart-action').value = 'checkout';
     document.getElementById('cart-form').submit();
+}
+function toggleWishlist(btn) {
+    btn.classList.toggle('active');
+    if (btn.classList.contains('active')) {
+        btn.innerHTML = '&#9829;'; 
+    } else {
+        btn.innerHTML = '&#9825;';
+    }
 }
 
 $(() => {
@@ -173,7 +180,6 @@ $(document).ready(function () {
     $(document).on('click', function () {
         $('.user-photo-dropdown').removeClass('active');
     });
-
 
 //Before submitting the Apply or Remove voucher form, sync the latest values from the left address section into the hidden input fields.
 function syncAddressToForm(form) {

@@ -103,6 +103,7 @@ require '../customer_header.php';
             <div class="product-grid">
     <?php foreach ($products as $index => $p): ?>
         <div class="product-card<?= $index >= 4 ? ' extra-product hidden' : '' ?>">
+            <button class="wishlist-btn" onclick="toggleWishlist(this)">&#9825;</button>
             <a href="/product/product_detail.php?product_id=<?= $p->product_id ?>">
                 <div class="product-thumb-wrapper">
                     <img src="/product_img/<?= encode($p->image) ?>" alt="<?= encode($p->product_name) ?>">

@@ -3289,4 +3289,29 @@ tbody tr:nth-child(even) {
 .product-button-group button {
     width: 100%;
 }
->>>>>>> b97f85ded11bede7f9c0dd939c86b5d4fb6c588f
+
+.sidebar-user {
+    margin-top: 80px;  
+    text-align: center;
+}
+
+.sidebar-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    margin-bottom: 10px;
+}
+
+.sidebar-logout {
+    display: block;
+    color: #fff;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.sidebar-logout:hover {
+    color: #ffdede;
+}
+

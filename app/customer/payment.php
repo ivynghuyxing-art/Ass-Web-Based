@@ -2,27 +2,7 @@
 $title = 'Payment';
 $_title = '';
 include '../_base.php';
-require_once '../_base.php';
 
-$order_id = req('orders_id');
-
-// ❗ 如果没有 id，直接回去
-if (!$order_id) {
-    redirect('/customer/order_history.php');
-}
-
-// ✅ 更新 status
-$_db->prepare("
-    UPDATE orders 
-    SET status = 'Paid'
-    WHERE orders_id = ?
-")->execute([$order_id]);
-
-// 成功提示
-$_SESSION['success'] = "Payment successful!";
-
-// 跳回订单页
-redirect('/customer/order_history.php');
 if (!isset($_SESSION['user'])) {
     redirect('/login.php');
 }
@@ -51,7 +31,7 @@ if (is_post()) {
         $_db->prepare('UPDATE orders SET status = ? WHERE orders_id = ?')
             ->execute(['Paid', $orders_id]);
         temp('info', 'Payment successful! Your order has been placed.');
-        redirect('/customer/order_detail.php');
+        redirect('/customer/order.php');
     }
 
     if ($action === 'cancel') {

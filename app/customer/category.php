@@ -88,6 +88,8 @@ require '../customer_header.php';
         $stmt2->execute([$cat->category_id]);
         $products = $stmt2->fetchAll();
         $productCount = count($products);
+
+        if (empty($products)) continue; //if this categorty no product,skip this category
     ?>
 
     <section class="category-section" data-category-id="<?= $cat->category_id ?>">

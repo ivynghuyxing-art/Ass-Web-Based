@@ -111,7 +111,8 @@ NEW ARRIVAL
 $stm = $_db->prepare("
     SELECT * FROM product
     WHERE is_active=1
-    ORDER BY product_id DESC
+    AND created_at >= NOW() - INTERVAL 3 DAY
+    ORDER BY created_at DESC
     LIMIT 8
 ");
 $stm->execute();

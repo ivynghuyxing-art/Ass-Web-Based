@@ -15,8 +15,11 @@ $orders->execute([$user_id]);
 $orders = $orders->fetchAll();
 ?>
 
-<div class="title">
-    <h2>My Order</h2>
+<div class="orders-header">
+    <div class="title">
+        <h2>My Order</h2>
+    </div>
+    <a href="/customer/home.php" class="btn-back-cart">← Back to Home</a>
 </div>
 
 <section class="orders-page">

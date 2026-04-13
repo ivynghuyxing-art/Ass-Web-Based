@@ -1,19 +1,65 @@
 ﻿<?php
-require_once __DIR__ . '/../_base.php';
+
+require'../_base.php';
+
+
+if (!isset($_SESSION['user'])) {
+    die("Admin not logged in");
+}
 
 $title = 'Admin Profile';
 $admin = $_SESSION['user'];
 $photo = $admin->profile_photo ?? '';
+
+if (!empty($_POST['new_password'])) {
+
+    $current = $_POST['current_password'] ?? '';
+    $new = $_POST['new_password'] ?? '';
+    $confirm = $_POST['confirm_password'] ?? '';
+
+    $user_id = $admin->user_id;
+
+    
+    $stm = $_db->prepare('SELECT password FROM user WHERE user_id = ?');
+    $stm->execute([$user_id]);
+    $row = $stm->fetch();
+
+    $db_password = $row->password ?? '';
+
+
+    if (sha1($current) !== $db_password) {
+        $_err['password'] = "Current password incorrect!";
+    }
+    elseif ($new !== $confirm) {
+        $_err['password'] = "Passwords do not match!";
+    }
+    elseif (strlen($new) < 6) {
+        $_err['password'] = "Password must be at least 6 characters!";
+    }
+    else {
+     
+        $hashed = sha1($new);
+
+        $stm = $_db->prepare('UPDATE user SET password = ? WHERE user_id = ?');
+        $stm->execute([$hashed, $user_id]);
+
+        temp('info', 'Password updated successfully.');
+        redirect('admin_panel.php?page=profile');
+    }
+}
+
 if (is_get()) {
     $_SESSION['photo'] = $photo;
 }
 
-if (is_post()) {
+if (is_post() && empty($_POST['new_password'])) {
+
     $email = req('email');
     $name = req('name');
     $photo = $_SESSION['photo'];
     $f = get_file('photo');
 
+    // Email validation
     if ($email === '') {
         $_err['email'] = 'Required';
     } elseif (strlen($email) > 100) {
@@ -28,12 +74,14 @@ if (is_post()) {
         }
     }
 
+    // Name validation
     if ($name === '') {
         $_err['name'] = 'Required';
     } elseif (strlen($name) > 100) {
         $_err['name'] = 'Maximum 100 characters';
     }
 
+    // Photo validation
     if ($f) {
         if (!str_starts_with($f->type, 'image/')) {
             $_err['photo'] = 'Must be image';
@@ -42,6 +90,7 @@ if (is_post()) {
         }
     }
 
+    // save
     if (!$_err) {
         if ($f) {
             if ($photo && file_exists(__DIR__ . '/../photo/' . $photo)) {
@@ -53,6 +102,7 @@ if (is_post()) {
         $stm = $_db->prepare('UPDATE user SET email = ?, name = ?, profile_photo = ? WHERE user_id = ?');
         $stm->execute([$email, $name, $photo, $admin->user_id]);
 
+        // update_session
         $_SESSION['user']->email = $email;
         $_SESSION['user']->name = $name;
         $_SESSION['user']->profile_photo = $photo;
@@ -66,6 +116,7 @@ if (is_post()) {
 $email = $email ?? $admin->email;
 $name = $name ?? $admin->name;
 $displayPhoto = $photo ? '/photo/' . $photo : '/images/favicon.png';
+
 ?>
 
 <div class="profile-page">
@@ -100,33 +151,53 @@ $displayPhoto = $photo ? '/photo/' . $photo : '/images/favicon.png';
 
         <div class="profile-form">
             <form method="post" enctype="multipart/form-data">
+
                 <div class="form-group">
-                    <label for="name">Name</label>
+                    <label>Name</label>
                     <?= html_text('name', 'maxlength="100"') ?>
                     <?= err('name') ?>
                 </div>
 
                 <div class="form-group">
-                    <label for="email">Email</label>
+                    <label>Email</label>
                     <?= html_text('email', 'maxlength="100"') ?>
                     <?= err('email') ?>
                 </div>
 
+                <hr>
+                <h3>Change Password</h3>
+
+                <div class="form-group">
+                    <label>Current Password</label>
+                    <input type="password" name="current_password">
+                </div>
+
+                <div class="form-group">
+                    <label>New Password</label>
+                    <input type="password" name="new_password">
+                </div>
+
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" name="confirm_password">
+                    <?= err('password') ?>
+                </div>
+
                 <div class="form-group upload">
-                    <label for="photo">Profile Photo</label>
-                    <label class="upload" tabindex="0">
+                    <label>Profile Photo</label>
+                    <label class="upload">
                         <?= html_file('photo', 'image/*', 'hidden') ?>
-                        <img src="<?= encode($displayPhoto) ?>" alt="Profile Photo">
+                        <img src="<?= encode($displayPhoto) ?>">
                     </label>
                     <?= err('photo') ?>
-                    <small>Choose a new image (optional, max 1MB).</small>
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit">Save Profile</button>
+                    <button type="submit">Save Changes</button>
                     <button type="reset" class="reset-btn">Reset</button>
                 </div>
+
             </form>
         </div>
     </div>
-</div>
+</div>  

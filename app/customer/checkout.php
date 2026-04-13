@@ -125,6 +125,7 @@ if (is_post()) {
     }
 
     // ── PLACE ORDER ──
+    
     if ($action === 'place_order') {
         $voucher_code = $voucher ? $voucher->code : null;
 

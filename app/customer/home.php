@@ -43,6 +43,7 @@ if (!empty($products)): ?>
         <div class="product-grid">
             <?php foreach ($products as $p): ?>
                 <div class="product-card">
+                   
                     <img src="../product_img/<?= encode($p->image) ?>" alt="<?= encode($p->product_name) ?>">
                     <h3><?= encode($p->product_name) ?></h3>
                     <p>RM <?= number_format($p->price, 2) ?></p>

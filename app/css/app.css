@@ -3236,3 +3236,41 @@ tbody tr:nth-child(even) {
     transition: opacity 0.5s ease;
     z-index: 9999;
 }
+<<<<<<< HEAD
+
+.btn {
+    padding: 12px 22px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.submit-button-profile {
+    padding: 12px 22px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+/* Submit */
+.submit-button-profile[type="submit"] {
+    background: darkred;
+    color: white;
+}
+
+.submit-button-profile[type="submit"]:hover {
+    background: rgb(173, 8, 8);
+}
+
+/* Reset */
+.submit-button-profile[type="reset"] {
+    background: white;
+    color: #222;
+}
+
+.submit-button-profile[type="reset"]:hover {
+    background: #c5c5c5;
+}

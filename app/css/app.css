@@ -2971,7 +2971,7 @@ label.upload img {
     background: darkred;
     color: white;
 }
-<<<<<<< HEAD
+ HEAD
 /* =========================================
     Orders
    ========================================= */
@@ -3110,10 +3110,6 @@ tbody tr:nth-child(even) {
     text-decoration: none;
 }
 
-.view-btn:hover {
-    text-decoration: underline;
-}
-
 .sort-btn {
     margin-left: 10px;
     background: #333;
@@ -3179,7 +3175,7 @@ tbody tr:nth-child(even) {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
 }
-=======
+
 .wishlist-btn {
     position: absolute;
     top: 10px;
@@ -3202,4 +3198,37 @@ tbody tr:nth-child(even) {
 .wishlist-btn.active {
     color: darkred;
 }
->>>>>>> f0c81ad9e4b65b9559b90d6d86c53bbe11da2ee3
+.order-box {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+}
+
+.status {
+    padding: 5px 10px;
+    border-radius: 20px;
+    color: white;
+}
+
+.status.paid { background: green; }
+.status.pending { background: orange; }
+
+.sort-btn {
+    margin-left: 10px;
+    text-decoration: none;
+}
+.popup {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #444;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 16px;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+    z-index: 9999;
+}

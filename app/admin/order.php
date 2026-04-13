@@ -5,17 +5,30 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-$sort = $_GET['sort'] ?? 'DESC';
+// =====================
+// 👉 SUCCESS POPUP
+// =====================
+if (!empty($_SESSION['success'])): ?>
+<div id="popup-message" class="popup">
+    <?= $_SESSION['success'] ?>
+</div>
 
-// =====================
-// 👉 Toast 提示
-// =====================
-if (!empty($_SESSION['success'])):
-?>
-<div id="toast"><?= $_SESSION['success'] ?></div>
+<script>
+    const popup = document.getElementById("popup-message");
+
+    popup.style.display = "block";
+
+    setTimeout(() => {
+        popup.style.opacity = "0";
+        setTimeout(() => popup.remove(), 500);
+    }, 2000);
+</script>
 <?php unset($_SESSION['success']); endif; ?>
 
 <?php
+
+$sort = $_GET['sort'] ?? 'DESC';
+
 // =====================
 // 👉 VIEW ORDER DETAILS
 // =====================
@@ -23,6 +36,7 @@ if (isset($_GET['id'])) {
 
     $id = $_GET['id'];
 
+    // 👉 取订单
     $stmt = $_db->prepare("SELECT * FROM orders WHERE orders_id = ?");
     $stmt->execute([$id]);
     $order = $stmt->fetch();
@@ -31,46 +45,67 @@ if (isset($_GET['id'])) {
         echo "Order not found";
         exit;
     }
+
+    // 👉 取产品（包含图片）
+    $stmt = $_db->prepare("
+        SELECT p.product_name, p.image, oi.price, oi.quantity
+        FROM orders_item oi
+        JOIN product p ON oi.product_id = p.product_id
+        WHERE oi.orders_id = ?
+    ");
+    $stmt->execute([$id]);
+    $items = $stmt->fetchAll();
 ?>
 
 <h2>Order Details</h2>
 
-<?php
-$stmt = $_db->prepare("
-    SELECT p.product_name, p.image, oi.price, oi.quantity
-    FROM orders_item oi
-    JOIN product p ON oi.product_id = p.product_id
-    WHERE oi.orders_id = ?
-");
-$stmt->execute([$id]);
-$items = $stmt->fetchAll();
-?>
-
 <table class="admin-table">
 <tr>
-    <th>Product Image</th>
+    <th>Image</th>
     <th>Product</th>
     <th>Price</th>
-    <th>Quantity</th>
+    <th>Qty</th>
     <th>Subtotal</th>
 </tr>
 
-<?php foreach ($items as $item): 
+<?php 
+$total = 0;
+foreach ($items as $item): 
     $subtotal = $item->price * $item->quantity;
+    $total += $subtotal;
 ?>
 <tr>
-    <td><img src="../product_img/<?= $item->image ?>" width="60"></td>
+    <td>
+        <img src="../product_img/<?= $item->image ?>" 
+             width="60"
+             onerror="this.src='../product_img/default.png'">
+    </td>
+
     <td><?= $item->product_name ?></td>
+
     <td>RM <?= number_format($item->price, 2) ?></td>
+
     <td><?= $item->quantity ?></td>
+
     <td>RM <?= number_format($subtotal, 2) ?></td>
 </tr>
 <?php endforeach; ?>
 
 <tr>
-    <td colspan="3"><strong>Total</strong></td>
+    <td colspan="4"><strong>Subtotal</strong></td>
+    <td><strong>RM <?= number_format($total, 2) ?></strong></td>
+</tr>
+
+<tr>
+    <td colspan="4"><strong>Shipping Fee</strong></td>
+    <td><strong>RM <?= number_format($order->shipping_fee, 2) ?></strong></td>
+</tr>
+
+<tr>
+    <td colspan="4"><strong>Total</strong></td>
     <td><strong>RM <?= number_format($order->total_price, 2) ?></strong></td>
 </tr>
+
 </table>
 
 <br>
@@ -84,7 +119,6 @@ $items = $stmt->fetchAll();
 // 👉 UPDATE STATUS
 // =====================
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_status'])) {
-
     $orders_id = $_POST['orders_id'];
     $status = $_POST['status'];
 
@@ -123,12 +157,12 @@ $stmt->execute($params);
 $orders = $stmt->fetchAll();
 ?>
 
-<h2>All Orders</h2>
+<h2>All Orders 📦</h2>
 
 <form method="GET">
     <input type="hidden" name="page" value="orders">
 
-    <input type="text" name="search" placeholder="Search Order ID"
+    <input type="text" name="search" placeholder="Search ID"
            value="<?= htmlspecialchars($search) ?>">
 
     <select name="status">
@@ -139,9 +173,7 @@ $orders = $stmt->fetchAll();
 
     <button type="submit">Filter</button>
 
-    <!-- 排序按钮 -->
-    <a class="sort-btn"
-       href="admin_panel.php?page=orders&search=<?= urlencode($search) ?>&status=<?= urlencode($status_filter) ?>&sort=<?= $sort == 'ASC' ? 'DESC' : 'ASC' ?>">
+    <a href="admin_panel.php?page=orders&search=<?= urlencode($search) ?>&status=<?= urlencode($status_filter) ?>&sort=<?= $sort == 'ASC' ? 'DESC' : 'ASC' ?>">
         Sort: <?= $sort == 'ASC' ? 'Ascending ↑' : 'Descending ↓' ?>
     </a>
 </form>
@@ -150,7 +182,10 @@ $orders = $stmt->fetchAll();
 
 <table class="admin-table">
 <tr>
-    <th>Order ID</th>
+    <th>ID</th>
+    <th>Customer</th>
+    <th>Phone</th>
+    <th>Address</th>
     <th>Total</th>
     <th>Status</th>
     <th>Date</th>
@@ -161,12 +196,21 @@ $orders = $stmt->fetchAll();
 <tr>
     <td><?= $row->orders_id ?></td>
 
+    <td><?= $row->recipient_name ?></td>
+
+    <td><?= $row->phone ?></td>
+
+    <td>
+        <?= $row->address_line1 ?><br>
+        <?= $row->address_line2 ?><br>
+        <?= $row->postal_code ?> <?= $row->city ?>
+    </td>
+
     <td>RM <?= number_format($row->total_price, 2) ?></td>
 
     <td>
-        <form method="POST" class="action-form">
+        <form method="POST" style="display:flex; gap:5px;">
             <input type="hidden" name="orders_id" value="<?= $row->orders_id ?>">
-            <input type="hidden" name="sort" value="<?= $sort ?>">
 
             <select name="status">
                 <option value="Pending" <?= $row->status=='Pending'?'selected':'' ?>>Pending</option>
@@ -180,20 +224,11 @@ $orders = $stmt->fetchAll();
     <td><?= $row->order_date ?></td>
 
     <td>
-        <a class="view-btn"
-           href="admin_panel.php?page=orders&id=<?= $row->orders_id ?>&sort=<?= $sort ?>">
-           View
+        <a href="admin_panel.php?page=orders&id=<?= $row->orders_id ?>&sort=<?= $sort ?>">
+            View
         </a>
     </td>
 </tr>
 <?php endforeach; ?>
 
 </table>
-<script>
-const toast = document.getElementById("toast");
-
-if (toast) {
-    setTimeout(() => toast.classList.add("show"), 100);
-    setTimeout(() => toast.classList.remove("show"), 3000);
-}
-</script>

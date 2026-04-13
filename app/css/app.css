@@ -314,6 +314,7 @@ footer {
 .auth-form label {
     margin-top: 10px;
     font-size: 14px;
+    color:black;
 }
 
 .box button, .auth-form button, .register-btn, .box a.login {
@@ -1254,7 +1255,11 @@ label.upload img {
     border-radius: 14px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
-
+.profile-form section {
+    display: flex;
+    justify-content: center; 
+    gap: 10px; 
+}
 .profile-form .form-group {
     margin-bottom: 18px;
 }
@@ -1266,18 +1271,16 @@ label.upload img {
     margin-top: 22px;
 }
 
-.profile-form button,
+
 .profile-form .reset-btn {
+    background:white;
+    color: #222;
     padding: 12px 22px;
     border: none;
     border-radius: 8px;
     font-size: 15px;
     cursor: pointer;
-}
 
-.profile-form button {
-    background: darkred;
-    color: white;
 }
 
 .profile-form button:hover {
@@ -1876,7 +1879,7 @@ label.upload img {
     display: block;
     font-size: 14px;
     font-weight: 600;
-    color: #333;
+    color: black;
     margin-bottom: 7px;
 }
 
@@ -1892,7 +1895,7 @@ label.upload img {
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 14px;
-    color: #333;
+    color: black;
     background: #fff;
     box-sizing: border-box;
     transition: border-color 0.2s;
@@ -2992,4 +2995,41 @@ label.upload img {
 
 .wishlist-btn.active {
     color: darkred;
+}
+
+.btn {
+    padding: 12px 22px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.submit-button-profile {
+    padding: 12px 22px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+/* Submit */
+.submit-button-profile[type="submit"] {
+    background: darkred;
+    color: white;
+}
+
+.submit-button-profile[type="submit"]:hover {
+    background: rgb(173, 8, 8);
+}
+
+/* Reset */
+.submit-button-profile[type="reset"] {
+    background: white;
+    color: #222;
+}
+
+.submit-button-profile[type="reset"]:hover {
+    background: #c5c5c5;
 }

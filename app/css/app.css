@@ -121,6 +121,7 @@ footer {
     color: #333;
     text-decoration: none;
     font-size: 14px;
+    white-space:nowrap;
 }
 
 .dropdown-content a:hover {
@@ -645,18 +646,6 @@ label.upload img {
     color: #111827;
 }
 
-.category-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 14px;
-    background: #fde68a;
-    color: #92400e;
-    border-radius: 999px;
-    font-size: 13px;
-    font-weight: 700;
-}
-
 .no-products {
     margin: 0 20px 10px;
     padding: 24px;
@@ -850,6 +839,7 @@ label.upload img {
 
 .product-image-section, .product-image {
     flex: 1;
+    margin-top: 15px;;
 }
 
 .product-detail-image, .product-image img {
@@ -977,6 +967,12 @@ label.upload img {
     font-size: 20px;
     color: black;
     font-weight: bold;
+}
+.empty-cart a{
+    text-decoration:none;
+}
+.empty-cart a:hover{
+    text-decoration: underline;
 }
 
 .cart-table {

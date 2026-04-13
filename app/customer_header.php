@@ -36,9 +36,10 @@ $navCategories = $_db->query('SELECT * FROM category ORDER BY category_name')->f
                     <img src="/photo/<?= ($_user->profile_photo) ?>" alt="Profile Photo">
 
                     <div class="dropdown-content">
-                        <a href="/customer/customer_profile.php">Profile</a>
-                        <a href="/customer/order_history.php">Orders History</a>
-                        <a href="/customer/reset_password.php">Reset Password</a>
+                        <a href="/customer/customer_profile.php">👤 My Profile</a>
+                        <a href="/customer/order_history.php">🕰️ Orders History</a>
+                        <a href="/customer/change_password.php">🔒 Change Password</a>
+                        <a href="/customer/wishlist.php">❤️ My WishList</a>
                     </div>
                 </div>
             <?php endif; ?>
@@ -82,7 +83,7 @@ $navCategories = $_db->query('SELECT * FROM category ORDER BY category_name')->f
                 $cart_count = $stmCount->fetchColumn();
             }
             ?>
-            <a href="/customer/cart.php">🛒 (<?= $cart_count ?>)</a>
+            <a href="/customer/cart.php">🛒 (<?= $cart_count ?>)</a>     
         </div>
     </div>
 </nav>

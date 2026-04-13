@@ -130,7 +130,24 @@ if (is_post() && (req('add') || req('buy_now') )) {
                 <p class="out-of-stock-message">This product is currently out of stock</p>
             <?php endif; ?>
 
+            <?php if(isset($_user)) :?>
+                <?php
+                $inwishlist=$_db->prepare('SELECT 1 FROM wishlist WHERE user_id=? AND product_id=?');
+                $inwishlist->execute([$_user->user_id,$product_id]);
+                $inwishlist = $inwishlist->fetchColumn();
+                ?>
+
+                <form method ="post" action="/customer/wishlist_toggle.php">
+                    <input type=hidden name="product_id" value= "<?= $product_id ?>">
+                    <button type=submit class="btn-wishlist">
+                        <?= $inwishlist ? 'Remove From Wishlist' : 'Add To Wishlist' ?>
+                    </button>
+                </form>
+
+            <?php endif ?>
+
             <a href="viewproduct.php" class="btn-back">← Back to Products</a>
+
         </div>
     </div>
 </section>

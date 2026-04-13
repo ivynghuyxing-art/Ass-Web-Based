@@ -94,7 +94,6 @@ require '../customer_header.php';
         <div class="category-header">
             <div>
                 <h2><?= encode($cat->category_name) ?></h2>
-                <span class="category-badge"><?= $productCount ?> <?= $productCount === 1 ? 'item' : 'items' ?></span>
             </div>
         </div>
 

@@ -84,8 +84,6 @@ if (is_post() && (req('add') || req('buy_now') )) {
 }
 ?>
 
-
-
 <section class="product-detail">
     <div class="product-detail-container">
         

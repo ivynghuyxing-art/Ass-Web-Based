@@ -1161,7 +1161,7 @@ label.upload img {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-top: auto;
+    margin-bottom: 20px;
 }
 
 .main-content {
@@ -2944,18 +2944,17 @@ label.upload img {
 }
 
 .btn-remove {
-    width: 100%;
     padding: 8px;
-    background: darkred;
-    color: white;
-    border: 1px solid;
+    background: rgb(222, 222, 222);
+    color: black;
+    border:none;
     border-radius: 6px;
     cursor: pointer;
     font-size: 13px;
 }
 
 .btn-remove:hover {
-    background:  rgb(173,8,8);
+    background:  rgb(172, 172, 172);
 }
 
 .btn-wishlist {
@@ -3288,4 +3287,64 @@ tbody tr:nth-child(even) {
 
 .product-button-group button {
     width: 100%;
+}
+
+.order-detail-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 50px 20px;
+   
+}
+
+.order-box {
+    width: 100%;
+    max-width: 1100px;   /* 控制不要太宽 */
+
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.order-back-home a {
+    display:flex;
+    margin-top: 20px;
+    justify-content: left;
+    text-decoration: none;
+}
+.order-back-home a:hover{
+    text-decoration: underline;
+}
+
+.wishlist-add{
+    display:block;
+    padding: 10px 20px;
+    background: darkred;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin:5px auto;
+    width:100%;
+
+}
+
+.wishlist-add:hover{
+   background-color: rgb(173,8,8);
+
+}
+.wishlist-remove{
+    width: 100%;
+    padding: 8px;
+    background: rgb(193, 193, 193);
+    color: white;
+    border:none;
+    outline:none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.wishlist-remove:hover {
+    background:  rgb(169, 169, 169);
 }

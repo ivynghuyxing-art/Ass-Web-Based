@@ -65,8 +65,10 @@ $items = $items->fetchAll();
         <div class="product-grid">
             <?php foreach ($items as $item): ?>
                 <div class="wishlist-card">
+                    <a href="../product/product_detail.php?product_id=<?= $item->product_id ?>">
                     <img src="../product_img/<?= htmlspecialchars($item->image) ?>"
                          alt="<?= htmlspecialchars($item->product_name) ?>">
+                    </a>
                     <div class="wishlist-info">
                         <div class="wishlist-name"><?= htmlspecialchars($item->product_name) ?></div>
                         <div class="wishlist-price">RM <?= number_format($item->price, 2) ?></div>
@@ -79,15 +81,15 @@ $items = $items->fetchAll();
                     <div class="wishlist-actions">
                         <?php if ($item->stock_quantity > 0): ?>
                             <form method="post">
-                                <input type="hidden" name="action"     value="add_to_cart">
+                                <input type="hidden" name="action" value="add_to_cart">
                                 <input type="hidden" name="product_id" value="<?= $item->product_id ?>">
-                                <button type="submit" class="btn-success">Add to Cart</button>
+                                <button type="submit" class="wishlist-add">Add to Cart</button>
                             </form>
                         <?php endif; ?>
                         <form method="post">
-                            <input type="hidden" name="action"     value="remove">
+                            <input type="hidden" name="action" value="remove">
                             <input type="hidden" name="product_id" value="<?= $item->product_id ?>">
-                            <button type="submit" class="btn-remove" onclick="return confirm('Remove from wishlist?')">Remove</button>
+                            <button type="submit" class="wishlist-remove" onclick="return confirm('Remove from wishlist?')">Remove</button>
                         </form>
                     </div>
                 </div>

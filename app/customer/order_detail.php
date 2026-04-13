@@ -24,32 +24,37 @@ $items->execute([$order_id]);
 $items = $items->fetchAll();
 ?>
 
-<section class="order-detail-page">
-    <h2>Order #<?= $order->orders_id ?></h2>
-    <p>Date: <?= $order->order_date ?> | Status: <?= encode($order->status) ?></p>
-    <table class="cart-table">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Qty</th>
-                <th>Unit</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($items as $item): ?>
+<section class="order-detail-wrapper">
+    <div class="order-box">
+        <h2>Order #<?= $order->orders_id ?></h2>
+        <p>Date: <?= $order->order_date ?> | Status: <?= encode($order->status) ?></p>
+        <table class="cart-table">
+            <thead>
                 <tr>
-                    <td><?= encode($item->product_name) ?></td>
-                    <td><?= $item->quantity ?></td>
-                    <td>RM <?= number_format($item->price,2) ?></td>
-                    <td>RM <?= number_format($item->price * $item->quantity,2) ?></td>
+                    <th>Product</th>
+                    <th>Qty</th>
+                    <th>Unit</th>
+                    <th>Total</th>
                 </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-    <p><strong>Shipping:</strong> RM <?= number_format($order->shipping_fee,2) ?></p>
+            </thead>
+            <tbody>
+                <?php foreach ($items as $item): ?>
+                    <tr>
+                        <td><?= encode($item->product_name) ?></td>
+                        <td><?= $item->quantity ?></td>
+                        <td>RM <?= number_format($item->price,2) ?></td>
+                        <td>RM <?= number_format($item->price * $item->quantity,2) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+            <p><strong>Shipping:</strong> RM <?= number_format($order->shipping_fee,2) ?></p>
     <p><strong>Total:</strong> RM <?= number_format($order->total_price,2) ?></p>
-    <a href="/customer/order.php">Back to orders</a>
+
+   <div class = "order-back-home">
+        <a href="/customer/order.php"> ← Back To Home</a>
+    </div>
+</div>
 </section>
 
 <?php include '../_foot.php'; ?>

@@ -3255,3 +3255,37 @@ tbody tr:nth-child(even) {
     background: #c5c5c5;
 }
 
+.change-password-label{
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 6px;
+    color: #333;
+    text-align: left;
+}
+.change-password-label input {
+    margin: 0;
+}
+
+.change-password-label a {
+    display:flex;
+    margin-top: 20px;
+    justify-content: center;
+    text-decoration: none;
+}
+.change-password-label a:hover{
+    text-decoration: underline;
+}
+.product-button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.product-button-group form {
+    margin: 0;
+}
+
+.product-button-group button {
+    width: 100%;
+}

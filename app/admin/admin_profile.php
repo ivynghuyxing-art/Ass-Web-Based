@@ -1,6 +1,6 @@
 ﻿<?php
+require_once '../_base.php';
 
-require_once'../_base.php';
 
 
 if (!isset($_SESSION['user'])) {

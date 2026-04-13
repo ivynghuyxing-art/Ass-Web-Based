@@ -104,17 +104,60 @@ BANNER
     <p>Your one-stop shop for all stationary needs.</p>
 </section>
 
-<!-- =========================
-NEW ARRIVAL
-========================= -->
+
+<?php 
+$top = $_db->prepare("SELECT p.* ,SUM(oi.quantity) AS total_sold FROM orders_item oi JOIN product p on oi.product_id =p.product_id Where p.is_active =1 GROUP BY p.product_id ORDER BY total_sold DESC LIMIT 5");
+$top->execute();
+$top_product = $top->fetchAll();
+?>
+
+<!--Top 5-->
+<?php 
+if($top_product):
+?>
+<section class="featured-products">
+    <h2>Top 5 Best Sellers</h2>
+
+    <div class="product-grid">
+        <?php foreach($top_product as $index=>$p):?>
+        <div class="product-card">
+            <span class ="badge">Top <?= $index +1 ?></span>
+
+            <a href ="/product/product_detail.php?product_id=<?= $p->product_id ?>">
+                <img src ="../product_img/<?= ($p->image) ?>">
+            </a>
+
+            <h3><?= ($p->product_name)?></h3>
+            <p>RM <?= number_format($p->price, 2) ?></p>
+
+            <?php if ($p->stock_quantity > 0): ?>
+            <form method="post" class="add-cart-form">
+                <input type="hidden" name="action" value="add">
+                <input type="hidden" name="product_id" value="<?= $p->product_id ?>">
+
+                <input type="number"
+                       name="quantity"
+                       value="1"
+                       min="1"
+                       max="<?= $p->stock_quantity ?>">
+
+                <button type="submit">Add to cart</button>
+            </form>
+            <?php else: ?>
+            <p>Out of Stock</p>
+            <?php endif; ?>
+
+        </div>
+        <?php endforeach; ?>
+
+    </div>
+</section>
+<?php endif;?>
+
+<!-- New Arrical-->
+
 <?php
-$stm = $_db->prepare("
-    SELECT * FROM product
-    WHERE is_active=1
-    AND created_at >= NOW() - INTERVAL 3 DAY
-    ORDER BY created_at DESC
-    LIMIT 8
-");
+$stm = $_db->prepare("SELECT * FROM product WHERE is_active=1 AND created_at >= NOW() - INTERVAL 3 DAY ORDER BY created_at DESC LIMIT 8");
 $stm->execute();
 $products = $stm->fetchAll();
 ?>

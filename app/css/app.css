@@ -3386,3 +3386,11 @@ tbody tr:nth-child(even) {
 .wishlist-remove:hover {
     background:  rgb(169, 169, 169);
 }
+.badge{
+    position:absolute;
+    top:10px;
+    left:10px;
+    background:rgb(233, 151, 0);
+    padding:4px 8px;
+    border-radius: 5px;
+}

@@ -57,26 +57,29 @@ if (is_post()) {
     <div class ="login-title">Change Password</div>
 
     <form method="post" class ="box">
-        <div>
+        <div class="change-password-label">
             <h2>Current Password</h2>
             <input type="password" id="current" name="current" placeholder="Current Password" required>
             <?= err('current') ?>
         </div>
 
-      <div>
+      <div class="change-password-label">
             <h2>New Password</h2>
             <input type="password" id="new" name="new" placeholder="New Password" required>
             <?= err('new') ?>
         </div>
 
-        <div>
+        <div class="change-password-label">
             <h2>Confirm</h2>
             <input type="password" id="confirm" name="confirm" placeholder="Confirm New Password" required>
             <?= err('confirm') ?>
         </div>
 
         <button type="submit" class ="register-btn">Update Password</button>
-        <a href="/customer/home.php">Back To Home</a>
+        <div class = "change-password-label">
+            <a href="/customer/home.php"> ← Back To Home</a>
+        </div>
+       
     </form>
 </div>
 </body>

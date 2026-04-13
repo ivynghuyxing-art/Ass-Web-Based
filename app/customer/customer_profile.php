@@ -135,6 +135,10 @@ if (is_post()) {
         <button type="submit" class="submit-button-profile">Submit</button>
         <button type="reset" class="submit-button-profile">Reset</button>
     </section>
+
+     <div class = "change-password-label">
+            <a href="/customer/home.php"> ← Back To Home</a>
+    </div>
 </form>
 
 <?php

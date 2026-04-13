@@ -1306,7 +1306,9 @@ label.upload img {
     transform: translateY(-3px);
 }
 
-.metric-card-wide { grid-column: span 1; }
+.metric-card-wide { 
+    grid-column: span 1; 
+}
 
 .metric-label {
     color: #7f8c8d;
@@ -3272,4 +3274,25 @@ tbody tr:nth-child(even) {
 
 .submit-button-profile[type="reset"]:hover {
     background: #c5c5c5;
+}
+.change-password-label{
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 6px;
+    color: #333;
+    text-align: left;
+}
+.change-password-label input {
+    margin: 0;
+}
+
+.change-password-label a {
+    display:flex;
+    margin-top: 20px;
+    justify-content: center;
+    text-decoration: none;
+}
+.change-password-label a:hover{
+    text-decoration: underline;
 }

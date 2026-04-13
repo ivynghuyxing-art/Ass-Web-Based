@@ -1,149 +1,209 @@
 <?php
-// Fetch summary data
-$totalProducts = $_db->query("SELECT COUNT(*) FROM product")->fetchColumn();
-$totalProductsInStock = $_db->query("SELECT COUNT(*) FROM product WHERE stock_quantity > 0")->fetchColumn();
-$totalUsers = $_db->query("SELECT COUNT(*) FROM user")->fetchColumn();
+// ===== SUMMARY DATA =====
+
+// ✅ Active Products（真正产品数量）
+$totalProducts = $_db->query("
+    SELECT COUNT(*) FROM product WHERE is_active = 1
+")->fetchColumn();
+
+// ✅ 有库存
+$totalProductsInStock = $_db->query("
+    SELECT COUNT(*) FROM product 
+    WHERE stock_quantity > 0 AND is_active = 1
+")->fetchColumn();
+
+// ✅ 没库存
+$outOfStock = $_db->query("
+    SELECT COUNT(*) FROM product 
+    WHERE stock_quantity = 0 AND is_active = 1
+")->fetchColumn();
+
+// Users
+$totalUsers = $_db->query("
+    SELECT COUNT(*) 
+    FROM user 
+    WHERE role = 'customer'
+")->fetchColumn();
+
+// Orders
 $totalOrders = $_db->query("SELECT COUNT(*) FROM orders")->fetchColumn();
-$totalSales = $_db->query("SELECT COALESCE(SUM(total_price), 0) FROM orders")->fetchColumn();
-$pendingOrders = $_db->query("SELECT COUNT(*) FROM orders WHERE status = 'Pending'")->fetchColumn();
-$lowStock = $_db->query("SELECT COUNT(*) FROM product WHERE stock_quantity <= 5")->fetchColumn();
-$outOfStock = $_db->query("SELECT COUNT(*) FROM product WHERE stock_quantity = 0")->fetchColumn();
-$orderStatusDistribution = $_db->query(" SELECT status, COUNT(*) as total FROM orders GROUP BY status")->fetchAll(PDO::FETCH_ASSOC);
+
+// ✅ Completed Orders
+$completedOrders = $_db->query("
+    SELECT COUNT(*) FROM orders WHERE status = 'Paid'
+")->fetchColumn();
+
+// Pending Orders
+$pendingOrders = $_db->query("
+    SELECT COUNT(*) FROM orders WHERE status = 'Pending'
+")->fetchColumn();
+
+// ✅ Monthly Sales（含 shipping）
+$totalSales = $_db->query("
+    SELECT COALESCE(SUM(total_price + shipping_fee), 0)
+    FROM orders
+    WHERE status = 'Paid'
+    AND MONTH(order_date) = MONTH(CURDATE())
+    AND YEAR(order_date) = YEAR(CURDATE())
+")->fetchColumn();
+
+// Stock
+$lowStock = $_db->query("
+    SELECT COUNT(*) FROM product 
+    WHERE stock_quantity <= 5 AND is_active = 1
+")->fetchColumn();
+
+// ✅ Chart Data
+$orderStatusDistribution = $_db->query("
+    SELECT status, COUNT(*) as total
+    FROM orders
+    GROUP BY status
+")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <div class="dashboard-page">
+
+    <!-- ===== HERO ===== -->
     <section class="dashboard-hero">
         <div class="hero-text">
             <h1>Dashboard</h1>
-            <p>Monitor product stock, sales performance, customer activity, and order flow in one place. This dashboard is tailored for your stationery store operations.</p>
+            <p>Monitor your store performance in one place.</p>
             <a href="admin_panel.php?page=products" class="hero-button">Manage Products</a>
         </div>
 
         <div class="hero-metrics">
+
+            <!-- ✅ PRODUCT -->
             <div class="summary-card">
                 <span>Total Products</span>
-                <strong><?= number_format($totalProductsInStock) ?></strong>
-                <small>Active stationery items</small>
+                <strong><?= number_format($totalProducts) ?></strong>
+
+                <small>
+                    <?= $totalProductsInStock ?> in stock
+                </small>
+
                 <?php if ($outOfStock > 0): ?>
-            <small style="color: #e74c3c; display: block;">
-                (<?= $outOfStock ?> items sold out)
-            </small>
-        <?php endif; ?>
+                    <small style="color:red;">
+                        (<?= $outOfStock ?> sold out)
+                    </small>
+                <?php endif; ?>
             </div>
+
+            <!-- USERS -->
             <div class="summary-card">
                 <span>Total Customers</span>
                 <strong><?= number_format($totalUsers) ?></strong>
-                <small>Registered shoppers</small>
+                <small>Registered users</small>
             </div>
+
+            <!-- SALES -->
             <div class="summary-card">
                 <span>Sales This Month</span>
                 <strong>RM <?= number_format($totalSales, 2) ?></strong>
-                <small>All completed orders</small>
+                <small>Completed orders only</small>
             </div>
+
         </div>
     </section>
 
+    <!-- ===== GRID ===== -->
     <section class="dashboard-grid">
-        <div class="metric-card metric-card--blue">
-            <div class="metric-card__label">Total Products</div>
-            <div class="metric-card__value"><?= number_format($totalProductsInStock) ?></div>
-            <div class="metric-card__note">Inventory across all stationery categories.</div>
+
+        <div class="metric-card">
+            <div>Total Products</div>
+            <h2><?= number_format($totalProducts) ?></h2>
         </div>
-        <div class="metric-card metric-card--green">
-            <div class="metric-card__label">Total Users</div>
-            <div class="metric-card__value"><?= number_format($totalUsers) ?></div>
-            <div class="metric-card__note">Registered buyers on the Stationery Hub.</div>
+
+        <div class="metric-card">
+            <div>Total Users</div>
+            <h2><?= number_format($totalUsers) ?></h2>
         </div>
-        <div class="metric-card metric-card--orange">
-            <div class="metric-card__label">Pending Orders</div>
-            <div class="metric-card__value"><?= number_format($pendingOrders) ?></div>
-            <div class="metric-card__note">Orders waiting to be processed.</div>
+
+        <div class="metric-card">
+            <div>Pending Orders</div>
+            <h2><?= number_format($pendingOrders) ?></h2>
         </div>
-        <div class="metric-card metric-card--purple">
-            <div class="metric-card__label">Low Stock Alerts</div>
-            <div class="metric-card__value"><?= number_format($lowStock) ?></div>
-            <div class="metric-card__note">Products with 5 or fewer units left.</div>
+
+        <div class="metric-card">
+            <div>Low Stock</div>
+            <h2><?= number_format($lowStock) ?></h2>
         </div>
+
     </section>
 
+    <!-- ===== ROW ===== -->
     <section class="dashboard-row">
+
+        <!-- ORDER SUMMARY -->
         <div class="dashboard-panel">
             <h2>Order Summary</h2>
+
             <div class="status-grid">
                 <div class="status-card">
-                    <span>Completed Orders</span>
-                    <strong><?= number_format($totalOrders - $pendingOrders) ?></strong>
+                    <span>Completed</span>
+                    <strong><?= number_format($completedOrders) ?></strong>
                 </div>
+
                 <div class="status-card">
-                    <span>Pending Orders</span>
+                    <span>Pending</span>
                     <strong><?= number_format($pendingOrders) ?></strong>
                 </div>
+
                 <div class="status-card">
-                    <span>Low stock products</span>
+                    <span>Low Stock</span>
                     <strong><?= number_format($lowStock) ?></strong>
                 </div>
             </div>
         </div>
 
-        <div class="dashboard-panel chart-card">
-            <h2>Sales & Visits</h2>
-            <?php if (count($orderStatusDistribution ?? [])): ?>
-                <div class="chart-container">
+        <!-- CHART -->
+        <div class="dashboard-panel">
+            <h2>Order Status</h2>
+
+            <?php if (count($orderStatusDistribution) > 0): ?>
+                <div style="height:250px;">
                     <canvas id="salesPieChart"></canvas>
                 </div>
             <?php else: ?>
-                <div class="chart-placeholder">No orders data available yet.</div>
+                <p>No data</p>
             <?php endif; ?>
-            <p class="chart-note">Orders by status in the store.</p>
+
         </div>
+
     </section>
+
 </div>
 
+<!-- ===== CHART JS ===== -->
 <?php if (count($orderStatusDistribution) > 0): ?>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const chartLabels = <?= json_encode(array_column($orderStatusDistribution, 'status')) ?>;
-        const chartData = <?= json_encode(array_map(fn($row) => (int) $row->order_count, $orderStatusDistribution)) ?>;
-        const chartColors = [
-            '#ef4444', '#f97316', '#facc15', '#22c55e', '#0ea5e9', '#818cf8', '#a855f7', '#ec4899', '#14b8a6', '#f43f5e'
-        ];
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        new Chart(document.getElementById('salesPieChart'), {
-            type: 'pie',
-            data: {
-                labels: chartLabels,
-                datasets: [{
-                    data: chartData,
-                    backgroundColor: chartLabels.map((_, index) => chartColors[index % chartColors.length]),
-                    borderColor: '#fff',
-                    borderWidth: 2,
-                }],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            boxWidth: 14,
-                            padding: 14,
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.label || '';
-                                const value = context.parsed || 0;
-                                const sum = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const percent = sum ? ((value / sum) * 100).toFixed(1) : 0;
-                                return `${label}: ${value} (${percent}%)`;
-                            }
-                        }
-                    }
-                }
+<script>
+const chartLabels = <?= json_encode(array_column($orderStatusDistribution, 'status')) ?>;
+const chartData = <?= json_encode(array_column($orderStatusDistribution, 'total')) ?>;
+
+const colors = [
+    '#22c55e', '#f59e0b', '#ef4444', '#3b82f6', '#a855f7'
+];
+
+new Chart(document.getElementById('salesPieChart'), {
+    type: 'doughnut',
+    data: {
+        labels: chartLabels,
+        datasets: [{
+            data: chartData,
+            backgroundColor: colors
+        }]
+    },
+    options: {
+        cutout: '60%',
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
             }
-        });
-    </script>
+        }
+    }
+});
+</script>
 <?php endif; ?>
-

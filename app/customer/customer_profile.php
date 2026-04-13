@@ -107,26 +107,33 @@ if (is_post()) {
 // ----------------------------------------------------------------------------
 
 ?>
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <form method="post" class="auth-form" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <?= html_text('email', 'maxlength="100"') ?>
+                <?= err('email') ?>
+            </div>
 
-<form method="post" class="form" enctype="multipart/form-data">
-    <label for="email">Email</label>
-    <?= html_text('email', 'maxlength="100"') ?>
-    <?= err('email') ?>
+            <div class="form-group">
+                <label for="name">Name</label>
+                <?= html_text('name', 'maxlength="100"') ?>
+                <?= err('name') ?>
+            </div>
 
-    <label for="name">Name</label>
-    <?= html_text('name', 'maxlength="100"') ?>
-    <?= err('name') ?>
-
-    <label for="photo">Photo</label>
-    <label class="upload" tabindex="0">
-        <?= html_file('photo', 'image/*', 'hidden') ?>
-        <img src="/photo/<?= $photo ?>">
-    </label>
-    <?= err('photo') ?>
+            <div class="form-group">
+                <label>Photo</label>
+                <label class="upload" tabindex="0">
+                    <?= html_file('photo', 'image/*', 'hidden') ?>
+                    <img src="/photo/<?= $photo ?>">
+                </label>
+                <?= err('photo') ?>
+    </div>
 
     <section>
-        <button>Submit</button>
-        <button type="reset">Reset</button>
+        <button type="submit" class="submit-button-profile">Submit</button>
+        <button type="reset" class="submit-button-profile">Reset</button>
     </section>
 </form>
 

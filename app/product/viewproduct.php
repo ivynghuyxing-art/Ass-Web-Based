@@ -4,7 +4,6 @@ $title = 'Products';
 $_title = '';
 include '../customer_header.php';
 
-
 if (is_post() && req('action') === 'add') {
     auth();
     $product_id = (int)req('product_id');
@@ -53,48 +52,52 @@ if (is_post() && req('action') === 'add') {
             ->execute([$cart_id, $product_id, $quantity, $quantity * $product->price]);
     }
 
-    // update cart totals
     $_db->prepare('UPDATE cart SET total_quantity = (SELECT COALESCE(SUM(quantity),0) FROM cart_item WHERE cart_id = ?), total_price = (SELECT COALESCE(SUM(price),0) FROM cart_item WHERE cart_id = ?) WHERE cart_id = ?')
         ->execute([$cart_id,$cart_id,$cart_id]);
 
     temp('info', 'Added to cart');
     redirect('viewproduct.php');
 }
-require_once'../lib/SimplePager.php';
-$page = req('page',1);
-$pager = new SimplePager('SELECT * FROM product WHERE is_active=1',[],'12',$page);
+
+require_once '../lib/SimplePager.php';
+$page = req('page', 1);
+$pager = new SimplePager('SELECT * FROM product WHERE is_active=1', [], '12', $page);
 $products = $pager->result;
 
+$wishlist_ids = [];
+if (isset($_SESSION['user'])) {
+    $wStmt = $_db->prepare('SELECT product_id FROM wishlist WHERE user_id = ?');
+    $wStmt->execute([$_SESSION['user']->user_id]);
+    $wishlist_ids = array_column($wStmt->fetchAll(), 'product_id');
+}
 ?>
 
 <div class="title">
     <h2>Products</h2>
 </div>
-    <div class="product-grid">
-        <?php foreach ($products as $p): ?>
-    
-            <div class="product-card">
-                <button class="wishlist-btn" onclick="toggleWishlist(this)">&#9825;</button>
-                <a href="../product/product_detail.php?product_id=<?= $p->product_id ?>">
-                    <img src="../product_img/<?= encode($p->image) ?>" alt="<?= encode($p->product_name) ?>">
-                </a>
-                <h3><?= encode($p->product_name) ?></h3>
-                <p>RM <?= number_format($p->price,2) ?></p>
+<div class="product-grid">
+    <?php foreach ($products as $p): ?>
+        <div class="product-card">
+            <a href="../product/product_detail.php?product_id=<?= $p->product_id ?>">
+                <img src="../product_img/<?= encode($p->image) ?>" alt="<?= encode($p->product_name) ?>">
+            </a>
+            <h3><?= encode($p->product_name) ?></h3>
+            <p>RM <?= number_format($p->price, 2) ?></p>
 
-                 <?php if ($p->stock_quantity >0): ?> 
+            <?php if ($p->stock_quantity > 0): ?>
                 <form method="post" class="add-cart-form">
                     <input type="hidden" name="action" value="add">
                     <input type="hidden" name="product_id" value="<?= $p->product_id ?>">
                     <input type="number" name="quantity" value="1" min="1" max="<?= $p->stock_quantity ?>">
                     <button type="submit">Add to cart</button>
                 </form>
-                <?php else:?>
-                    <p>Out of Stock</p>
-                <?php endif; ?>
-            </div>
-        <?php endforeach; ?>
-    </div>
-<?=$pager->html()?>
+            <?php else: ?>
+                <p>Out of Stock</p>
+            <?php endif; ?>
+        </div>
+    <?php endforeach; ?>
+</div>
+<?= $pager->html() ?>
 </section>
 
 <?php include '../_foot.php'; ?>

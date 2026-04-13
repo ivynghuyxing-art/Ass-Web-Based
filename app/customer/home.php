@@ -43,7 +43,7 @@ if (!empty($products)): ?>
         <div class="product-grid">
             <?php foreach ($products as $p): ?>
                 <div class="product-card">
-                    <button class="wishlist-btn" onclick="toggleWishlist(this)">&#9825;</button>
+                   
                     <img src="../product_img/<?= encode($p->image) ?>" alt="<?= encode($p->product_name) ?>">
                     <h3><?= encode($p->product_name) ?></h3>
                     <p>RM <?= number_format($p->price, 2) ?></p>
@@ -74,7 +74,6 @@ if (!empty($products)): ?>
             ?>
             <?php foreach ($products as $p) :?>
                 <div class="product-card">
-                    <button class="wishlist-btn" onclick="toggleWishlist(this)">&#9825;</button>
                     <img src="../product_img/<?= encode($p->image) ?>" alt="<?= encode($p->product_name) ?>">
 
                     <h3><?= encode($p->product_name) ?></h3>

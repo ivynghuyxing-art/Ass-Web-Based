@@ -2970,6 +2970,7 @@ label.upload img {
 .btn-wishlist:hover {
     background: darkred;
     color: white;
+<<<<<<< HEAD
 }
 .wishlist-btn {
     position: absolute;
@@ -2992,4 +2993,6 @@ label.upload img {
 
 .wishlist-btn.active {
     color: darkred;
+=======
+>>>>>>> a7f8a3b297f32595099192f26f4628eeebe86150
 }

@@ -11,6 +11,8 @@ if (!$id) redirect('admin_panel.php?page=product');
 // Get product data
 $stmt = $_db->prepare("SELECT * FROM product WHERE product_id = ?");
 $stmt->execute([$id]);
+if ($_SERVER['REQUEST_METHOD'] == 'POST') 
+$stock_quantity = intval($_POST['stock_quantity']); // ✅ 正确位置
 $product = $stmt->fetch();
 
 $categories = $_db->query("SELECT * FROM category ORDER BY category_name")->fetchAll();
@@ -20,10 +22,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = trim($_POST['product_name']);
     $price = floatval($_POST['price']);
     $category_id = intval($_POST['category_id']);
+    $stock_quantity = intval($_POST['stock_quantity']); // ✅ 加这个！
     $description = trim($_POST['description']);
 
-    $stmt = $_db->prepare("UPDATE product SET product_name=?, price=?, category_id=?, description=? WHERE product_id=?");
-    $stmt->execute([$name, $price, $category_id, $description, $id]);
+    // ✅ 如果有上传新图片
+    if (!empty($_FILES['image']['name'])) {
+        $image = $_FILES['image']['name'];
+
+        move_uploaded_file($_FILES['image']['tmp_name'], "../product_img/$image");
+
+        $stmt = $_db->prepare("UPDATE product SET product_name=?, price=?, category_id=?, stock_quantity=?, description=?, image=? WHERE product_id=?");
+        $stmt->execute([$name, $price, $category_id, $stock_quantity, $description, $image, $id]);
+
+    } else {
+        // ✅ 没换图片
+        $stmt = $_db->prepare("UPDATE product SET product_name=?, price=?, category_id=?, stock_quantity=?, description=? WHERE product_id=?");
+        $stmt->execute([$name, $price, $category_id, $stock_quantity, $description, $id]);
+    }
 
     temp('info', 'Product updated successfully!', 'success');
     redirect('admin_panel.php?page=product');
@@ -41,6 +56,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         <label>Price (RM) *</label>
         <input type="number" name="price" min="0" step="0.01" value="<?= $product->price ?>" placeholder="0.00" required>
+
+        <label>Stock Quantity *</label>
+        <input type="number" name="stock_quantity" min="0" value="<?= $product->stock_quantity ?>" required>
 
         <label>Category *</label>
         <select name="category_id" required>
@@ -62,6 +80,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <?php endif; ?>
         <input type="file" name="image" accept="image/jpeg,image/png,image/gif,image/webp">
         <small>Leave empty to keep current image. Accepted formats: JPG, PNG, GIF, WEBP</small>
+
+        
 
         <label>Description</label>
         <textarea name="description" rows="5" placeholder="Enter product details here"><?= htmlspecialchars($product->description) ?></textarea>

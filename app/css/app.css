@@ -47,7 +47,7 @@ header a {
 footer {
     margin-top: 40px;
     padding: 40px 50px;
-    background-color: lightgray;
+    background-color: rgb(235, 232, 232);
 }
 
 .navbar {
@@ -934,12 +934,12 @@ label.upload img {
 }
 
 .btn-buy-now, .buy-now {
-    background-color: #28a745;
-    color: white;
+    background-color:white;
+    color: black;
 }
 
 .btn-buy-now:hover, .buy-now:hover {
-    background-color: #218838;
+    background-color: #cacaca;
 }
 
 .btn-back, .back-link a {
@@ -3160,25 +3160,6 @@ tbody tr:nth-child(even) {
     gap: 5px;
 }
 
-#toast {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-20px);
-    background: #444;
-    color: #fff;
-    padding: 12px 25px;
-    border-radius: 6px;
-    opacity: 0;
-    transition: all 0.4s ease;
-    z-index: 9999;
-}
-
-#toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
-
 .wishlist-btn {
     position: absolute;
     top: 10px;
@@ -3273,27 +3254,39 @@ tbody tr:nth-child(even) {
 .submit-button-profile[type="reset"]:hover {
     background: #c5c5c5;
 }
-.sidebar-user {
-    margin-top: 80px;   /* 🔥 控制往下多少 */
-    text-align: center;
-}
 
-.sidebar-avatar {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #fff;
-    margin-bottom: 10px;
-}
-
-.sidebar-logout {
+.change-password-label{
     display: block;
-    color: #fff;
-    font-weight: bold;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 6px;
+    color: #333;
+    text-align: left;
+}
+.change-password-label input {
+    margin: 0;
+}
+
+.change-password-label a {
+    display:flex;
+    margin-top: 20px;
+    justify-content: center;
     text-decoration: none;
 }
-
-.sidebar-logout:hover {
-    color: #ffdede;
+.change-password-label a:hover{
+    text-decoration: underline;
 }
+.product-button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.product-button-group form {
+    margin: 0;
+}
+
+.product-button-group button {
+    width: 100%;
+}
+>>>>>>> b97f85ded11bede7f9c0dd939c86b5d4fb6c588f

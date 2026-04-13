@@ -78,6 +78,7 @@ if (isset($_SESSION['user'])) {
 <div class="product-grid">
     <?php foreach ($products as $p): ?>
         <div class="product-card">
+
             <a href="../product/product_detail.php?product_id=<?= $p->product_id ?>">
                 <img src="../product_img/<?= encode($p->image) ?>" alt="<?= encode($p->product_name) ?>">
             </a>

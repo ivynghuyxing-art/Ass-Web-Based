@@ -121,7 +121,7 @@ if (is_post() && (req('add') || req('buy_now') )) {
                         <label for="quantity">Quantity:</label>
                         <input type="number" id="quantity" name="quantity" value="1" min="1" max="<?= $product->stock_quantity ?>">
                     </div>
-                    <div class="button-group">
+                    <div class="product-button-group">
                         <button type="submit" name="add" value="1" class="btn-add-cart">Add to Cart</button>
                         <button type="submit" name="buy_now" value="1" class="btn-buy-now">Buy Now</button>
                     </div>
@@ -140,7 +140,7 @@ if (is_post() && (req('add') || req('buy_now') )) {
                 <form method ="post" action="/customer/wishlist_toggle.php">
                     <input type=hidden name="product_id" value= "<?= $product_id ?>">
                     <button type=submit class="btn-wishlist">
-                        <?= $inwishlist ? 'Remove From Wishlist' : 'Add To Wishlist' ?>
+                        <?= $inwishlist ? '♥' : '♡' ?>
                     </button>
                 </form>
 

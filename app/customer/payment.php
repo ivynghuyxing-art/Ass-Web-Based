@@ -31,7 +31,7 @@ if (is_post()) {
         $_db->prepare('UPDATE orders SET status = ? WHERE orders_id = ?')
             ->execute(['Paid', $orders_id]);
         temp('info', 'Payment successful! Your order has been placed.');
-        redirect('/customer/order_detail.php');
+        redirect('/customer/order.php');
     }
 
     if ($action === 'cancel') {

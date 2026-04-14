@@ -125,6 +125,10 @@ function is_email($value){
     return filter_var($value,FILTER_VALIDATE_EMAIL) !== false;
 }
 
+function is_password($password) {
+    $len = strlen($password);
+    return $len >= 5 && $len <= 100;
+}
 $_user = $_SESSION['user'] ?? null;
 
 function login($user, $url = '/') {

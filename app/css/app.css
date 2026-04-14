@@ -820,6 +820,9 @@ label.upload img {
 .add-to-cart:hover, .product-card .add-cart-form button:hover {
     background: rgb(173,8,8);
 }
+.add-to-cart-form {
+    width: 100%;
+}
 
 .product-link {
     text-decoration: none;
@@ -922,6 +925,7 @@ label.upload img {
     font-weight: bold;
     flex: 1;
     transition: background-color 0.3s;
+
 }
 
 .btn-add-cart, .btn {

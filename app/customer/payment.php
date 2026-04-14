@@ -109,10 +109,10 @@ if (is_post()) {
             <select class="bank-select" id="bankSelect">
                 <option value="">Choose Your Option</option>
                 <option value="Maybank2u">Maybank2u</option>
-                <option value="CIMB Clicks">CIMB Clicks</option>
+                <option value="CIMB Bank">CIMB Bank</option>
                 <option value="Public Bank">Public Bank</option>
                 <option value="RHB Now">RHB Now</option>
-                <option value="Hong Leong Connect">Hong Leong Connect</option>
+                <option value="Hong Leong Bank">Hong Leong Bank</option>
                 <option value="AmBank">AmBank</option>
                 <option value="Bank Islam">Bank Islam</option>
                 <option value="BSN">BSN</option>

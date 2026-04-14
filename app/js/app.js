@@ -41,14 +41,10 @@ function syncAddressToForm(form) {
 }
 
 
-// ===============================
-// 🚀 MAIN INIT
-// ===============================
+
 $(() => {
 
-    // =========================
-    // 🏦 BANK LOGIN TOGGLE (FIXED)
-    // =========================
+    // bank select and password
     const bankSelect = document.getElementById('bankSelect');
     const loginBox   = document.getElementById('bankLogin');
 
@@ -59,8 +55,7 @@ $(() => {
             if (this.value === '') {
                 loginBox.style.display = 'none';
 
-                // clear input when hidden
-                const acc = document.getElementById('bankAccount');
+                const acc  = document.getElementById('bankAccount');
                 const pass = document.getElementById('bankPassword');
 
                 if (acc) acc.value = '';
@@ -72,35 +67,62 @@ $(() => {
         });
     }
 
+    // account input
+    const accountInput = document.getElementById('bankAccount');
+
+    if (accountInput) {
+        accountInput.addEventListener('input', function () {
+            this.value = this.value.replace(/\D/g, ""); //only allow digit
+        });
+    }
+
+    const bankRules = {
+        "Maybank2u": 12,
+        "CIMB Bank": 10,
+        "Public Bank": 10,
+        "RHB Now": 14,
+        "Hong Leong Bank": 11,
+        "AmBank": 10,
+        "Bank Islam": 14,
+        "BSN": 16
+    };
+
+    // Payment Validation
     const payForm = document.getElementById('payForm');
 
-        if (payForm) {
-            payForm.addEventListener('submit', function (e) {
+    if (payForm) {
+        payForm.addEventListener('submit', function (e) {
 
-                const bank = document.getElementById('bankSelect')?.value;
-                const acc  = document.getElementById('bankAccount')?.value.trim();
-                const pass = document.getElementById('bankPassword')?.value.trim();
+            const bank = document.getElementById('bankSelect')?.value;
+            const acc  = document.getElementById('bankAccount')?.value.trim();
+            const pass = document.getElementById('bankPassword')?.value.trim();
 
-                if (!bank) {
+            if (!bank) {
+                e.preventDefault();
+                alert('Please choose a bank first');
+                return;
+            }
+
+
+                if (!acc || !pass) {
                     e.preventDefault();
-                    alert('Please choose a bank first');
+                    alert('Please enter bank account and password');
                     return;
                 }
 
-                if (document.getElementById('bankLogin').style.display !== 'none') {
+                const requiredLength = bankRules[bank];
 
-                    if (!acc || !pass) {
-                        e.preventDefault();
-                        alert('Please enter bank account and password');
-                        return;
-                    }
+                if (requiredLength && acc.length !== requiredLength) {
+                    e.preventDefault();
+                    alert(bank + " account must be " + requiredLength + " digits");
+                    return;
                 }
-            });
-        }
+            
+        });
+    }
 
-    // =========================
-    // 🖼️ PHOTO PREVIEW
-    // =========================
+
+    //Photo
     $('label.upload input[type=file]').on('change', function (e) {
         const f = e.target.files[0];
         const img = $(this).closest('label').find('img')[0];
@@ -118,9 +140,7 @@ $(() => {
     });
 
 
-    // =========================
-    // 👤 PROFILE TOGGLE
-    // =========================
+    // Profile dropdown
     const userDropdown = document.querySelector('.user-photo-dropdown');
     const userImg = document.querySelector('.user-photo-dropdown img');
 
@@ -137,9 +157,7 @@ $(() => {
     }
 
 
-    // =========================
-    // 📦 VIEW MORE PRODUCTS
-    // =========================
+    // view more product
     $('.view-more-btn').on('click', function () {
         const button = $(this);
         const section = button.closest('.category-section');
@@ -158,9 +176,7 @@ $(() => {
     });
 
 
-    // =========================
-    // 📂 DROPDOWN MENU
-    // =========================
+    // dropdown menu
     $(document).on('click', '.nav-dropdown .dropdown-toggle', function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -179,9 +195,7 @@ $(() => {
     });
 
 
-    // =========================
-    // 🛒 CART SUMMARY
-    // =========================
+    //cart summary
     function initCartSelectionSummary() {
 
         const selectAll = document.getElementById('select-all');
@@ -238,9 +252,7 @@ $(() => {
     initCartSelectionSummary();
 
 
-    // =========================
-    // 💰 VOUCHER FORM SYNC
-    // =========================
+    // voucher
     const applyForm  = document.getElementById('apply-voucher-form');
     const removeForm = document.getElementById('remove-voucher-form');
 

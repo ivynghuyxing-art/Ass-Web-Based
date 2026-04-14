@@ -13,6 +13,8 @@
 
         if(!$password){
             $_err['password'] = 'Required';
+        }else if(!is_password($password)){
+            $_err['password'] = 'Password must between 5 to 100 characters.';
         }
 
         if(!$_err){

@@ -5,9 +5,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// =====================
-// 👉 SUCCESS POPUP
-// =====================
 if (!empty($_SESSION['success'])): ?>
 <div id="popup-message" class="popup">
     <?= $_SESSION['success'] ?>
@@ -29,14 +26,12 @@ if (!empty($_SESSION['success'])): ?>
 
 $sort = $_GET['sort'] ?? 'DESC';
 
-// =====================
-// 👉 VIEW ORDER DETAILS
-// =====================
+// view order detail
 if (isset($_GET['id'])) {
 
     $id = $_GET['id'];
 
-    // 👉 取订单
+    // take order
     $stmt = $_db->prepare("SELECT * FROM orders WHERE orders_id = ?");
     $stmt->execute([$id]);
     $order = $stmt->fetch();
@@ -46,7 +41,7 @@ if (isset($_GET['id'])) {
         exit;
     }
 
-    // 👉 取产品（包含图片）
+    // take product contain photo
     $stmt = $_db->prepare("
         SELECT p.product_name, p.image, oi.price, oi.quantity
         FROM orders_item oi

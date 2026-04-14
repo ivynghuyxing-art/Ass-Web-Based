@@ -1,18 +1,17 @@
 <?php
-// ===== SUMMARY DATA =====
 
-// ✅ Active Products（真正产品数量）
+// active product
 $totalProducts = $_db->query("
     SELECT COUNT(*) FROM product WHERE is_active = 1
 ")->fetchColumn();
 
-// ✅ 有库存
+// have stock
 $totalProductsInStock = $_db->query("
     SELECT COUNT(*) FROM product 
     WHERE stock_quantity > 0 AND is_active = 1
 ")->fetchColumn();
 
-// ✅ 没库存
+// no stock
 $outOfStock = $_db->query("
     SELECT COUNT(*) FROM product 
     WHERE stock_quantity = 0 AND is_active = 1
@@ -28,7 +27,7 @@ $totalUsers = $_db->query("
 // Orders
 $totalOrders = $_db->query("SELECT COUNT(*) FROM orders")->fetchColumn();
 
-// ✅ Completed Orders
+// Completed Orders
 $completedOrders = $_db->query("
     SELECT COUNT(*) FROM orders WHERE status = 'Paid'
 ")->fetchColumn();
@@ -38,7 +37,7 @@ $pendingOrders = $_db->query("
     SELECT COUNT(*) FROM orders WHERE status = 'Pending'
 ")->fetchColumn();
 
-// ✅ Monthly Sales（含 shipping）
+
 $totalSales = $_db->query("
     SELECT COALESCE(SUM(total_price + shipping_fee), 0)
     FROM orders
@@ -53,7 +52,7 @@ $lowStock = $_db->query("
     WHERE stock_quantity <= 5 AND is_active = 1
 ")->fetchColumn();
 
-// ✅ Chart Data
+// Chart Data
 $orderStatusDistribution = $_db->query("
     SELECT status, COUNT(*) as total
     FROM orders
@@ -73,7 +72,6 @@ $orderStatusDistribution = $_db->query("
 
         <div class="hero-metrics">
 
-            <!-- ✅ PRODUCT -->
             <div class="summary-card">
                 <span>Total Products</span>
                 <strong><?= number_format($totalProducts) ?></strong>
@@ -106,7 +104,6 @@ $orderStatusDistribution = $_db->query("
         </div>
     </section>
 
-    <!-- ===== GRID ===== -->
     <section class="dashboard-grid">
 
         <div class="metric-card">
@@ -130,8 +127,7 @@ $orderStatusDistribution = $_db->query("
         </div>
 
     </section>
-
-    <!-- ===== ROW ===== -->
+    
     <section class="dashboard-row">
 
         <!-- ORDER SUMMARY -->

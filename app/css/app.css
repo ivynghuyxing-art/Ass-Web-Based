@@ -19,9 +19,7 @@ body.admin-layout {
     flex-direction: column;
 }
 
-/* =========================================
-   2. HEADER, FOOTER & NAVIGATION
-   ========================================= */
+/* header fooeter and navigation bar*/
 header {
     padding: 5px 35px;
     background-color: white;
@@ -69,9 +67,7 @@ footer {
     border-bottom: 2px solid white;
 }
 
-/* =========================================
-   3. USER AUTH & PROFILE BAR
-   ========================================= */
+
 .auth {
     display: flex;
     justify-content: flex-end;
@@ -155,9 +151,7 @@ footer {
     border-radius: 4px;
 }
 
-/* =========================================
-   4. SEARCH BAR
-   ========================================= */
+/* search bar*/
 .search-bar {
     display: inline-block;
     margin-right: 20px;
@@ -204,9 +198,7 @@ footer {
    
 }
 
-/* =========================================
-   5. ALERTS & NOTIFICATIONS
-   ========================================= */
+
 #info {
     position: fixed;
     color: #fff;
@@ -238,9 +230,7 @@ footer {
     margin-top: 3px;
 }
 
-/* =========================================
-   6. LOGIN & REGISTRATION FORMS
-   ========================================= */
+/* login and register */
 .center-box, .auth-wrapper {
     min-height: 100vh;
     display: flex;
@@ -358,9 +348,7 @@ label.upload img {
     margin: 10px auto;
 }
 
-/* =========================================
-   7. HOME PAGE (Hero, Banner, Welcome)
-   ========================================= */
+/* home page*/
 .hero {
     height: 400px;
     background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('/images/hero-bg.jpg');
@@ -830,9 +818,7 @@ label.upload img {
     display: block;
 }
 
-/* =========================================
-   9. PRODUCT DETAILS PAGE
-   ========================================= */
+/* product detail page*/
 .product-detail-container, .product-detail {
     display: flex;
     gap: 40px;
@@ -1050,9 +1036,7 @@ label.upload img {
      font-size: 16px; 
 }
 
-/* =========================================
-   11. ADMIN DASHBOARD
-   ========================================= */
+/* admin dashboard */
 .header {
     display: flex;
     justify-content: space-between;
@@ -1270,9 +1254,15 @@ label.upload img {
 
 .profile-form .form-actions {
     display: flex;
-    gap: 12px;
+    gap: 15px;
     flex-wrap: wrap;
     margin-top: 22px;
+}
+.form-actions button{
+    background:darkred;
+    border:none;
+    border-radius:5px;
+    color:white;
 }
 
 
@@ -1294,6 +1284,10 @@ label.upload img {
 .profile-form .reset-btn {
     background: #bbb;
     color: #222;
+}
+
+.profile-form .reset-btn:hover {
+    background:rgb(235, 228, 228);
 }
 
 .profile-form .upload img {
@@ -1582,18 +1576,7 @@ label.upload img {
     line-height: 1.75;
 }
 
-@media (max-width: 1024px) {
-    .dashboard-hero,
-    .dashboard-row {
-        grid-template-columns: 1fr;
-    }
-}
 
-@media (max-width: 640px) {
-    .hero-text h1 {
-        font-size: 2rem;
-    }
-}
 
 .dashboard-table {
     width: 100%;
@@ -2404,9 +2387,7 @@ label.upload img {
     background-color:lightgrey;
 }
 
-/* =========================================
-    Manage User Account
-   ========================================= */
+ 
 .styled-table {
   width: 100%;
   border-collapse: collapse;
@@ -2487,9 +2468,6 @@ label.upload img {
   background: #b91c1c;
 }
 
-/* ==================
-   CART SUMMARY BAR 
-   ==================*/
 .cart-summary-bar {
     display: flex;
     flex-direction: row;
@@ -2557,9 +2535,7 @@ label.upload img {
     font-size: 15px;
     border-radius: 8px;
 }
-/* ==================
-   ABOUT US PAGE
-   ==================*/
+/*about us*/
 .about-page {
     padding: 20px 40px 60px;
     max-width: 1100px;
@@ -2689,9 +2665,7 @@ label.upload img {
 }
 
 
-/* =========================================
-    Voucher
-   ========================================= */
+/* voucher*/
 
 .voucher-management {
     max-width: 1200px;
@@ -2894,9 +2868,7 @@ label.upload img {
     margin: 10px 20px;
 }
 
-/* ==================
-   WISHLIST
-   ==================*/
+/*wishlist*/
 
 .wishlist-card {
     background: white;
@@ -2989,12 +2961,7 @@ label.upload img {
     background: darkred;
     color: white;
 }
- HEAD
-/* =========================================
-    Orders
-   ========================================= */
-
-   /* 容器 */
+/* order*/
 .table-container {
     background: #fff;
     padding: 20px;
@@ -3002,14 +2969,12 @@ label.upload img {
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-/* 表格 */
 table {
     width: 100%;
     border-collapse: collapse;
     font-family: Arial, sans-serif;
 }
 
-/* 表头 */
 table thead {
     background: #a80000;
     color: white;
@@ -3052,17 +3017,15 @@ table tbody tr:hover {
     font-size: 13px;
 }
 
-/* Block */
 .btn-block {
     background: #e74c3c;
 }
 
-/* Unblock */
 .btn-unblock {
     background: #27ae60;
 }
 
-/* hover */
+
 .btn:hover {
     opacity: 0.85;
 }
@@ -3249,7 +3212,6 @@ tbody tr:nth-child(even) {
     transition: 0.2s ease;
 }
 
-/* Submit */
 .submit-button-profile[type="submit"] {
     background: darkred;
     color: white;

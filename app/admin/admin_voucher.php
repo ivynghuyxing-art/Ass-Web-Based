@@ -331,37 +331,3 @@ $vouchers = $_db->query('SELECT * FROM voucher ORDER BY voucher_id DESC')->fetch
         <?php endif; ?>
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const today = new Date().toISOString().split('T')[0];
-    const startDateInput = document.getElementById('started_date');
-    const endDateInput = document.getElementById('expired_date');
-    
-    function validateDates() {
-        if (startDateInput?.value && startDateInput.value < today) {
-            alert('Start date cannot be in the past!');
-            startDateInput.value = '';
-            return false;
-        }
-        if (endDateInput?.value && endDateInput.value < today) {
-            alert('Expiry date cannot be in the past!');
-            endDateInput.value = '';
-            return false;
-        }
-        if (startDateInput?.value && endDateInput?.value && startDateInput.value > endDateInput.value) {
-            alert('Start date must be before expiry date!');
-            endDateInput.value = '';
-            return false;
-        }
-        return true;
-    }
-    
-    const form = document.getElementById('voucherForm');
-    if (form) {
-        form.addEventListener('submit', e => {
-            if (!validateDates()) e.preventDefault();
-        });
-    }
-});
-</script>

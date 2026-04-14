@@ -35,8 +35,7 @@
                 else {
                 $_SESSION['user'] = $u;
                 temp('info', 'Welcome, ' . $u->name);
-
-                // 2. ROLE REDIRECTION
+                
                 if ($u->role === 'admin') {
                     redirect('/admin/admin_panel.php');
                 } else {

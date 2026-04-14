@@ -3,7 +3,7 @@ require_once __DIR__ . '/../_base.php';
 $title = 'Add Product';
 $_title = 'Add Product';
 
-// Handle form submission
+
 if (is_post()) {
     $product_name = req('product_name');
     $price = req('price');

@@ -14,7 +14,8 @@ if(is_post()){
         $stm = $_db->prepare('SELECT * FROM user WHERE email = ?');
         $stm->execute([$email]);
         $u = $stm->fetch();
-
+         
+        //if user exist
         if($u){
             // Generate token
             $token = bin2hex(random_bytes(32));

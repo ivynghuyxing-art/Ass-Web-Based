@@ -34,8 +34,7 @@ if (is_post() && req('action') === 'add') {
     $cart = $cart->fetch();
 
     if (!$cart) {
-        $_db->prepare('INSERT INTO cart (user_id,total_price,total_quantity)
-            VALUES (0,0,0)')->execute([$user_id]);
+        $_db->prepare('INSERT INTO cart (user_id,total_price,total_quantity) VALUES (0,0,0)')->execute([$user_id]);
         $cart_id = $_db->lastInsertId();
     } else {
         $cart_id = $cart->cart_id;
@@ -56,15 +55,11 @@ if (is_post() && req('action') === 'add') {
         $_db->prepare('UPDATE cart_item SET quantity=?, price=? WHERE cart_item_id=?')
             ->execute([$new_qty, $new_qty * $product->price, $item->cart_item_id]);
     } else {
-        $_db->prepare('INSERT INTO cart_item (cart_id,product_id,quantity,price)
-            VALUES (?,?,?,?)')
+        $_db->prepare('INSERT INTO cart_item (cart_id,product_id,quantity,price) VALUES (?,?,?,?)')
             ->execute([$cart_id, $product_id, $quantity, $quantity * $product->price]);
     }
 
-    $_db->prepare('UPDATE cart SET
-        total_quantity=(SELECT COALESCE(SUM(quantity),0) FROM cart_item WHERE cart_id=?),
-        total_price=(SELECT COALESCE(SUM(price),0) FROM cart_item WHERE cart_id=?)
-        WHERE cart_id=?')
+    $_db->prepare('UPDATE cart SET total_quantity=(SELECT COALESCE(SUM(quantity),0) FROM cart_item WHERE cart_id=?), total_price=(SELECT COALESCE(SUM(price),0) FROM cart_item WHERE cart_id=?) WHERE cart_id=?')
         ->execute([$cart_id,$cart_id,$cart_id]);
 
     temp('info','Added to cart');
@@ -198,9 +193,7 @@ $products = $stm->fetchAll();
 </section>
 <?php endif; ?>
 
-<!-- =========================
-FEATURED
-========================= -->
+<!-- Featured product-->
 <section class="featured-products">
     <h2>Featured Products</h2>
 

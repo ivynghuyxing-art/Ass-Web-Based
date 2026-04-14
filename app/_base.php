@@ -174,6 +174,7 @@ function auth(...$roles) {
     
     redirect('/login.php');
 }
+//send email
 function get_mail() {
     require_once 'lib/PHPMailer.php';
     require_once 'lib/SMTP.php';

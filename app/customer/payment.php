@@ -143,9 +143,6 @@ if (is_post()) {
                 </button>
             </form>
 
-            <div class="secure-badge">
-                <span>🔒 256-bit SSL Secured</span>
-            </div>
 
         </div>
     </div>

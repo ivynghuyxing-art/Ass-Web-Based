@@ -86,11 +86,7 @@ if (is_post()) {
         
         // (2) Update user (email, name, photo)
         // TODO
-        $stm = $_db->prepare('
-            UPDATE user
-            SET email = ?, name =?, profile_photo = ?
-            WHERE user_id = ?
-        ');
+        $stm = $_db->prepare('UPDATE user SET email = ?, name =?, profile_photo = ? WHERE user_id = ?');
         $stm->execute([$email,$name,$photo,$_user->user_id]);
 
         // (3) Update global user object
@@ -107,6 +103,11 @@ if (is_post()) {
 // ----------------------------------------------------------------------------
 
 ?>
+
+<div class="title">
+        <h2>My Profile</h2>
+    </div>
+
 <div class="auth-wrapper">
     <div class="auth-card">
         <form method="post" class="auth-form" enctype="multipart/form-data">

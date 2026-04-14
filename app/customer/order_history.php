@@ -7,7 +7,7 @@ if (!isset($_SESSION['user'])) {
     temp('info', 'Please login to view your order');
     redirect('/login.php');
 }
-// ✅ 先检查有没有 order_id
+
 if (!req('order_id')) {
     redirect('/customer/order.php');
 }
@@ -18,7 +18,7 @@ $order = $_db->prepare('SELECT * FROM orders WHERE orders_id = ? AND user_id = ?
 $order->execute([$order_id, $_SESSION['user']->user_id]);
 $order = $order->fetch();
 
-// ✅ 只有真的查不到才提示
+
 if (!$order) {
     temp('info', 'Order not found');
     redirect('/customer/order.php');

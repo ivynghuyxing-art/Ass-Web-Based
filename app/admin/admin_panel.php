@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../_base.php';
+require_once '../_base.php';
 $title = 'Admin Panel';
 
 if(!isset($_SESSION['user']) || $_SESSION['user']->role !== 'admin'){

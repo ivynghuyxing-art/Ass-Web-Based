@@ -10,21 +10,14 @@ if (!isset($_SESSION['user'])) {
 
 $user_id = $_SESSION['user']->user_id;
 
-/* ===============================
-   ⚡ BUY NOW
-=============================== */
 $buy_now = $_SESSION['buy_now'] ?? null;
 
-/* ===============================
-   INIT
-=============================== */
+
 $items = [];
 $selected_subtotal = 0;
 $selected_items = [];
 
-/* ===============================
-   CART INFO
-=============================== */
+
 $cart = $_db->prepare('
     SELECT c.*, COALESCE(SUM(ci.quantity),0) AS item_qty
     FROM cart c
@@ -35,9 +28,7 @@ $cart = $_db->prepare('
 $cart->execute([$user_id]);
 $cart = $cart->fetch();
 
-/* ===============================
-   BUY NOW MODE
-=============================== */
+
 if ($buy_now) {
 
     $stm = $_db->prepare('SELECT * FROM product WHERE product_id = ? AND is_active = 1');
@@ -61,9 +52,6 @@ if ($buy_now) {
 
 } else {
 
-    /* ===============================
-       CART MODE
-    =============================== */
     $selected_items = $_SESSION['checkout_items'] ?? [];
 
     if (empty($selected_items)) {
@@ -106,18 +94,14 @@ if ($buy_now) {
     }
 }
 
-/* ===============================
-   TOTALS
-=============================== */
+/*total */
 $shipping_fee    = 5.00;
 $discount_amount = 0;
 $voucher         = null;
 $voucher_msg     = '';
 $voucher_error   = '';
 
-/* ===============================
-   ADDRESS
-=============================== */
+/* address */
 $recipient_name = trim(req('recipient_name', ''));
 $phone          = trim(req('phone', ''));
 $address_line1  = trim(req('address_line1', ''));
@@ -126,16 +110,14 @@ $postal_code    = trim(req('postal_code', ''));
 $city           = trim(req('city', ''));
 $state          = trim(req('state', ''));
 
-/* ===============================
-   RESTORE VOUCHER
-=============================== */
+/* voucher*/
 if (isset($_SESSION['applied_voucher'])) {
     $v = $_db->prepare('SELECT * FROM voucher WHERE code = ?');
     $v->execute([$_SESSION['applied_voucher']]);
     $v = $v->fetch();
 
     if ($v) {
-        $voucher         = $v;
+        $voucher= $v;
         $discount_amount = min($v->discount_amount, $selected_subtotal);
         $voucher_msg = 'Voucher applied!';
     }
@@ -143,9 +125,7 @@ if (isset($_SESSION['applied_voucher'])) {
 
 $grand_total = $selected_subtotal + $shipping_fee - $discount_amount;
 
-/* ===============================
-   POST HANDLING
-=============================== */
+
 if (is_post()) {
 
     $action = req('action');
@@ -178,7 +158,7 @@ if (is_post()) {
         $grand_total = $selected_subtotal + $shipping_fee - $discount_amount;
     }
 
-    /* REMOVE VOUCHER */
+    /* remove voucher */
     if ($action === 'remove_voucher') {
         unset($_SESSION['applied_voucher']);
         $voucher = null;
@@ -187,7 +167,7 @@ if (is_post()) {
         $grand_total = $selected_subtotal + $shipping_fee;
     }
 
-    /* PLACE ORDER */
+    /* place order */
     if ($action === 'place_order') {
 
         $_err = [];
@@ -381,7 +361,7 @@ if (is_post()) {
             <?php if ($voucher): ?>
                 <div class="voucher-success">
                     <span><?= htmlspecialchars($voucher_msg) ?></span>
-                    <!-- ✅ Remove voucher: bawa balik address data -->
+
                     <form method="post" style="display:inline;" id="remove-voucher-form">
                         <input type="hidden" name="action" value="remove_voucher">
                         <input type="hidden" name="recipient_name" value="<?= encode($recipient_name) ?>">
@@ -395,7 +375,6 @@ if (is_post()) {
                     </form>
                 </div>
             <?php else: ?>
-                <!-- ✅ Apply voucher: bawa balik address data -->
                 <form method="post" id="apply-voucher-form">
                     <input type="hidden" name="action" value="apply_voucher">
                     <input type="hidden" name="recipient_name" value="<?= encode($recipient_name) ?>">

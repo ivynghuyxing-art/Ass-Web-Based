@@ -77,7 +77,7 @@ if(!$_err){
  
         // Store user_id in session for verification
         $_SESSION['verify_user_id'] = $_db->lastInsertId();
-        $_SESSION['verify_email'] = $email;
+        $_SESSION['verify_email'] = $email; 
  
         temp('info', 'Registration successful! Please check your email for verification code.');
         redirect('verify_email.php');

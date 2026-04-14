@@ -29,8 +29,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 try {
-    $stmt = $_db->query("SELECT user_id, name, email, role, valid FROM user WHERE role = 'customer'");
-    $users = $stmt ? $stmt->fetchAll() : [];
+    $stmt = $_db->prepare("
+        SELECT u.user_id, u.name, u.email, u.gender, m.name AS membership, u.valid,
+               COUNT(o.orders_id) AS total_orders
+        FROM user u
+        LEFT JOIN membership m ON u.membership_id = m.membership_id
+        LEFT JOIN orders o ON u.user_id = o.user_id
+        WHERE u.role = 'customer'
+        GROUP BY u.user_id, u.name, u.email, u.gender, m.name, u.valid
+    ");
+    $stmt->execute();
+    $users = $stmt->fetchAll();
 } catch (PDOException $e) {
     $error = "Database error: " . $e->getMessage();
     $users = [];
@@ -56,7 +65,9 @@ try {
         <th>ID</th>
         <th>Name</th>
         <th>Email</th>
-        <th>Role</th>
+        <th>Gender</th>
+        <th>Membership</th>
+        <th>Total Orders</th>
         <th>Status</th>
         <th>Action</th>
       </tr>
@@ -67,17 +78,17 @@ try {
                 <td><?= htmlspecialchars($user->user_id) ?></td>
                 <td><?= htmlspecialchars($user->name) ?></td>
                 <td><?= htmlspecialchars($user->email) ?></td>
-                <td>
-                    <span class="badge <?= $user->role ?>">
-                        <?= ucfirst($user->role) ?>
-                    </span>
-                </td>
+                <td><?= htmlspecialchars($user->gender ?? 'N/A') ?></td>
+                <td><?= htmlspecialchars($user->membership ?? 'N/A') ?></td>
+                <td><?= htmlspecialchars($user->total_orders) ?></td>
+                
                 <td>
                     <span class="status <?= $user->valid ? 'active' : 'inactive' ?>">
                         <?= $user->valid ? 'Active' : 'Inactive' ?>
                     </span>
                 </td>
                 <td>
+                    <div class="action-buttons">
                     <?php if ($user->valid): ?>
                         <form method="post" style="display:inline;" onsubmit="return confirm('Do you want to block this user？')">
                             <input type="hidden" name="action" value="block">

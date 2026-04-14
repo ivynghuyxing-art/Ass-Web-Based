@@ -41,7 +41,7 @@ $orders = $orders->fetchAll();
                         <td><?= $order->order_date ?></td>
                         <td><?= encode($order->status) ?></td>
                         <td>RM <?= number_format($order->total_price,2) ?></td>
-                        <td><a href="/customer/order_detail.php?order_id=<?= $order->orders_id ?>">View</a></td>
+                        <td><a href="/customer/order_detail.php?orders_id=<?= $order->orders_id ?>">View</a></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

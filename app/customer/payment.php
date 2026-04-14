@@ -7,15 +7,15 @@ if (!isset($_SESSION['user'])) {
     redirect('/login.php');
 }
 
-$orders_id = (int)req('orders_id');
+$orders_id = $_GET['orders_id'];
 
 if (!$orders_id) {
     redirect('/customer/order.php');
 }
 
 // Get order - make sure it belongs to this user and is still Pending
-$order = $_db->prepare('SELECT * FROM orders WHERE orders_id = ? AND user_id = ? AND status = ?');
-$order->execute([$orders_id, $_SESSION['user']->user_id, 'Pending']);
+$order = $_db->prepare('SELECT * FROM orders WHERE orders_id = ? AND user_id = ?');
+$order->execute([$orders_id, $_SESSION['user']->user_id]);
 $order = $order->fetch();
 
 if (!$order) {
@@ -30,16 +30,31 @@ if (is_post()) {
         // Mark as Paid
         $_db->prepare('UPDATE orders SET status = ? WHERE orders_id = ?')
             ->execute(['Paid', $orders_id]);
-        temp('info', 'Payment successful! Your order has been placed.');
-        redirect('/customer/order.php');
-    }
 
+        $user_id =$_user->user_id;
+        $cart = $_db->prepare('SELECT cart_id FROM cart WHERE user_id=?');
+        $cart->execute([$user_id]);
+        $cart = $cart->fetch();
+
+        if($cart){
+            $cart_id = $cart->cart_id;
+
+            $_db->prepare('DELETE FROM cart_item WHERE cart_id=?')
+                ->execute([$cart_id]);
+
+            $_db->prepare('UPDATE cart SET total_quantity=0,total_price=0 WHERE cart_id=?')
+                ->execute([$cart_id]);
+        }
+
+        temp('info','Payment Successful!');
+        redirect('/customer/order_detail.php?orders_id=' . $orders_id);
+    }
     if ($action === 'cancel') {
         // Mark as Cancelled
         $_db->prepare('UPDATE orders SET status = ? WHERE orders_id = ?')
             ->execute(['Cancelled', $orders_id]);
         temp('info', 'Payment cancelled.');
-        redirect('/customer/cart.php');
+        redirect('/customer/order_detail.php?orders_id=' . $orders_id);
     }
 }
 ?>

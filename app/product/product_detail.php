@@ -143,13 +143,14 @@ if (is_post() && (req('add') || req('buy_now') )) {
                             <button type="submit" name="buy_now" value="1" class="btn-buy-now">Buy Now</button>
                         </div>
                     </form>
-                
-                    <?php else: ?>
-                            <p class="out-of-stock-message">This product is currently out of stock</p>
-                    <?php endif; ?>
-
                 </div>
 
+                
+            <?php else: ?>
+                    <p class="out-of-stock-message">This product is currently out of stock</p>
+            <?php endif; ?>
+
+                
             <a href="viewproduct.php" class="btn-back">← Back to Products</a>
 
         </div>

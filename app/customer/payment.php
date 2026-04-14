@@ -91,19 +91,29 @@ if (is_post()) {
                 ⚠️ This is a simulated payment. No real transaction will occur.
             </div>
 
-            <label class="bank-select-label">Select Your Bank</label>
-            <select class="bank-select">
-                <option>Maybank2u</option>
-                <option>CIMB Clicks</option>
-                <option>Public Bank</option>
-                <option>RHB Now</option>
-                <option>Hong Leong Connect</option>
-                <option>AmBank</option>
-                <option>Bank Islam</option>
-                <option>BSN</option>
+            <select class="bank-select" id="bankSelect">
+                <option value="">Choose Your Option</option>
+                <option value="Maybank2u">Maybank2u</option>
+                <option value="CIMB Clicks">CIMB Clicks</option>
+                <option value="Public Bank">Public Bank</option>
+                <option value="RHB Now">RHB Now</option>
+                <option value="Hong Leong Connect">Hong Leong Connect</option>
+                <option value="AmBank">AmBank</option>
+                <option value="Bank Islam">Bank Islam</option>
+                <option value="BSN">BSN</option>
             </select>
 
-            <form method="post">
+            <div id="bankLogin" style="display:none">
+
+                <label class="bank-select-label">Bank Account</label>
+                <input type="text" id="bankAccount" class="fpx-input" placeholder="Enter your account number">
+
+                <label class="bank-select-label">Password</label>
+                <input type="password" id="bankPassword" class="fpx-input" placeholder="Enter your password">
+
+            </div>
+
+            <form method="post" id="payForm">
                 <input type="hidden" name="action" value="pay">
                 <input type="hidden" name="orders_id" value="<?= $order->orders_id ?>">
                 <button type="submit" class="btn-pay">Pay Now  RM <?= number_format($order->total_price, 2) ?></button>

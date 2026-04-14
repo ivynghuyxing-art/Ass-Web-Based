@@ -3382,3 +3382,38 @@ tbody tr:nth-child(even) {
     padding:4px 8px;
     border-radius: 5px;
 }
+
+#banklogin{
+    display: none;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+}
+.bank-select-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    margin: 12px 0 6px;
+    letter-spacing: 0.3px;
+}
+.fpx-input {
+    width: 92%;
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: 0.2s;
+    outline: none;
+    background: #fff;
+    margin-bottom: 10px;
+}
+
+.fpx-input:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74,144,226,0.15);
+}
+.top-row {
+    display:flex;
+    align-items:center;
+    gap:12px;
+}

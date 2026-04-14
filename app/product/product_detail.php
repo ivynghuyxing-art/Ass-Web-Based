@@ -73,8 +73,12 @@ if (is_post() && (req('add') || req('buy_now') )) {
     $_db->prepare('UPDATE cart SET total_quantity = (SELECT COALESCE(SUM(quantity),0) FROM cart_item WHERE cart_id = ?), total_price = (SELECT COALESCE(SUM(price),0) FROM cart_item WHERE cart_id = ?) WHERE cart_id = ?')
         ->execute([$cart_id, $cart_id, $cart_id]);
 
-    if (req('buy_now')){
-        temp('info', 'Proceeding to checkout');
+    if (req('buy_now')) {
+
+    $_SESSION['buy_now'] = [
+        'product_id' => $product_id,
+        'quantity'   => $quantity
+    ];
         redirect('../customer/checkout.php');
     }else{
         temp('info', 'Added to cart');
@@ -102,6 +106,20 @@ if (is_post() && (req('add') || req('buy_now') )) {
                         <?= $product->stock_quantity > 0 ? $product->stock_quantity . ' units available' : 'Out of Stock' ?>
                     </span>
                 </p>
+                <?php if(isset($_user)) :?>
+                        <?php
+                            $inwishlist=$_db->prepare('SELECT 1 FROM wishlist WHERE user_id=? AND product_id=?');
+                            $inwishlist->execute([$_user->user_id,$product_id]);
+                            $inwishlist = $inwishlist->fetchColumn();
+                        ?>
+
+                        <form method ="post" action="/customer/wishlist_toggle.php">
+                            <input type=hidden name="product_id" value= "<?= $product_id ?>">
+                            <button type=submit class="btn-wishlist">
+                                <?= $inwishlist ? '♥' : '♡' ?>
+                            </button>
+                        </form>
+                    <?php endif ?>
             </div>
 
             <div class="product-description">
@@ -114,35 +132,23 @@ if (is_post() && (req('add') || req('buy_now') )) {
             </div>
 
             <?php if ($product->stock_quantity > 0): ?>
-                <form method="post" class="add-to-cart-form">
-                    <div class="quantity-selector">
-                        <label for="quantity">Quantity:</label>
-                        <input type="number" id="quantity" name="quantity" value="1" min="1" max="<?= $product->stock_quantity ?>">
-                    </div>
-                    <div class="product-button-group">
-                        <button type="submit" name="add" value="1" class="btn-add-cart">Add to Cart</button>
-                        <button type="submit" name="buy_now" value="1" class="btn-buy-now">Buy Now</button>
-                    </div>
-                </form>
-            <?php else: ?>
-                <p class="out-of-stock-message">This product is currently out of stock</p>
-            <?php endif; ?>
+                <div class ="top-row">
+                    <form method="post" class="add-to-cart-form">
+                        <div class="quantity-selector">
+                            <label for="quantity">Quantity:</label>
+                            <input type="number" id="quantity" name="quantity" value="1" min="1" max="<?= $product->stock_quantity ?>">
+                        </div>
+                        <div class="product-button-group">
+                            <button type="submit" name="add" value="1" class="btn-add-cart">Add to Cart</button>
+                            <button type="submit" name="buy_now" value="1" class="btn-buy-now">Buy Now</button>
+                        </div>
+                    </form>
+                
+                    <?php else: ?>
+                            <p class="out-of-stock-message">This product is currently out of stock</p>
+                    <?php endif; ?>
 
-            <?php if(isset($_user)) :?>
-                <?php
-                $inwishlist=$_db->prepare('SELECT 1 FROM wishlist WHERE user_id=? AND product_id=?');
-                $inwishlist->execute([$_user->user_id,$product_id]);
-                $inwishlist = $inwishlist->fetchColumn();
-                ?>
-
-                <form method ="post" action="/customer/wishlist_toggle.php">
-                    <input type=hidden name="product_id" value= "<?= $product_id ?>">
-                    <button type=submit class="btn-wishlist">
-                        <?= $inwishlist ? '♥' : '♡' ?>
-                    </button>
-                </form>
-
-            <?php endif ?>
+                </div>
 
             <a href="viewproduct.php" class="btn-back">← Back to Products</a>
 

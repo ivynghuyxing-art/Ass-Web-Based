@@ -1,66 +1,170 @@
-// ✅ 全局函数，onclick="handleCheckout()" 才能调用到
+// ===============================
+// 🌍 GLOBAL FUNCTIONS
+// ===============================
+
+// Checkout
 function handleCheckout() {
     const checked = document.querySelectorAll('.select-item:checked');
+
     if (checked.length === 0) {
         alert('Please select at least one item to checkout.');
         return;
     }
-    document.getElementById('cart-action').value = 'checkout';
-    document.getElementById('cart-form').submit();
+
+    const action = document.getElementById('cart-action');
+    const form   = document.getElementById('cart-form');
+
+    if (!action || !form) return;
+
+    action.value = 'checkout';
+    form.submit();
 }
 
+// Sync voucher address → hidden form
+function syncAddressToForm(form) {
+    if (!form) return;
+
+    const get = id => document.getElementById(id)?.value ?? '';
+
+    const set = (name, value) => {
+        const el = form.querySelector(`[name=${name}]`);
+        if (el) el.value = value;
+    };
+
+    set('recipient_name', get('f_recipient_name'));
+    set('phone',          get('f_phone'));
+    set('address_line1',  get('f_address_line1'));
+    set('address_line2',  get('f_address_line2'));
+    set('postal_code',    get('f_postal_code'));
+    set('city',           get('f_city'));
+    set('state',          get('f_state'));
+}
+
+
+// ===============================
+// 🚀 MAIN INIT
+// ===============================
 $(() => {
 
-    // Photo preview
-    $('label.upload input[type=file]').on('change', e => {
+    // =========================
+    // 🏦 BANK LOGIN TOGGLE (FIXED)
+    // =========================
+    const bankSelect = document.getElementById('bankSelect');
+    const loginBox   = document.getElementById('bankLogin');
+
+    if (bankSelect && loginBox) {
+
+        bankSelect.addEventListener('change', function () {
+
+            if (this.value === '') {
+                loginBox.style.display = 'none';
+
+                // clear input when hidden
+                const acc = document.getElementById('bankAccount');
+                const pass = document.getElementById('bankPassword');
+
+                if (acc) acc.value = '';
+                if (pass) pass.value = '';
+
+            } else {
+                loginBox.style.display = 'block';
+            }
+        });
+    }
+
+    const payForm = document.getElementById('payForm');
+
+        if (payForm) {
+            payForm.addEventListener('submit', function (e) {
+
+                const bank = document.getElementById('bankSelect')?.value;
+                const acc  = document.getElementById('bankAccount')?.value.trim();
+                const pass = document.getElementById('bankPassword')?.value.trim();
+
+                if (!bank) {
+                    e.preventDefault();
+                    alert('Please choose a bank first');
+                    return;
+                }
+
+                if (document.getElementById('bankLogin').style.display !== 'none') {
+
+                    if (!acc || !pass) {
+                        e.preventDefault();
+                        alert('Please enter bank account and password');
+                        return;
+                    }
+                }
+            });
+        }
+
+    // =========================
+    // 🖼️ PHOTO PREVIEW
+    // =========================
+    $('label.upload input[type=file]').on('change', function (e) {
         const f = e.target.files[0];
-        const img = $(e.target).closest('label').find('img')[0];
+        const img = $(this).closest('label').find('img')[0];
 
         if (!img) return;
 
         img.dataset.src ??= img.src;
 
-        if (f?.type.startsWith('image/')) {
+        if (f?.type?.startsWith('image/')) {
             img.src = URL.createObjectURL(f);
-        }
-        else {
+        } else {
             img.src = img.dataset.src;
-            e.target.value = '';
+            this.value = '';
         }
     });
 
-    // admin.js
-    window.addEventListener('DOMContentLoaded', () => {
-        const userBtn = document.getElementById("user-btn");
-        const profile = document.querySelector(".profile");
 
-        if (userBtn && profile) {
-            userBtn.onclick = () => {
-                profile.classList.toggle("active");
-            }
-        }
-    });
+    // =========================
+    // 👤 PROFILE TOGGLE
+    // =========================
+    const userDropdown = document.querySelector('.user-photo-dropdown');
+    const userImg = document.querySelector('.user-photo-dropdown img');
 
-    // View more products for category sections
+    if (userDropdown && userImg) {
+
+        userImg.addEventListener('click', function (e) {
+            e.stopPropagation();
+            userDropdown.classList.toggle('active');
+        });
+
+        document.addEventListener('click', function () {
+            userDropdown.classList.remove('active');
+        });
+    }
+
+
+    // =========================
+    // 📦 VIEW MORE PRODUCTS
+    // =========================
     $('.view-more-btn').on('click', function () {
         const button = $(this);
         const section = button.closest('.category-section');
         const extraItems = section.find('.extra-product');
-        const totalExtras = extraItems.length;
+        const total = extraItems.length;
+
+        if (!extraItems.length) return;
 
         if (extraItems.first().is(':visible')) {
             extraItems.addClass('hidden');
-            button.text(`View more ${totalExtras} ${totalExtras === 1 ? 'item' : 'items'}`);
+            button.text(`View more ${total} ${total === 1 ? 'item' : 'items'}`);
         } else {
             extraItems.removeClass('hidden');
             button.text('Show less');
         }
     });
 
-    // Header categories dropdown
-    $(document).on('click', '.nav-dropdown .dropdown-toggle', function (event) {
-        event.preventDefault();
-        event.stopPropagation();
+
+    // =========================
+    // 📂 DROPDOWN MENU
+    // =========================
+    $(document).on('click', '.nav-dropdown .dropdown-toggle', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
         const dropdown = $(this).closest('.nav-dropdown');
         $('.nav-dropdown').not(dropdown).removeClass('active');
         dropdown.toggleClass('active');
@@ -70,125 +174,86 @@ $(() => {
         $('.nav-dropdown').removeClass('active');
     });
 
-    $('.nav-dropdown .dropdown-content').on('click', function (event) {
-        event.stopPropagation();
+    $(document).on('click', '.nav-dropdown .dropdown-content', function (e) {
+        e.stopPropagation();
     });
 
-    // Banner Slider
-    let currentSlide = 0;
-    const slides = document.querySelectorAll('.slide');
-    const dots = document.querySelectorAll('.dot');
-    const prevBtn = document.querySelector('.prev-btn');
-    const nextBtn = document.querySelector('.next-btn');
 
-    function showSlide(index) {
-        slides.forEach(slide => slide.classList.remove('active'));
-        dots.forEach(dot => dot.classList.remove('active'));
-
-        slides[index].classList.add('active');
-        dots[index].classList.add('active');
-        currentSlide = index;
-    }
-
-    function nextSlide() {
-        currentSlide = (currentSlide + 1) % slides.length;
-        showSlide(currentSlide);
-    }
-
-    function prevSlide() {
-        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-        showSlide(currentSlide);
-    }
-
-    // Event listeners
-    if (nextBtn && prevBtn && slides.length > 0) {
-        nextBtn.addEventListener('click', nextSlide);
-        prevBtn.addEventListener('click', prevSlide);
-
-        dots.forEach((dot, index) => {
-            dot.addEventListener('click', () => showSlide(index));
-        });
-
-        // Auto slide
-        setInterval(nextSlide, 5000);
-    }
-
-    // ✅ Cart selection summary
+    // =========================
+    // 🛒 CART SUMMARY
+    // =========================
     function initCartSelectionSummary() {
-        const selectAll      = document.getElementById('select-all');
-        const itemCheckboxes = Array.from(document.querySelectorAll('.select-item'));
-        const quantityInputs = Array.from(document.querySelectorAll('.qty-input'));
-        const selectedCountEl = document.getElementById('selected-count');
-        const selectedTotalEl = document.getElementById('selected-total-display'); // ✅ 新 ID
 
-        if (itemCheckboxes.length === 0) return;
+        const selectAll = document.getElementById('select-all');
+        const items     = Array.from(document.querySelectorAll('.select-item'));
 
-        function updateSummary() {
+        const countEl   = document.getElementById('selected-count');
+        const totalEl   = document.getElementById('selected-total-display');
+
+        if (!items.length) return;
+
+        function update() {
             let count = 0;
             let total = 0;
 
-            itemCheckboxes.forEach(cb => {
+            items.forEach(cb => {
                 if (!cb.checked) return;
-                const cartItemId = cb.dataset.cartItemId;
-                const unitPrice  = parseFloat(cb.dataset.unitPrice) || 0;
-                const qtyInput   = document.querySelector(`.qty-input[data-cart-item-id="${cartItemId}"]`);
-                const qty        = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
+
+                const price = parseFloat(cb.dataset.unitPrice) || 0;
+                const qtyEl = document.querySelector(
+                    `.qty-input[data-cart-item-id="${cb.dataset.cartItemId}"]`
+                );
+
+                const qty = qtyEl ? (parseInt(qtyEl.value) || 1) : 1;
+
                 count++;
-                total += unitPrice * qty;
+                total += price * qty;
             });
 
-            if (selectedCountEl) selectedCountEl.textContent = count;
-            if (selectedTotalEl) selectedTotalEl.textContent = 'RM ' + total.toFixed(2);
+            if (countEl) countEl.textContent = count;
+            if (totalEl) totalEl.textContent = 'RM ' + total.toFixed(2);
 
-            // 全选 checkbox 状态
             if (selectAll) {
-                selectAll.checked       = itemCheckboxes.length > 0 && itemCheckboxes.every(cb => cb.checked);
-                selectAll.indeterminate = itemCheckboxes.some(cb => cb.checked) && !itemCheckboxes.every(cb => cb.checked);
+                selectAll.checked =
+                    items.every(i => i.checked) && items.length > 0;
+
+                selectAll.indeterminate =
+                    items.some(i => i.checked) && !items.every(i => i.checked);
             }
         }
 
-        // 全选
         selectAll?.addEventListener('change', function () {
-            itemCheckboxes.forEach(cb => cb.checked = this.checked);
-            updateSummary();
+            items.forEach(i => i.checked = this.checked);
+            update();
         });
 
-        itemCheckboxes.forEach(cb => cb.addEventListener('change', updateSummary));
-        quantityInputs.forEach(input => input.addEventListener('input', updateSummary));
+        items.forEach(i => i.addEventListener('change', update));
 
-        updateSummary();
+        document.querySelectorAll('.qty-input')
+            .forEach(i => i.addEventListener('input', update));
+
+        update();
     }
 
     initCartSelectionSummary();
-});
-
-$(document).ready(function () {
-    $('.user-photo-dropdown img').on('click', function (e) {
-        e.stopPropagation();
-        $('.user-photo-dropdown').toggleClass('active');
-    });
-
-    $(document).on('click', function () {
-        $('.user-photo-dropdown').removeClass('active');
-    });
 
 
-//Before submitting the Apply or Remove voucher form, sync the latest values from the left address section into the hidden input fields.
-function syncAddressToForm(form) {
-    const get = id => document.getElementById(id)?.value ?? '';
-    form.querySelector('[name=recipient_name]').value = get('f_recipient_name');
-    form.querySelector('[name=phone]').value           = get('f_phone');
-    form.querySelector('[name=address_line1]').value   = get('f_address_line1');
-    form.querySelector('[name=address_line2]').value   = get('f_address_line2');
-    form.querySelector('[name=postal_code]').value     = get('f_postal_code');
-    form.querySelector('[name=city]').value            = get('f_city');
-    form.querySelector('[name=state]').value           = get('f_state');
-}
+    // =========================
+    // 💰 VOUCHER FORM SYNC
+    // =========================
+    const applyForm  = document.getElementById('apply-voucher-form');
+    const removeForm = document.getElementById('remove-voucher-form');
 
-document.getElementById('apply-voucher-form')
-    ?.addEventListener('submit', function () { syncAddressToForm(this); });
+    if (applyForm) {
+        applyForm.addEventListener('submit', function () {
+            syncAddressToForm(this);
+        });
+    }
 
-document.getElementById('remove-voucher-form')
-    ?.addEventListener('submit', function () { syncAddressToForm(this); });
+    if (removeForm) {
+        removeForm.addEventListener('submit', function () {
+            syncAddressToForm(this);
+        });
+    }
 
 });

@@ -10,53 +10,114 @@ if (!isset($_SESSION['user'])) {
 
 $user_id = $_SESSION['user']->user_id;
 
-$cart = $_db->prepare('SELECT c.*, COALESCE(SUM(ci.quantity),0) AS item_qty FROM cart c LEFT JOIN cart_item ci ON c.cart_id = ci.cart_id WHERE c.user_id = ? GROUP BY c.cart_id');
+/* ===============================
+   ⚡ BUY NOW
+=============================== */
+$buy_now = $_SESSION['buy_now'] ?? null;
+
+/* ===============================
+   INIT
+=============================== */
+$items = [];
+$selected_subtotal = 0;
+$selected_items = [];
+
+/* ===============================
+   CART INFO
+=============================== */
+$cart = $_db->prepare('
+    SELECT c.*, COALESCE(SUM(ci.quantity),0) AS item_qty
+    FROM cart c
+    LEFT JOIN cart_item ci ON c.cart_id = ci.cart_id
+    WHERE c.user_id = ?
+    GROUP BY c.cart_id
+');
 $cart->execute([$user_id]);
 $cart = $cart->fetch();
 
-$selected_items = $_SESSION['checkout_items'] ?? [];
+/* ===============================
+   BUY NOW MODE
+=============================== */
+if ($buy_now) {
 
-if (empty($selected_items)) {
-    temp('info', 'No items selected. Please select items to checkout.');
-    redirect('/customer/cart.php');
+    $stm = $_db->prepare('SELECT * FROM product WHERE product_id = ? AND is_active = 1');
+    $stm->execute([$buy_now['product_id']]);
+    $p = $stm->fetch();
+
+    if (!$p) {
+        temp('info', 'Product not found');
+        redirect('/customer/home.php');
+    }
+
+    $items = [(object)[
+        'product_id'   => $p->product_id,
+        'product_name' => $p->product_name,
+        'unit_price'   => $p->price,
+        'image'        => $p->image,
+        'quantity'     => $buy_now['quantity']
+    ]];
+
+    $selected_subtotal = $p->price * $buy_now['quantity'];
+
+} else {
+
+    /* ===============================
+       CART MODE
+    =============================== */
+    $selected_items = $_SESSION['checkout_items'] ?? [];
+
+    if (empty($selected_items)) {
+        temp('info', 'No items selected. Please select items to checkout.');
+        redirect('/customer/cart.php');
+    }
+
+    if (!$cart || $cart->item_qty == 0) {
+        temp('info', 'Your cart is empty.');
+        redirect('/customer/home.php');
+    }
+
+    $placeholders = implode(',', array_fill(0, count($selected_items), '?'));
+    $params       = array_merge($selected_items, [$cart->cart_id]);
+
+    $stm = $_db->prepare("
+        SELECT 
+            ci.product_id,
+            ci.quantity,
+            p.product_name,
+            p.price AS unit_price,
+            p.image
+        FROM cart_item ci
+        JOIN product p ON ci.product_id = p.product_id
+        WHERE ci.cart_item_id IN ($placeholders)
+          AND ci.cart_id = ?
+          AND p.is_active = 1
+    ");
+
+    $stm->execute($params);
+    $items = $stm->fetchAll();
+
+    if (empty($items)) {
+        temp('info', 'Selected items no longer available.');
+        redirect('/customer/cart.php');
+    }
+
+    foreach ($items as $item) {
+        $selected_subtotal += $item->unit_price * $item->quantity;
+    }
 }
 
-if (!$cart || $cart->item_qty == 0) {
-    temp('info', 'Your cart is empty. Please add products before checkout.');
-    redirect('/product/viewproduct.php');
-}
-
-$placeholders = implode(',', array_fill(0, count($selected_items), '?'));
-$params       = array_merge($selected_items, [$cart->cart_id]);
-
-$items = $_db->prepare("
-    SELECT ci.*, p.product_name, p.price AS unit_price, p.image
-    FROM cart_item ci
-    JOIN product p ON ci.product_id = p.product_id
-    WHERE ci.cart_item_id IN ($placeholders)
-      AND ci.cart_id = ?
-      AND p.is_active = 1
-");
-$items->execute($params);
-$items = $items->fetchAll();
-
-if (empty($items)) {
-    temp('info', 'Selected items are no longer available.');
-    redirect('/customer/cart.php');
-}
-
-$selected_subtotal = 0;
-foreach ($items as $item) {
-    $selected_subtotal += $item->unit_price * $item->quantity;
-}
-
+/* ===============================
+   TOTALS
+=============================== */
 $shipping_fee    = 5.00;
 $discount_amount = 0;
 $voucher         = null;
 $voucher_msg     = '';
 $voucher_error   = '';
 
-// ── 提前读取地址资料（POST 或空值），保证回填 ──
+/* ===============================
+   ADDRESS
+=============================== */
 $recipient_name = trim(req('recipient_name', ''));
 $phone          = trim(req('phone', ''));
 $address_line1  = trim(req('address_line1', ''));
@@ -65,126 +126,128 @@ $postal_code    = trim(req('postal_code', ''));
 $city           = trim(req('city', ''));
 $state          = trim(req('state', ''));
 
-// Restore voucher from session if already applied
+/* ===============================
+   RESTORE VOUCHER
+=============================== */
 if (isset($_SESSION['applied_voucher'])) {
     $v = $_db->prepare('SELECT * FROM voucher WHERE code = ?');
     $v->execute([$_SESSION['applied_voucher']]);
     $v = $v->fetch();
+
     if ($v) {
         $voucher         = $v;
         $discount_amount = min($v->discount_amount, $selected_subtotal);
-        $voucher_msg     = 'Voucher applied: -RM ' . number_format($discount_amount, 2);
+        $voucher_msg = 'Voucher applied!';
     }
 }
 
 $grand_total = $selected_subtotal + $shipping_fee - $discount_amount;
 
+/* ===============================
+   POST HANDLING
+=============================== */
 if (is_post()) {
+
     $action = req('action');
 
-    // ── APPLY VOUCHER ──
+    /* APPLY VOUCHER */
     if ($action === 'apply_voucher') {
+
         $code = strtoupper(trim(req('voucher_code')));
 
         if (!$code) {
-            $voucher_error = 'Please enter a voucher code.';
+            $voucher_error = 'Please enter voucher code';
         } else {
+
             $v = $_db->prepare('SELECT * FROM voucher WHERE code = ?');
             $v->execute([$code]);
             $v = $v->fetch();
 
             if (!$v) {
-                $voucher_error = 'Invalid voucher code.';
-            } else if ($v->started_date && date('Y-m-d') < $v->started_date) {
-                $voucher_error = 'This voucher is not active yet.';
-            } else if ($v->expired_date && date('Y-m-d') > $v->expired_date) {
-                $voucher_error = 'This voucher has expired.';
-            } else if ($v->usage_limit !== null && $v->usage_count >= $v->usage_limit) {
-                $voucher_error = 'This voucher has reached its usage limit.';
+                $voucher_error = 'Invalid voucher';
             } else if ($selected_subtotal < $v->minimum_purchase_amount) {
-                $voucher_error = 'Minimum purchase of RM ' . number_format($v->minimum_purchase_amount, 2) . ' required.';
+                $voucher_error = 'Minimum purchase not met';
             } else {
-                $voucher                     = $v;
-                $discount_amount             = min($v->discount_amount, $selected_subtotal);
-                $voucher_msg                 = 'Voucher applied: -RM ' . number_format($discount_amount, 2);
+                $voucher         = $v;
+                $discount_amount = min($v->discount_amount, $selected_subtotal);
                 $_SESSION['applied_voucher'] = $code;
+                $voucher_msg = 'Voucher applied!';
             }
         }
 
         $grand_total = $selected_subtotal + $shipping_fee - $discount_amount;
     }
 
-    // ── REMOVE VOUCHER ──
-    // ✅ 不再 redirect，直接清除 session 并留在页面，地址资料通过 hidden inputs 保留
+    /* REMOVE VOUCHER */
     if ($action === 'remove_voucher') {
         unset($_SESSION['applied_voucher']);
-        $voucher         = null;
+        $voucher = null;
         $discount_amount = 0;
-        $voucher_msg     = '';
-        $grand_total     = $selected_subtotal + $shipping_fee;
+
+        $grand_total = $selected_subtotal + $shipping_fee;
     }
 
-    // ── PLACE ORDER ──
+    /* PLACE ORDER */
     if ($action === 'place_order') {
-        $voucher_code = $voucher ? $voucher->code : null;
 
-        if (!$recipient_name) {
-            $_err['recipient_name'] = 'Required';
-        }
+        $_err = [];
 
-        if (!$phone) {
-            $_err['phone'] = 'Required';
-        } else if (!preg_match('/^[0-9]{10,11}$/', $phone)) {
-            $_err['phone'] = 'Invalid phone number';
-        }
-
-        if (!$address_line1) {
-            $_err['address_line1'] = 'Required';
-        }
-
-        if (!$postal_code) {
-            $_err['postal_code'] = 'Required';
-        } else if (!preg_match('/^[0-9]{5}$/', $postal_code)) {
-            $_err['postal_code'] = 'Invalid postal code';
-        }
-
-        if (!$city) {
-            $_err['city'] = 'Required';
-        }
-
-        if (!$state) {
-            $_err['state'] = 'Required';
-        }
+        if (!$recipient_name) $_err['recipient_name'] = 'Required';
+        if (!$phone) $_err['phone'] = 'Required';
+        if (!$address_line1) $_err['address_line1'] = 'Required';
+        if (!$postal_code) $_err['postal_code'] = 'Required';
+        if (!$city) $_err['city'] = 'Required';
+        if (!$state) $_err['state'] = 'Required';
 
         if (!$_err) {
-            $orders_id      = $_db->query('SELECT COALESCE(MAX(orders_id),0) + 1 FROM orders')->fetchColumn();
-            $orders_item_id = $_db->query('SELECT COALESCE(MAX(orders_item_id),0) + 1 FROM orders_item')->fetchColumn();
 
-            $_db->prepare('INSERT INTO orders (orders_id, user_id, total_price, order_date, status, shipping_fee, recipient_name, phone, address_line1, address_line2, postal_code, city, state, voucher_code, discount_amount) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
-                ->execute([$orders_id, $user_id, $grand_total, date('Y-m-d'), 'Pending', $shipping_fee,
-                           $recipient_name, $phone, $address_line1, $address_line2, $postal_code, $city, $state,
-                           $voucher_code, $discount_amount]);
+            $orders_id = $_db->query('SELECT COALESCE(MAX(orders_id),0)+1 FROM orders')->fetchColumn();
+
+            $_db->prepare('
+                INSERT INTO orders
+                (orders_id, user_id, total_price, order_date, status, shipping_fee,
+                 recipient_name, phone, address_line1, address_line2, postal_code, city, state,
+                 voucher_code, discount_amount)
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+            ')->execute([
+                $orders_id,
+                $user_id,
+                $grand_total,
+                date('Y-m-d'),
+                'Pending',
+                $shipping_fee,
+                $recipient_name,
+                $phone,
+                $address_line1,
+                $address_line2,
+                $postal_code,
+                $city,
+                $state,
+                $voucher ? $voucher->code : null,
+                $discount_amount
+            ]);
 
             foreach ($items as $item) {
-                $_db->prepare('INSERT INTO orders_item (orders_item_id, orders_id, product_id, price, quantity) VALUES (?,?,?,?,?)')
-                    ->execute([$orders_item_id++, $orders_id, $item->product_id, $item->unit_price, $item->quantity]);
+
+                $_db->prepare('
+                    INSERT INTO orders_item
+                    (orders_item_id, orders_id, product_id, price, quantity)
+                    VALUES (?,?,?,?,?)
+                ')->execute([
+                    $_db->query('SELECT COALESCE(MAX(orders_item_id),0)+1 FROM orders_item')->fetchColumn(),
+                    $orders_id,
+                    $item->product_id,
+                    $item->unit_price,
+                    $item->quantity
+                ]);
 
                 $_db->prepare('UPDATE product SET stock_quantity = stock_quantity - ? WHERE product_id = ?')
                     ->execute([$item->quantity, $item->product_id]);
-
-                $_db->prepare('DELETE FROM cart_item WHERE cart_item_id = ? AND cart_id = ?')
-                    ->execute([$item->cart_item_id, $cart->cart_id]);
-            }
-
-            recalcCart($cart->cart_id);
-
-            if ($voucher) {
-                $_db->prepare('UPDATE voucher SET usage_count = usage_count + 1 WHERE voucher_id = ?')
-                    ->execute([$voucher->voucher_id]);
             }
 
             unset($_SESSION['checkout_items']);
             unset($_SESSION['applied_voucher']);
+            unset($_SESSION['buy_now']);
 
             redirect('/customer/payment.php?orders_id=' . $orders_id);
         }

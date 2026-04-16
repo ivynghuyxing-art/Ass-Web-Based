@@ -100,6 +100,7 @@ BANNER
 </section>
 
 
+
 <?php 
 $top = $_db->prepare("SELECT p.* ,SUM(oi.quantity) AS total_sold FROM orders_item oi JOIN product p on oi.product_id =p.product_id Where p.is_active =1 GROUP BY p.product_id ORDER BY total_sold DESC LIMIT 5");
 $top->execute();

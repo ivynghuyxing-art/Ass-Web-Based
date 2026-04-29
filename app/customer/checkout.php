@@ -173,7 +173,7 @@ if (is_post()) {
         $_err = [];
 
         if (!$recipient_name) $_err['recipient_name'] = 'Required';
-        if (!$phone) $_err['phone'] = 'Required';
+        if (!$phone) $_err ['phone'] ='Required';
         if (!$address_line1) $_err['address_line1'] = 'Required';
         if (!$postal_code) $_err['postal_code'] = 'Required';
         if (!$city) $_err['city'] = 'Required';

@@ -3422,3 +3422,19 @@ tbody tr:nth-child(even) {
     margin-top:10px;
     width:100%;
 }
+
+.btn-back-home{
+    text-align: right;
+}
+
+.btn-back-home a{
+     display:inline-block;
+    margin-right: auto;
+    text-decoration:none;
+    color:darkred;
+    font-size: 13px;
+}
+
+.btn-back-home a:hover{
+    border-bottom: 1px solid darkred;
+}

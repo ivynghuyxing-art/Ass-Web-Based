@@ -86,6 +86,9 @@
                     <p class="switch">
                         <a href="customer/forget_password.php">Forgot Password?</a>
                     </p>
+                    <div class ="btn-back-home">
+                        <a href = "/customer/home.php"> ← Back Home </a>
+                    </div>
             </form>
         </div>
     </body>

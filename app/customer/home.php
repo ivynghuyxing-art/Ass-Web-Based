@@ -206,8 +206,9 @@ $products = $stm->fetchAll();
 
         <?php foreach ($products as $p): ?>
         <div class="product-card">
-
-            <img src="../product_img/<?= encode($p->image) ?>">
+            <a href="../product/product_detail.php?product_id=<?= $p->product_id ?>">
+                <img src="../product_img/<?= encode($p->image) ?>">
+            </a>
             <h3><?= encode($p->product_name) ?></h3>
             <p>RM <?= number_format($p->price,2) ?></p>
 

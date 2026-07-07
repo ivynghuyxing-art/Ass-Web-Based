@@ -102,8 +102,7 @@ $items = $items->fetchAll();
                             </td>
                             <td></td>
                             <td>
-                                <button type="button" class="btn-remove"
-                                    onclick="
+                                <button type="button" class="btn-remove" onclick="
                                         document.getElementById('remove-item-id').value='<?= $item->cart_item_id ?>';
                                         document.getElementById('cart-action').value='remove';
                                         this.form.submit();

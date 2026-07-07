@@ -805,6 +805,18 @@ label.upload img {
     transition: background 0.2s;
 }
 
+.add-cart-form a{
+   width: 100%;
+    padding: 8px;
+    background: darkred;
+    color: white;
+    border: 1px solid darkred;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background 0.2s;
+}
+
 .add-to-cart:hover, .product-card .add-cart-form button:hover {
     background: rgb(173,8,8);
 }
@@ -982,7 +994,7 @@ label.upload img {
 }
 
 .cart-table th {
-    color: black;
+    color: white;
 
 }
 

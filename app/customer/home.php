@@ -34,7 +34,7 @@ if (is_post() && req('action') === 'add') {
     $cart = $cart->fetch();
 
     if (!$cart) {
-        $_db->prepare('INSERT INTO cart (user_id,total_price,total_quantity) VALUES (0,0,0)')->execute([$user_id]);
+        $_db->prepare('INSERT INTO cart (user_id,total_price,total_quantity) VALUES (?,0,0)')->execute([$user_id]);
         $cart_id = $_db->lastInsertId();
     } else {
         $cart_id = $cart->cart_id;

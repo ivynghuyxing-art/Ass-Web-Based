@@ -39,11 +39,17 @@ if (is_post()) {
         if($cart){
             $cart_id = $cart->cart_id;
 
-            $_db->prepare('DELETE FROM cart_item WHERE cart_id=?')
-                ->execute([$cart_id]);
+            $order_items = $_db->prepare('SELECT product_id FROM orders_item WHERE orders_id=?');
+            $order_items ->execute([$orders_id]);
+            $order_items = $order_items->fetchAll();
 
-            $_db->prepare('UPDATE cart SET total_quantity=0,total_price=0 WHERE cart_id=?')
-                ->execute([$cart_id]);
+            foreach($order_items as $oi){
+               $_db->prepare('DELETE FROM cart_item WHERE cart_id =? AND product_id =?')
+                    ->execute([$cart_id, $oi->product_id]);
+            }
+
+             $_db->prepare('UPDATE cart SET total_quantity=(SELECT COALESCE(SUM(quantity),0) FROM cart_item WHERE cart_id=?), total_price=(SELECT COALESCE(SUM(price),0) FROM cart_item WHERE cart_id=?)WHERE cart_id=?')
+                  ->execute([$cart_id, $cart_id, $cart_id]);
         }
 
         temp('info','Payment Successful!');
